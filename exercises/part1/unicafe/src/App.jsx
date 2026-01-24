@@ -2,7 +2,14 @@ import { useState } from 'react'
 
 const Button = ({ text, onClick }) => <button onClick={onClick}>{text}</button>
 
-const StatisticsLine = ({ label, value }) => <p>{label} {value}</p>
+const StatisticsLine = ({ label, value }) => {
+  return (
+    <tr>
+      <td>{label}</td>
+      <td>{value}</td>
+    </tr>
+  )
+}
 
 const App = () => {
   // save clicks of each button to its own state
@@ -11,7 +18,7 @@ const App = () => {
   const [bad, setBad] = useState(0)
   const total = good + neutral + bad
   const average = ((good + bad * -1) / total).toFixed(2);
-  const positive = (good / total * 100).toFixed(2);
+  const positive = `${(good / total * 100).toFixed(2)}%`;
 
   return (
     <>
@@ -26,14 +33,16 @@ const App = () => {
       <section>
         <h2>Statistics</h2>
         {total > 0 ?
-          <>
-            <StatisticsLine label='Good' value={good} />
-            <StatisticsLine label='Neutral' value={neutral} />
-            <StatisticsLine label='Bad' value={bad} />
-            <StatisticsLine label='All' value={total} />
-            <StatisticsLine label='Average' value={average} />
-            <StatisticsLine label='Positive' value={positive} />
-          </>
+          <table>
+            <tbody>
+              <StatisticsLine label='Good' value={good} />
+              <StatisticsLine label='Neutral' value={neutral} />
+              <StatisticsLine label='Bad' value={bad} />
+              <StatisticsLine label='All' value={total} />
+              <StatisticsLine label='Average' value={average} />
+              <StatisticsLine label='Positive' value={positive} />
+            </tbody>
+          </table>
         :
           <p>No feedback given</p>
         }
