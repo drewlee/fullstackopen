@@ -25,12 +25,18 @@ const App = () => {
       </section>
       <section>
         <h2>Statistics</h2>
-        <Statistics label='Good' value={good} />
-        <Statistics label='Neutral' value={neutral} />
-        <Statistics label='Bad' value={bad} />
-        <Statistics label='All' value={total} />
-        <Statistics label='Average' value={average} />
-        <Statistics label='Positive' value={positive} />
+        {total > 0 ?
+          <>
+            <Statistics label='Good' value={good} />
+            <Statistics label='Neutral' value={neutral} />
+            <Statistics label='Bad' value={bad} />
+            <Statistics label='All' value={total} />
+            <Statistics label='Average' value={average} />
+            <Statistics label='Positive' value={positive} />
+          </>
+        :
+          <p>No feedback given</p>
+        }
       </section>
     </>
   )
