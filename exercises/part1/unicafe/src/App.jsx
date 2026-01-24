@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const Button = ({ text, onClick }) => <button onClick={onClick}>{text}</button>
 
-const Statistics = ({ label, value }) => <p>{label} {value}</p>
+const StatisticsLine = ({ label, value }) => <p>{label} {value}</p>
 
 const App = () => {
   // save clicks of each button to its own state
@@ -27,12 +27,12 @@ const App = () => {
         <h2>Statistics</h2>
         {total > 0 ?
           <>
-            <Statistics label='Good' value={good} />
-            <Statistics label='Neutral' value={neutral} />
-            <Statistics label='Bad' value={bad} />
-            <Statistics label='All' value={total} />
-            <Statistics label='Average' value={average} />
-            <Statistics label='Positive' value={positive} />
+            <StatisticsLine label='Good' value={good} />
+            <StatisticsLine label='Neutral' value={neutral} />
+            <StatisticsLine label='Bad' value={bad} />
+            <StatisticsLine label='All' value={total} />
+            <StatisticsLine label='Average' value={average} />
+            <StatisticsLine label='Positive' value={positive} />
           </>
         :
           <p>No feedback given</p>
