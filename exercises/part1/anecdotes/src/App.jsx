@@ -1,5 +1,12 @@
 import { useState } from 'react'
 
+const Anecdote = ({ anecdote }) => <p>{anecdote}</p>
+
+const Vote = ({ votes }) => {
+  const noun = votes === 1 ? 'vote' : 'votes'
+  return <p>Has {votes} {noun}</p>
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -12,18 +19,58 @@ const App = () => {
     'The only way to go fast, is to go well.'
   ]
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
 
   const handleNextAnecdote = () => {
-    const randomIndex = Math.floor(Math.random() * anecdotes.length)
+    let randomIndex = selected
+
+    // Avoid generating the same index as the current index
+    while (randomIndex === selected) {
+      randomIndex = Math.floor(Math.random() * anecdotes.length)
+    }
+
     setSelected(randomIndex)
   }
 
+  const handleVote = () => {
+    const newVotes = [...votes]
+
+    newVotes[selected] += 1
+    setVotes(newVotes)
+  }
+
+  const getMostPopularAnecdote = () => {
+    const maxIndex = votes.reduce((maxIndex, voteCount, index) => {
+      if (voteCount > votes[maxIndex]) {
+        maxIndex = index
+      }
+
+      return maxIndex
+    }, 0)
+
+    return maxIndex
+  }
+
+  const mostPopular = getMostPopularAnecdote()
+
   return (
-    <section>
-      <h1>Anecdotes</h1>
-      <p>{anecdotes[selected]}</p>
-      <button onClick={handleNextAnecdote}>Next Anecdote</button>
-    </section>
+    <>
+      <section>
+        <h1>Anecdotes</h1>
+
+        <Anecdote anecdote={anecdotes[selected]} />
+        <Vote votes={votes[selected]} />
+
+        <button onClick={handleVote}>Vote</button>
+        <button onClick={handleNextAnecdote}>Next Anecdote</button>
+      </section>
+      <section>
+        <h2>Anecdote with most votes</h2>
+
+        <Anecdote anecdote={anecdotes[mostPopular]} />
+        <Vote votes={votes[mostPopular]} />
+      </section>
+    </>
   )
 }
 
