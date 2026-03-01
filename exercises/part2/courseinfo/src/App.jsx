@@ -10,8 +10,8 @@ const Content = ({ parts }) => {
   return parts.map(part => <Part key={part.id} info={part} />)
 }
 
-const Total = (props) => {
-  const total = props.parts.reduce((sum, { exercises }) => sum + exercises, 0)
+const Total = ({ parts }) => {
+  const total = parts.reduce((sum, { exercises }) => sum + exercises, 0)
   return <p><strong>Number of exercises {total}</strong></p>
 }
 
