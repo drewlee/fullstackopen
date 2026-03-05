@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { useState, useEffect } from 'react'
 import personsService from './services/persons'
 import Filter from './components/Filter'
@@ -12,7 +11,7 @@ const App = () => {
   useEffect(() => {
     personsService
       .getAll()
-      .then((allPersons) => setPersons(allPersons))
+      .then(allPersons => setPersons(allPersons))
   }, [])
 
   const setNewPerson = (name, number) => {
@@ -36,6 +35,14 @@ const App = () => {
     })
   }
 
+  const deletePerson = id => {
+    personsService
+      .deleteEntry(id)
+      .then(deletedPerson => {
+        setPersons(persons.filter(person => person.id !== deletedPerson.id))
+      })
+  }
+
   const shownPersons = filter
     ? getFilteredNames()
     : persons
@@ -52,7 +59,7 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons persons={shownPersons} />
+      <Persons persons={shownPersons} onDelete={deletePerson} />
     </div>
   )
 }
