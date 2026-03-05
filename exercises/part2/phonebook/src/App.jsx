@@ -25,6 +25,16 @@ const App = () => {
       )
   }
 
+  const updatePerson = (person) => {
+    personsService
+      .update(person)
+      .then(newPerson => {
+        setPersons(
+          persons.map(person => person.id === newPerson.id ? newPerson : person)
+        )
+      })
+  }
+
   const setNewFilter = value => setFilter(value)
 
   const getFilteredNames = () => {
@@ -55,7 +65,11 @@ const App = () => {
 
       <h3>Add a new</h3>
 
-      <PersonForm persons={persons} onFormSubmit={setNewPerson} />
+      <PersonForm
+        persons={persons}
+        setNewPerson={setNewPerson}
+        updatePerson={updatePerson}
+      />
 
       <h3>Numbers</h3>
 
