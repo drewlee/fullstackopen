@@ -17,13 +17,14 @@ const App = () => {
   }, [])
 
   const setNewPerson = (name, number) => {
-    const newEntry = {
-      name,
-      number,
-      id: persons.length + 1,
-    }
-
-    setPersons(persons.concat(newEntry))
+    axios
+      .post('http://localhost:3001/persons', {
+        name,
+        number
+      })
+      .then(response => {
+        setPersons(persons.concat(response.data))
+      })
   }
 
   const setNewFilter = value => setFilter(value)
