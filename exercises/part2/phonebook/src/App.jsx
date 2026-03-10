@@ -9,7 +9,10 @@ import './index.css'
 const App = () => {
   const [persons, setPersons] = useState([])
   const [filter, setFilter] = useState('')
-  const [message, setMessage] = useState(null)
+  const [notification, setNotification] = useState({
+    message: null,
+    type: null
+  })
 
   useEffect(() => {
     personsService
@@ -25,7 +28,14 @@ const App = () => {
       })
       .then(newPersons => {
           setPersons(persons.concat(newPersons))
-          setMessage(`Added ${name}`)
+          setNotification({
+            message: `Added ${name}`,
+            type: 'success'
+          })
+          setTimeout(setNotification, 5000, {
+            message: null,
+            type: null
+          })
       }
       )
   }
@@ -37,6 +47,16 @@ const App = () => {
         setPersons(
           persons.map(person => person.id === newPerson.id ? newPerson : person)
         )
+      })
+      .catch(() => {
+        setNotification({
+          message: `Information of ${person.name} has already been removed from the server`,
+          type: 'error'
+        })
+        setTimeout(setNotification, 5000, {
+          message: null,
+          type: null
+        })
       })
   }
 
@@ -66,7 +86,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
 
-      <Notification message={message} />
+      <Notification message={notification.message} type={notification.type} />
 
       <Filter filter={filter} onFilterChange={setNewFilter} />
 
