@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import countriesService from './services/countries'
 import CountrySearch from './components/CountrySearch'
 import MatchesList from './components/MatchesList'
 
@@ -8,9 +8,8 @@ const App = () => {
   const [matches, setMatches] = useState([])
 
   useEffect(() => {
-    axios
-      .get('https://studies.cs.helsinki.fi/restcountries/api/all')
-      .then(response => response.data)
+    countriesService
+      .getAll()
       .then(data => setData(data))
   }, [])
 
@@ -29,7 +28,7 @@ const App = () => {
   }
 
   const onShowCountry = country => {
-    const fData = data.filter(record => record.name.common === country)
+    const fData = matches.filter(record => record.name.common === country)
     setMatches(fData)
   }
 
