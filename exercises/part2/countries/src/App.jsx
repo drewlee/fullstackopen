@@ -28,10 +28,15 @@ const App = () => {
     setMatches(fData)
   }
 
+  const onShowCountry = country => {
+    const fData = data.filter(record => record.name.common === country)
+    setMatches(fData)
+  }
+
   return (
     <>
       <CountrySearch onCountrySearch={onCountrySearch} />
-      <MatchesList matches={matches} />
+      <MatchesList matches={matches} onShowCountry={onShowCountry} />
     </>
   )
 }
