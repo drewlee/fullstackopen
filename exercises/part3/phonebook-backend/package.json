@@ -1,7 +1,7 @@
 {
-  "name": "phonebook",
+  "name": "phonebook-backend",
   "version": "1.0.0",
-  "description": "Part 3 - phonebook backend app",
+  "description": "Phonebook backend app",
   "author": "Andrew A. Lee",
   "type": "commonjs",
   "main": "index.js",
