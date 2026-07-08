@@ -1,16 +1,16 @@
 {
   "name": "notes-backend",
   "version": "1.0.0",
-  "description": "",
-  "author": "",
+  "description": "Notes app backend",
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
     "dev": "node --watch index.js",
-    "start": "index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "cors": "^2.8.6",
     "express": "^5.2.1"
   },
   "volta": {
