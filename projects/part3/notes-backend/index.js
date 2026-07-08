@@ -35,6 +35,7 @@ const unknownEndpoint = (request, response) => {
 }
 
 app.use(cors())
+app.use(express.static('public'))
 app.use(express.json())
 
 app.get('/api/notes', (request, response) => {
