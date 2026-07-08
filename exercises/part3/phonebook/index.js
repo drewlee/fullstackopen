@@ -25,6 +25,16 @@ const persons = [
   }
 ]
 
+app.get('/info', (request, response) => {
+  const numPersons = persons.length;
+  const pNoun = numPersons === 1 ? 'person' : 'people';
+
+  response.send(
+    `<p>Phonebook has info for ${numPersons} ${pNoun}</p>
+    <p>${new Date().toString()}</p>`
+  )
+})
+
 app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
