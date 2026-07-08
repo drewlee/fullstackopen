@@ -42,7 +42,26 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.post('/api/persons', (request, response) => {
-  const { name, number } = request.body
+  const { body } = request
+  const required = ['name', 'number']
+
+  for (const prop of required) {
+    if (!body[prop]) {
+      return response.status(400).json({
+        error: `missing required '${prop}' property`
+      })
+    }
+  }
+
+  const { name, number } = body
+  const dupeName = persons.find(person => person.name === name)
+
+  if (dupeName) {
+    return response.status(400).json({
+      error: `name '${name}' already exists`
+    })
+  }
+
   const id = Math.floor(Math.random() * 1000).toString()
 
   persons.push({ id, name, number })
