@@ -26,8 +26,14 @@ let persons = [
   }
 ]
 
-app.use(morgan('tiny'))
+morgan.token('data', (request, response) => {
+  if (request.body) {
+    return JSON.stringify(request.body)
+  }
+})
+
 app.use(express.json())
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 
 app.get('/info', (request, response) => {
   const numPersons = persons.length
