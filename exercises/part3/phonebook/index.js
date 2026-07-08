@@ -26,17 +26,28 @@ const persons = [
 ]
 
 app.get('/info', (request, response) => {
-  const numPersons = persons.length;
-  const pNoun = numPersons === 1 ? 'person' : 'people';
+  const numPersons = persons.length
+  const pNoun = numPersons === 1 ? 'person' : 'people'
+  const date = new Date()
 
   response.send(
-    `<p>Phonebook has info for ${numPersons} ${pNoun}</p>
-    <p>${new Date().toString()}</p>`
+    `<p>Phonebook has info for ${numPersons} ${pNoun}</p><p>${date.toString()}</p>`
   )
 })
 
 app.get('/api/persons', (request, response) => {
   response.json(persons)
+})
+
+app.get('/api/persons/:id', (request, response) => {
+  const id = request.params.id
+  const person = persons.find(entry => entry.id === id)
+
+  if (!person) {
+    response.status(404).end()
+  }
+
+  response.json(person)
 })
 
 app.listen(PORT, () => {
