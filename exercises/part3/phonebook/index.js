@@ -25,6 +25,8 @@ let persons = [
   }
 ]
 
+app.use(express.json())
+
 app.get('/info', (request, response) => {
   const numPersons = persons.length
   const pNoun = numPersons === 1 ? 'person' : 'people'
@@ -36,6 +38,15 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
+  response.json(persons)
+})
+
+app.post('/api/persons', (request, response) => {
+  const { name, number } = request.body
+  const id = Math.floor(Math.random() * 1000).toString()
+
+  persons.push({ id, name, number })
+
   response.json(persons)
 })
 
