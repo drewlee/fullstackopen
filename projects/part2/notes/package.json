@@ -1,7 +1,8 @@
 {
   "name": "notes-frontend",
-  "private": true,
   "version": "1.0.0",
+  "description": "Notes app frontend",
+  "private": true,
   "type": "module",
   "scripts": {
     "build": "vite build",

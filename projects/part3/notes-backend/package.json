@@ -2,6 +2,7 @@
   "name": "notes-backend",
   "version": "1.0.0",
   "description": "Notes app backend",
+  "private": true,
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
