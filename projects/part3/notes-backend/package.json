@@ -5,7 +5,11 @@
   "private": true,
   "type": "commonjs",
   "main": "index.js",
+  "files": ["public"],
   "scripts": {
+    "build:ui": "./build-ui.sh",
+    "deploy": "vercel",
+    "deploy:full": "npm run build:ui && npm run deploy",
     "dev": "node --watch index.js",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
