@@ -12,6 +12,7 @@ morgan.token('data', (request, response) => {
   }
 })
 
+app.use(express.static('public'))
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 

@@ -142,3 +142,4 @@ vite.config.ts.timestamp-*
 .DS_Store
 .vercel
 projects/part3/notes-backend/public
+exercises/part3/phonebook-backend/public
