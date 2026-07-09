@@ -17,3 +17,8 @@ Start Vite:
 ```sh
 $ npm run dev
 ```
+
+## Deployment
+
+Deployment is handled via the
+[phonebook-backend](../phonebook-backend/) app.
