@@ -9,6 +9,16 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformed id' })
+  }
+
+  next(error)
+}
+
 app.use(express.static('public'))
 app.use(express.json())
 
@@ -37,19 +47,45 @@ app.post('/api/notes', (request, response) => {
   })
 })
 
-app.get('/api/notes/:id', (request, response) => {
+app.get('/api/notes/:id', (request, response, next) => {
   Note.findById(request.params.id).then(note => {
+    if (!note) {
+      response.status(404).end()
+      return
+    }
+
     response.json(note)
-  })
+  }).catch(error => next(error))
 })
 
-app.delete('/api/notes/:id', (request, response) => {
+app.delete('/api/notes/:id', (request, response, next) => {
   Note.findByIdAndDelete(request.params.id).then(() => {
     response.status(204).end()
-  })
+  }).catch(error => next(error))
+})
+
+app.put('/api/notes/:id', (request, response, next) => {
+  const { content, important } = request.body
+
+  Note.findById(request.params.id).then(note => {
+    if (!note) {
+      response.status(404).end()
+      return
+    }
+
+    note.content = content
+    note.important = important
+
+    return note.save()
+  }).then(updatedNote => {
+    if (updatedNote) {
+      response.json(updatedNote)
+    }
+  }).catch(error => next(error))
 })
 
 app.use(unknownEndpoint)
+app.use(errorHandler)
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
