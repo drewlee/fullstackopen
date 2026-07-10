@@ -26,8 +26,8 @@ const App = () => {
         name,
         number
       })
-      .then(newPersons => {
-          setPersons(newPersons)
+      .then(newPerson => {
+          setPersons([...persons, newPerson])
           setNotification({
             message: `Added ${name}`,
             type: 'success'
