@@ -1,4 +1,6 @@
+require('dotenv').config()
 const express = require('express')
+const Note = require('./models/note')
 
 const PORT = process.env.PORT || 3001
 const app = express()
@@ -37,25 +39,9 @@ app.use(express.static('public'))
 app.use(express.json())
 
 app.get('/api/notes', (request, response) => {
-  response.json(notes)
-})
-
-app.get('/api/notes/:id', (request, response) => {
-  const id = request.params.id
-  const note = notes.find(note => note.id === id)
-
-  if (note) {
-    response.json(note)
-  } else {
-    response.status(404).end()
-  }
-})
-
-app.delete('/api/notes/:id', (request, response) => {
-  const id = request.params.id
-  notes = notes.filter(note => note.id !== id)
-
-  response.status(204).end()
+  Note.find({}).then(notes => {
+    response.json(notes)
+  })
 })
 
 app.post('/api/notes', (request, response) => {
@@ -67,15 +53,26 @@ app.post('/api/notes', (request, response) => {
     })
   }
 
-  const note = {
-    id: generateId(),
+  const note = new Note({
     content: body.content,
     important: body.important || false,
-  }
+  })
 
-  notes = notes.concat(note)
+  note.save().then(savedNote => {
+    response.json(savedNote)
+  })
+})
 
-  response.json(note)
+app.get('/api/notes/:id', (request, response) => {
+  Note.findById(request.params.id).then(note => {
+    response.json(note)
+  })
+})
+
+app.delete('/api/notes/:id', (request, response) => {
+  Note.findByIdAndDelete(request.params.id).then(() => {
+    response.status(204).end()
+  })
 })
 
 app.use(unknownEndpoint)
