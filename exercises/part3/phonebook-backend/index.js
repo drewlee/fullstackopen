@@ -6,6 +6,16 @@ const Person = require('./models/person')
 const PORT = process.env.PORT || 3001
 const app = express()
 
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformed id' })
+  }
+
+  next(error)
+}
+
 morgan.token('data', (request, response) => {
   if (request.body) {
     return JSON.stringify(request.body)
@@ -56,7 +66,7 @@ app.post('/api/persons', (request, response) => {
   })
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id).then(person => {
     if (!person) {
       response.status(404).end()
@@ -64,18 +74,16 @@ app.get('/api/persons/:id', (request, response) => {
     }
 
     response.json(person)
-  }).catch(error => {
-    console.error(error.message)
-  })
+  }).catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id).then(() => {
     response.status(204).end()
-  }).catch(error => {
-    console.error(error.message)
-  })
+  }).catch(error => next(error))
 })
+
+app.use(errorHandler)
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
