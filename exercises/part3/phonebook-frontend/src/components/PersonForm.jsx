@@ -25,6 +25,8 @@ const PersonForm = ({ persons, setNewPerson, updatePerson }) => {
           ...matchingPerson,
           number: normNewNumber
         })
+        setNewName('')
+        setNewNumber('')
       }
 
       return

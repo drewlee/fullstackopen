@@ -27,17 +27,16 @@ const App = () => {
         number
       })
       .then(newPerson => {
-          setPersons([...persons, newPerson])
-          setNotification({
-            message: `Added ${name}`,
-            type: 'success'
-          })
-          setTimeout(setNotification, 5000, {
-            message: null,
-            type: null
-          })
-      }
-      )
+        setPersons([...persons, newPerson])
+        setNotification({
+          message: `Added ${name}`,
+          type: 'success'
+        })
+        setTimeout(setNotification, 5000, {
+          message: null,
+          type: null
+        })
+      })
   }
 
   const updatePerson = (person) => {

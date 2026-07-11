@@ -6,6 +6,16 @@ GET http://localhost:3001/api/persons/6a506650127bedacbdfc7d70
 
 ###
 
+PUT http://localhost:3001/api/persons/6a518373edd6e257e21659d4
+Content-Type: application/json
+
+{
+  "name": "Andrew Lee",
+  "number": "999"
+}
+
+###
+
 DELETE http://localhost:3001/api/persons/6a5097aafb657e012b6eee59
 
 ###
