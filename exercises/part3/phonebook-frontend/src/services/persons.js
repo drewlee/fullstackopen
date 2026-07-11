@@ -12,6 +12,17 @@ const create = newObject => {
   return axios
     .post(baseUrl, newObject)
     .then(response => response.data)
+    .catch(error => {
+      const result = { error: 'Unable to save new person' }
+
+      if (error?.response?.data?.error) {
+        result.error = error.response.data.error
+      } else if (error?.message) {
+        result.error = error.message
+      }
+
+      return result
+    })
 }
 
 const deleteEntry = id => {
