@@ -32,6 +32,17 @@ const App = () => {
         setNotes(notes.concat(returnedNote))
         setNewNote('')
       })
+      .catch(error => {
+        const msg = error?.response?.data?.error
+          ? error.response.data.error
+          : 'Unable to save note'
+
+        setErrorMessage(msg)
+
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
   }
 
   const toggleImportanceOf = (id) => {

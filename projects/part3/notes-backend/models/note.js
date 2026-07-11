@@ -9,7 +9,11 @@ mongoose.connect(url, { family: 4 })
   .catch(error => console.log(`Error connecting to MongoDB: ${error.message}`))
 
 const noteSchema = new mongoose.Schema({
-  content: String,
+  content: {
+    type: String,
+    minLength: 5,
+    required: true,
+  },
   important: Boolean,
 })
 
