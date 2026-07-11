@@ -2,11 +2,21 @@ GET https://phonebook-backend-nu.vercel.app/api/persons
 
 ###
 
-GET https://phonebook-backend-nu.vercel.app/api/persons/4
+GET https://phonebook-backend-nu.vercel.app/api/persons/6a506650127bedacbdfc7d70
 
 ###
 
-DELETE https://phonebook-backend-nu.vercel.app/api/persons/2
+PUT https://phonebook-backend-nu.vercel.app/api/persons/6a518373edd6e257e21659d4
+Content-Type: application/json
+
+{
+  "name": "Andrew Lee",
+  "number": "999"
+}
+
+###
+
+DELETE https://phonebook-backend-nu.vercel.app/api/persons/6a5097aafb657e012b6eee59
 
 ###
 
