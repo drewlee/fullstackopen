@@ -10,7 +10,7 @@ if (!args.length) {
   process.exit(1)
 }
 
-const password = args[0];
+const password = args[0]
 const url = `mongodb+srv://starsthatfell_db_user:${password}@cluster0.giv0msd.mongodb.net/phonebookApp?appName=Cluster0`
 
 mongoose.set('strictQuery', false)
@@ -38,7 +38,7 @@ if (args.length === 1) {
   const person = new Person({ name, number })
 
   person.save().then(result => {
-    console.log(`Added ${result.name} number ${result.number} to phonebook`);
+    console.log(`Added ${result.name} number ${result.number} to phonebook`)
     mongoose.connection.close()
   })
 }

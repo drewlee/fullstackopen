@@ -18,7 +18,7 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
-morgan.token('data', (request, response) => {
+morgan.token('data', (request) => {
   if (request.body) {
     return JSON.stringify(request.body)
   }
@@ -29,7 +29,7 @@ app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 
 app.get('/info', (request, response) => {
-  const numPersons = Person.countDocuments({}).then(numPersons => {
+  Person.countDocuments({}).then(numPersons => {
     const pNoun = numPersons === 1 ? 'person' : 'people'
     const date = new Date()
 

@@ -5,7 +5,7 @@ const url = process.env.MONGODB_URI
 mongoose.set('strictQuery', false)
 
 mongoose.connect(url, { family: 4 })
-  .then(result => console.log('Connected to MongoDB'))
+  .then(() => console.log('Connected to MongoDB'))
   .catch(error => console.log(`Error connecting to MongoDB: ${error.message}`))
 
 const personSchema = new mongoose.Schema({

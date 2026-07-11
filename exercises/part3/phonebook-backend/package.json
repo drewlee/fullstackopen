@@ -10,6 +10,7 @@
     "build:ui": "./build-ui.sh",
     "dev": "node --watch index.js",
     "deploy": "npm run build:ui && vercel",
+    "lint": "eslint .",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,6 +19,12 @@
     "express": "^5.2.1",
     "mongoose": "^9.7.4",
     "morgan": "^1.11.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "eslint": "^10.7.0",
+    "globals": "^17.7.0"
   },
   "volta": {
     "node": "24.14.1",
