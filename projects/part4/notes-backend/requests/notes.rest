@@ -1,0 +1,29 @@
+GET http://localhost:3001/api/notes
+
+###
+
+GET http://localhost:3001/api/notes/6a502bbd4d333e7d8c86d26d
+
+###
+
+PUT http://localhost:3001/api/notes/6a507417029b4ae83a801f35
+content-type: application/json
+
+{
+    "content": "JavaScript is the best",
+    "important": false
+}
+
+###
+
+DELETE http://localhost:3001/api/notes/6a502bbd4d333e7d8c86d26e
+
+###
+
+POST http://localhost:3001/api/notes/ HTTP/1.1
+content-type: application/json
+
+{
+    "content": "JavaScript is the best",
+    "important": false
+}
