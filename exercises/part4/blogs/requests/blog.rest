@@ -6,8 +6,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Drew's Awesome Blog",
-  "author": "Andrew A. Lee",
-  "url": "https://andrewleeart.com",
+  "title": "Bob's Dumpy Blog",
+  "author": "Bob McBob",
+  "url": "https://bobdumpyblog.com",
   "likes": 0
 }
