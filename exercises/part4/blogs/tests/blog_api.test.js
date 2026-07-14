@@ -36,3 +36,24 @@ test('blogs include the id property', async () => {
 
   assert(Object.hasOwn(blog, 'id'))
 })
+
+test('a valid blog can be added', async () => {
+  const newBlog = {
+    title: 'First class tests',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
+    likes: 10,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+  
+  const blogs = await blogsInDb()
+  assert.strictEqual(blogs.length, initialBlogs.length + 1)
+
+  const content = blogs.map((blog) => blog.title)
+  assert(content.includes('First class tests'))
+})
