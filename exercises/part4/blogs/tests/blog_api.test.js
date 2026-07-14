@@ -76,3 +76,37 @@ test('defaults likes to 0 if not provided', async () => {
 
   assert.strictEqual(newBlog.likes, 0)
 })
+
+test('fails to add blog if title is not provided', async () => {
+  const blog = {
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
+    like: 1,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(blog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+  
+  const blogs = await blogsInDb()
+  assert.strictEqual(blogs.length, initialBlogs.length)
+})
+
+test('fails to add blog if url is not provided', async () => {
+  const blog = {
+    title: 'First class tests',
+    author: 'Robert C. Martin',
+    like: 1,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(blog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+  
+  const blogs = await blogsInDb()
+  assert.strictEqual(blogs.length, initialBlogs.length)
+})

@@ -17,9 +17,13 @@ blogsRouter.post('/', async (request, response) => {
     likes: body.likes ?? 0,
   }
   const newBlog = new Blog(blog)
-  const result = await newBlog.save()
 
-  response.status(201).json(result)
+  try {
+    const result = await newBlog.save()
+    response.status(201).json(result)
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
 })
 
 module.exports = blogsRouter
