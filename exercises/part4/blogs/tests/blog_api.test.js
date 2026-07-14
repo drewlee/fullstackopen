@@ -116,7 +116,24 @@ describe('blog API', () => {
     })
   })
 
-  describe('deleting a note', () => {
+  describe('updating a blog', () => {
+    test('succeeds with valid data', async () => {
+      const blogsAtStart = await blogsInDb()
+      const blogToUpdate = blogsAtStart[0]
+
+      await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send({ ...blogToUpdate, likes: blogToUpdate.likes + 1 })
+        .expect(201)
+
+      const blogsAtEnd = await blogsInDb()
+      const updatedBlog = blogsAtEnd.find(blog => blog.id === blogToUpdate.id)
+
+      assert.strictEqual(updatedBlog.likes, blogToUpdate.likes + 1)
+    })
+  })
+
+  describe('deleting a blog', () => {
     test('succeeds with status 204 if id is valid', async () => {
       const blogsAtStart = await blogsInDb()
       const blogToDelete = blogsAtStart[0]
