@@ -30,11 +30,11 @@ const mostBlogs = blogs => {
     return null
   }
 
-  const authorCount = new Map()
+  const authorCount = {}
 
-  for (const blog of blogs) {
-    const count = authorCount.get(blog.author) ?? 0
-    authorCount.set(blog.author, count + 1)
+  for (const { author } of blogs) {
+    const count = authorCount[author] ?? 0
+    authorCount[author] = count + 1
   }
 
   const most = {
@@ -42,7 +42,7 @@ const mostBlogs = blogs => {
     blogs: 0,
   };
 
-  for (const [key, value] of authorCount.entries()) {
+  for (const [key, value] of Object.entries(authorCount)) {
     if (value > most.blogs) {
       most.author = key;
       most.blogs = value;
@@ -57,11 +57,11 @@ const mostLikes = blogs => {
     return null
   }
 
-  const likesCount = new Map()
+  const likesCount = {}
 
-  for (const blog of blogs) {
-    const count = likesCount.get(blog.author) ?? 0
-    likesCount.set(blog.author, count + blog.likes)
+  for (const { author, likes } of blogs) {
+    const count = likesCount[author] ?? 0
+    likesCount[author] = count + likes
   }
 
   const most = {
@@ -69,7 +69,7 @@ const mostLikes = blogs => {
     likes: 0,
   };
 
-  for (const [key, value] of likesCount.entries()) {
+  for (const [key, value] of Object.entries(likesCount)) {
     if (value > most.likes) {
       most.author = key;
       most.likes = value;
