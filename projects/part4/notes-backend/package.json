@@ -9,10 +9,10 @@
     "build:ui": "./build-ui.sh",
     "deploy": "vercel",
     "deploy:full": "npm run build:ui && npm run deploy",
-    "dev": "node --watch index.js",
+    "dev": "NODE_ENV=development node --watch index.js",
     "lint": "eslint .",
-    "start": "node index.js",
-    "test": "node --test"
+    "start": "NODE_ENV=production node index.js",
+    "test": "NODE_ENV=test node --test"
   },
   "dependencies": {
     "dotenv": "^17.4.2",
@@ -23,7 +23,8 @@
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
     "eslint": "^10.7.0",
-    "globals": "^17.7.0"
+    "globals": "^17.7.0",
+    "supertest": "^7.2.2"
   },
   "volta": {
     "node": "24.18.0",
