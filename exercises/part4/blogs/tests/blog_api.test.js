@@ -57,3 +57,22 @@ test('a valid blog can be added', async () => {
   const content = blogs.map((blog) => blog.title)
   assert(content.includes('First class tests'))
 })
+
+test('defaults likes to 0 if not provided', async () => {
+  const blog = {
+    title: 'First class tests',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(blog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogs = await blogsInDb()
+  const newBlog = blogs.find(blog => blog.title === 'First class tests')
+
+  assert.strictEqual(newBlog.likes, 0)
+})

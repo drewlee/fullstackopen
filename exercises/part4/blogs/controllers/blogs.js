@@ -3,12 +3,21 @@ const Blog = require('../models/blog')
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({})
+
   response.json(blogs)
 })
 
 blogsRouter.post('/', async (request, response) => {
-  const blog = new Blog(request.body)
-  const result = await blog.save()
+  const { body } = request;
+
+  const blog = {
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes ?? 0,
+  }
+  const newBlog = new Blog(blog)
+  const result = await newBlog.save()
 
   response.status(201).json(result)
 })
