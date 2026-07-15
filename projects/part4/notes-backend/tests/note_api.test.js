@@ -2,20 +2,34 @@ const { test, after, beforeEach, describe } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const bcrypt = require('bcrypt')
 const app = require('../app')
-const { initialNotes, notesInDb, nonExistingId } = require('./test_helper')
+const { initialNotes, notesInDb, nonExistingId, usersInDb } = require('./test_helper')
 const Note = require('../models/note')
+const User = require('../models/user')
 
 const api = supertest(app)
 
-after(async () => {
-  await mongoose.connection.close()
+after(() => {
+  mongoose.connection.close()
 })
 
 describe('when there is initially some notes saved', () => {
   beforeEach(async () => {
+    await User.deleteMany({})
     await Note.deleteMany({})
-    await Note.insertMany(initialNotes)
+
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'root', passwordHash })
+    const savedUser = await user.save()
+
+    const notesWithUser = initialNotes.map(note => {
+      note = { ...note }
+      note.user = savedUser._id
+      return note
+    })
+
+    await Note.insertMany(notesWithUser)
   })
 
   test('notes are returned as json', async () => {
@@ -66,9 +80,11 @@ describe('when there is initially some notes saved', () => {
 
   describe('addition of a new note', () => {
     test('succeeds with valid data', async () => {
+      const initialUsers = await usersInDb()
       const newNote = {
         content: 'async/await simplifies making async calls',
         important: true,
+        userId: initialUsers[0].id
       }
 
       await api
