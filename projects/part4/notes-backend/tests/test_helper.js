@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const Note = require('../models/note')
 const User = require('../models/user')
 
@@ -53,6 +54,16 @@ const getInitialUsers = async () => {
   }))
 }
 
+const getAuthToken = user => {
+  const userForToken = {
+    username: user.username,
+    id: user.id,
+  }
+  const token = jwt.sign(userForToken, process.env.SECRET)
+
+  return token
+}
+
 const usersInDb = async () => {
   const users = await User.find({})
   return users.map(user => user.toJSON())
@@ -63,5 +74,6 @@ module.exports = {
   nonExistingId,
   notesInDb,
   getInitialUsers,
+  getAuthToken,
   usersInDb,
 }

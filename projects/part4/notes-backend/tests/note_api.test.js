@@ -8,7 +8,8 @@ const {
   notesInDb,
   nonExistingId,
   usersInDb,
-  getInitialUsers
+  getAuthToken,
+  getInitialUsers,
 } = require('./test_helper')
 const Note = require('../models/note')
 const User = require('../models/user')
@@ -90,14 +91,16 @@ describe('when there is initially some notes saved', () => {
   describe('addition of a new note', () => {
     test('succeeds with valid data', async () => {
       const initialUsers = await usersInDb()
+      const token = getAuthToken(initialUsers[0])
       const newNote = {
         content: 'async/await simplifies making async calls',
         important: true,
-        userId: initialUsers[0].id
+        user: initialUsers[0].id,
       }
 
       await api
         .post('/api/notes')
+        .set('Authorization', `Bearer ${token}`)
         .send(newNote)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -110,10 +113,16 @@ describe('when there is initially some notes saved', () => {
     })
 
     test('fails with status code 400 if data invalid', async () => {
-      const newNote = { important: true }
+      const initialUsers = await usersInDb()
+      const token = getAuthToken(initialUsers[0])
+      const newNote = {
+        important: true,
+        user: initialUsers[0].id,
+      }
 
       await api
         .post('/api/notes')
+        .set('Authorization', `Bearer ${token}`)
         .send(newNote)
         .expect(400)
 

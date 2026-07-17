@@ -7,7 +7,7 @@ GET http://localhost:3001/api/notes/6a502bbd4d333e7d8c86d26d
 ###
 
 PUT http://localhost:3001/api/notes/6a507417029b4ae83a801f35
-content-type: application/json
+Content-Type: application/json
 
 {
   "content": "JavaScript is the best",
@@ -21,10 +21,10 @@ DELETE http://localhost:3001/api/notes/6a502bbd4d333e7d8c86d26e
 ###
 
 POST http://localhost:3001/api/notes/ HTTP/1.1
-content-type: application/json
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI2YTU3MTdmNDQ2YjYzYjI1M2UwYTNhNGIiLCJpYXQiOjE3ODQzMDkzNjl9.FB24NZsOAsGbLMuU6EherHS0jWeGYed8nU5oH1AXFXc
 
 {
-  "content": "The existing code and tests need to be changed when user is added to system",
-  "important": true,
-  "userId": "6a57177f46b63b253e0a3a4a"
+  "content": "Single page apps use token based auth",
+  "important": true
 }
