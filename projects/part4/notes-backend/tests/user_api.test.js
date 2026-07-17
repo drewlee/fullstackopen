@@ -1,11 +1,10 @@
-const { describe, test, beforeEach, after } = require('node:test')
+const { describe, test, before, beforeEach, after } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
-const bcrypt = require('bcrypt')
 const app = require('../app')
 const User = require('../models/user')
-const { usersInDb } = require('./test_helper')
+const { getInitialUsers, usersInDb } = require('./test_helper')
 
 const api = supertest(app)
 
@@ -14,27 +13,28 @@ after(() => {
 })
 
 describe('when there is initially one user in db', () => {
+  let initialUsers = []
+
+  before(async () => {
+    initialUsers = await getInitialUsers()
+  })
+
   beforeEach(async () => {
     await User.deleteMany({})
-
-    const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({ username: 'root', passwordHash })
-
-    await user.save()
+    await User.insertMany(initialUsers.slice(0, 1))
   })
 
   test('creation succeeds with a fresh username', async () => {
     const usersAtStart = await usersInDb()
-
-    const newUser = {
-      username: 'mluukkai',
-      name: 'Matti Luukkainen',
-      password: 'salainen',
-    }
+    const { name, username, password } = initialUsers[1]
 
     await api
       .post('/api/users')
-      .send(newUser)
+      .send({
+        name,
+        username,
+        password,
+      })
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -42,21 +42,20 @@ describe('when there is initially one user in db', () => {
     assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
 
     const usernames = usersAtEnd.map(u => u.username)
-    assert(usernames.includes(newUser.username))
+    assert(usernames.includes(username))
   })
 
   test('creation fails with proper statuscode and message if username already taken', async () => {
     const usersAtStart = await usersInDb()
-
-    const newUser = {
-      username: 'root',
-      name: 'Superuser',
-      password: 'salainen',
-    }
+    const { name, password } = initialUsers[1]
 
     const result = await api
       .post('/api/users')
-      .send(newUser)
+      .send({
+        name,
+        username: 'jameskirk',
+        password,
+      })
       .expect(400)
       .expect('Content-Type', /application\/json/)
 

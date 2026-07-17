@@ -1,10 +1,15 @@
-const { test, after, beforeEach, describe } = require('node:test')
+const { test, after, before, beforeEach, describe } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
-const bcrypt = require('bcrypt')
 const app = require('../app')
-const { initialNotes, notesInDb, nonExistingId, usersInDb } = require('./test_helper')
+const {
+  initialNotes,
+  notesInDb,
+  nonExistingId,
+  usersInDb,
+  getInitialUsers
+} = require('./test_helper')
 const Note = require('../models/note')
 const User = require('../models/user')
 
@@ -15,18 +20,22 @@ after(() => {
 })
 
 describe('when there is initially some notes saved', () => {
+  let initialUsers = []
+
+  before(async () => {
+    initialUsers = await getInitialUsers()
+  })
+
   beforeEach(async () => {
     await User.deleteMany({})
     await Note.deleteMany({})
 
-    const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({ username: 'root', passwordHash })
-    const savedUser = await user.save()
-
+    const savedUsers = await User.insertMany(initialUsers)
     const notesWithUser = initialNotes.map(note => {
-      note = { ...note }
-      note.user = savedUser._id
-      return note
+      return {
+        ...note,
+        user: savedUsers[0]._id,
+      }
     })
 
     await Note.insertMany(notesWithUser)
