@@ -5,20 +5,9 @@ GET http://localhost:3003/api/users
 POST http://localhost:3003/api/users
 Content-Type: application/json
 
+# Invalid
 {
   "username": "j",
   "name": "John Doe",
   "password": "aaa"
 }
-
-# {
-#   "username": "jjones",
-#   "name": "Jimbo Jones",
-#   "password": "awesomesauce"
-# }
-
-# {
-#   "username": "drewlee",
-#   "name": "Andrew Lee",
-#   "password": "craycray"
-# }
