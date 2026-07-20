@@ -1,4 +1,4 @@
-const { test, after, beforeEach, describe } = require('node:test')
+const { test, after, before, beforeEach, describe } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -8,29 +8,33 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 
 const api = supertest(app)
-
-beforeEach(async () => {
-  await User.deleteMany({})
-  await Blog.deleteMany({})
-
-  const initialUsers = await getInitialUsers()
-  await User.insertMany(initialUsers)
-
-  const users = await usersInDb()
-  const blogs = initialBlogs.map(blog => {
-    blog.user = users[0].id
-    return blog
-  })
-
-  await Blog.insertMany(blogs)
-})
+let initialUsers = []
 
 after(async () => {
   await mongoose.connection.close()
 })
 
 describe('blog API', () => {
-  describe('fetching blogs', () => {
+  before(async () => {
+    initialUsers = await getInitialUsers()
+  })
+
+  beforeEach(async () => {
+    await User.deleteMany({})
+    await Blog.deleteMany({})
+
+    await User.insertMany(initialUsers)
+
+    const users = await usersInDb()
+    const blogsWithUsers = initialBlogs.map(blog => {
+      blog.user = users[0].id
+      return blog
+    })
+
+    await Blog.insertMany(blogsWithUsers)
+  })
+
+  describe('fetch all', () => {
     test('blogs are returned as JSON', async () => {
       await api
         .get('/api/blogs')
@@ -38,21 +42,23 @@ describe('blog API', () => {
         .expect('Content-Type', /application\/json/)
     })
 
-    test('all blogs are returned', async () => {
+    test('returns all blogs in the db', async () => {
       const response = await api.get('/api/blogs')
 
       assert.strictEqual(response.body.length, initialBlogs.length)
     })
 
-    test('returned blogs include the id', async () => {
+    test('returned blogs include the expected properties', async () => {
       const response = await api.get('/api/blogs')
-      const blogs = response.body
+      const blog = response.body[0]
+      const props = ['id', 'title', 'author', 'url', 'likes', 'user']
 
-      assert(blogs.every(blog => Object.hasOwn(blog, 'id')))
+      assert.deepEqual(Object.keys(blog).length, props.length)
+      props.forEach(prop => assert(prop in blog))
     })
   })
 
-  describe('adding a new blog', () => {
+  describe('create new', () => {
     test('succeeds with valid data', async () => {
       const users = await usersInDb()
       const blog = {
@@ -74,6 +80,23 @@ describe('blog API', () => {
 
       const content = blogs.map((blog) => blog.title)
       assert(content.includes('First class tests'))
+    })
+
+    test('new blog includes the expected properties', async () => {
+      const users = await usersInDb()
+      const blog = {
+        title: 'First class tests',
+        author: 'Robert C. Martin',
+        url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
+        likes: 10,
+        user: users[1].id,
+      }
+
+      const response = await api.post('/api/blogs').send(blog)
+      const props = ['id', 'title', 'author', 'url', 'likes', 'user']
+
+      assert.deepEqual(Object.keys(response.body).length, props.length)
+      props.forEach(prop => assert(prop in response.body))
     })
 
     test('defaults likes to 0 if not provided', async () => {
@@ -136,7 +159,7 @@ describe('blog API', () => {
     })
   })
 
-  describe('updating a blog', () => {
+  describe('update', () => {
     test('succeeds with valid data', async () => {
       const blogsAtStart = await blogsInDb()
       const blogToUpdate = blogsAtStart[0]
@@ -153,8 +176,8 @@ describe('blog API', () => {
     })
   })
 
-  describe('deleting a blog', () => {
-    test('succeeds with status 204 if id is valid', async () => {
+  describe('delete', () => {
+    test('succeeds if id is valid', async () => {
       const blogsAtStart = await blogsInDb()
       const blogToDelete = blogsAtStart[0]
 

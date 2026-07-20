@@ -23,7 +23,7 @@ describe('user API', () => {
     await User.insertMany(initialUsers)
   })
 
-  describe('fetching users', () => {
+  describe('fetch all', () => {
     test('users are returned as JSON', async () => {
       await api
         .get('/api/users')
@@ -31,13 +31,22 @@ describe('user API', () => {
         .expect('Content-Type', /application\/json/)
     })
 
-    test('all users are returned', async () => {
-      const result = await api.get('/api/users')
-      assert.strictEqual(result.body.length, initialUsers.length)
+    test('returns all users in the db', async () => {
+      const response = await api.get('/api/users')
+      assert.strictEqual(response.body.length, initialUsers.length)
+    })
+
+    test('returned users include the expected properties', async () => {
+      const response = await api.get('/api/users')
+      const user = response.body[0]
+      const props = ['username', 'name', 'id', 'blogs']
+
+      assert.deepEqual(Object.keys(user).length, props.length)
+      props.forEach(prop => assert(prop in user))
     })
   })
 
-  describe('creating a new user', () => {
+  describe('create new', () => {
     test('successfully adds a new user', async () => {
       const newUser = {
         username: 'scotty',
@@ -49,10 +58,25 @@ describe('user API', () => {
         .post('/api/users')
         .send(newUser)
         .expect(201)
-      
+
       const users = await usersInDb()
+
       assert.strictEqual(users.length, initialUsers.length + 1)
-      assert(users.map(u => u.username).includes(newUser.username))
+      assert(users.map(user => user.username).includes(newUser.username))
+    })
+
+    test('new user includes the expected properties', async () => {
+      const newUser = {
+        username: 'scotty',
+        name: 'Montgomery Scott',
+        password: 'beam_me_up',
+      }
+
+      const response = await api.post('/api/users').send(newUser)
+      const props = ['username', 'name', 'id', 'blogs']
+
+      assert.strictEqual(Object.keys(response.body).length, props.length)
+      props.forEach(prop => assert(prop in response.body))
     })
 
     test('fails validation when username is too short', async () => {
@@ -68,6 +92,7 @@ describe('user API', () => {
         .expect(400)
 
       const users = await usersInDb()
+
       assert.strictEqual(users.length, initialUsers.length)
       assert(response.body.error.includes('User validation failed'))
     })
@@ -85,6 +110,7 @@ describe('user API', () => {
         .expect(400)
 
       const users = await usersInDb()
+
       assert.strictEqual(users.length, initialUsers.length)
       assert(response.body.error.includes('duplicate key error'))
     })
@@ -102,6 +128,7 @@ describe('user API', () => {
         .expect(400)
 
       const users = await usersInDb()
+
       assert.strictEqual(users.length, initialUsers.length)
       assert(response.body.error)
     })
