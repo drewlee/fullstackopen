@@ -3,14 +3,26 @@ const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-const { initialBlogs, blogsInDb } = require('./test_helper')
+const { initialBlogs, blogsInDb, getInitialUsers, usersInDb } = require('./test_helper')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const api = supertest(app)
 
 beforeEach(async () => {
+  await User.deleteMany({})
   await Blog.deleteMany({})
-  await Blog.insertMany(initialBlogs)
+
+  const initialUsers = await getInitialUsers()
+  await User.insertMany(initialUsers)
+
+  const users = await usersInDb()
+  const blogs = initialBlogs.map(blog => {
+    blog.user = users[0].id
+    return blog
+  })
+
+  await Blog.insertMany(blogs)
 })
 
 after(async () => {
@@ -42,11 +54,13 @@ describe('blog API', () => {
 
   describe('adding a new blog', () => {
     test('succeeds with valid data', async () => {
+      const users = await usersInDb()
       const blog = {
         title: 'First class tests',
         author: 'Robert C. Martin',
         url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
         likes: 10,
+        user: users[1].id,
       }
 
       await api
@@ -63,10 +77,12 @@ describe('blog API', () => {
     })
 
     test('defaults likes to 0 if not provided', async () => {
+      const users = await usersInDb()
       const blog = {
         title: 'First class tests',
         author: 'Robert C. Martin',
         url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
+        user: users[1].id,
       }
 
       await api
@@ -82,10 +98,12 @@ describe('blog API', () => {
     })
 
     test('fails with status 400 if title is missing', async () => {
+      const users = await usersInDb()
       const blog = {
         author: 'Robert C. Martin',
         url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
         like: 1,
+        user: users[1].id,
       }
 
       await api
@@ -99,10 +117,12 @@ describe('blog API', () => {
     })
 
     test('fails with status 400 if url is missing', async () => {
+      const users = await usersInDb()
       const blog = {
         title: 'First class tests',
         author: 'Robert C. Martin',
         like: 1,
+        user: users[1].id,
       }
 
       await api

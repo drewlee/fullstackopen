@@ -37,8 +37,8 @@ describe('user API', () => {
     })
   })
 
-  describe('adding a new user', () => {
-    test('successfully creates a new user', async () => {
+  describe('creating a new user', () => {
+    test('successfully adds a new user', async () => {
       const newUser = {
         username: 'scotty',
         name: 'Montgomery Scott',
@@ -55,7 +55,7 @@ describe('user API', () => {
       assert(users.map(u => u.username).includes(newUser.username))
     })
 
-    test('fails username validation', async () => {
+    test('fails validation when username is too short', async () => {
       const newUser = {
         username: 'sc',
         name: 'Montgomery Scott',
@@ -72,7 +72,24 @@ describe('user API', () => {
       assert(response.body.error.includes('User validation failed'))
     })
 
-    test('fails password validation', async () => {
+    test('fails validation when username is not unique', async () => {
+      const newUser = {
+        username: 'spock',
+        name: 'Montgomery Scott',
+        password: 'beam_me_up',
+      }
+
+      const response = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+
+      const users = await usersInDb()
+      assert.strictEqual(users.length, initialUsers.length)
+      assert(response.body.error.includes('duplicate key error'))
+    })
+
+    test('fails validation when password is too short', async () => {
       const newUser = {
         username: 'scotty',
         name: 'Montgomery Scott',

@@ -9,5 +9,6 @@ Content-Type: application/json
   "title": "Bob's Dumpy Blog",
   "author": "Bob McBob",
   "url": "https://bobdumpyblog.com",
-  "likes": 0
+  "likes": 0,
+  "user": "6a5ac26575bf51ab130d0c7e"
 }
