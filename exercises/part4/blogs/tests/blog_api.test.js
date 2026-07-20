@@ -3,9 +3,15 @@ const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-const { initialBlogs, blogsInDb, getInitialUsers, usersInDb } = require('./test_helper')
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const {
+  initialBlogs,
+  blogsInDb,
+  getInitialUsers,
+  usersInDb,
+  getAuthToken,
+} = require('./test_helper')
 
 const api = supertest(app)
 let initialUsers = []
@@ -61,16 +67,17 @@ describe('blog API', () => {
   describe('create new', () => {
     test('succeeds with valid data', async () => {
       const users = await usersInDb()
+      const token = getAuthToken(users[1])
       const blog = {
         title: 'First class tests',
         author: 'Robert C. Martin',
         url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
         likes: 10,
-        user: users[1].id,
       }
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(blog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -84,15 +91,19 @@ describe('blog API', () => {
 
     test('new blog includes the expected properties', async () => {
       const users = await usersInDb()
+      const token = getAuthToken(users[1])
       const blog = {
         title: 'First class tests',
         author: 'Robert C. Martin',
         url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
         likes: 10,
-        user: users[1].id,
       }
 
-      const response = await api.post('/api/blogs').send(blog)
+      const response = await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
+        .send(blog)
+
       const props = ['id', 'title', 'author', 'url', 'likes', 'user']
 
       assert.deepEqual(Object.keys(response.body).length, props.length)
@@ -101,15 +112,16 @@ describe('blog API', () => {
 
     test('defaults likes to 0 if not provided', async () => {
       const users = await usersInDb()
+      const token = getAuthToken(users[1])
       const blog = {
         title: 'First class tests',
         author: 'Robert C. Martin',
         url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
-        user: users[1].id,
       }
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(blog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -122,15 +134,16 @@ describe('blog API', () => {
 
     test('fails with status 400 if title is missing', async () => {
       const users = await usersInDb()
+      const token = getAuthToken(users[1])
       const blog = {
         author: 'Robert C. Martin',
         url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
         like: 1,
-        user: users[1].id,
       }
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(blog)
         .expect(400)
         .expect('Content-Type', /application\/json/)
@@ -141,6 +154,7 @@ describe('blog API', () => {
 
     test('fails with status 400 if url is missing', async () => {
       const users = await usersInDb()
+      const token = getAuthToken(users[1])
       const blog = {
         title: 'First class tests',
         author: 'Robert C. Martin',
@@ -150,6 +164,7 @@ describe('blog API', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(blog)
         .expect(400)
         .expect('Content-Type', /application\/json/)
