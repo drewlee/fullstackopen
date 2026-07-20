@@ -6,9 +6,9 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Bob's Dumpy Blog",
-  "author": "Bob McBob",
-  "url": "https://bobdumpyblog.com",
-  "likes": 0,
+  "title": "Becoming an AI-proof software engineer",
+  "author": "Iris Meredith",
+  "url": "https://deadsimpletech.com/blog/ai-proof-engineer",
+  "likes": 3,
   "user": "6a5ac26575bf51ab130d0c7e"
 }

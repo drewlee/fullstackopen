@@ -16,18 +16,20 @@ blogsRouter.post('/', async (request, response) => {
     return
   }
 
-  const blog = {
+  const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
     likes: body.likes ?? 0,
     user: user._id,
-  }
-  const newBlog = new Blog(blog)
+  })
 
   try {
-    const result = await newBlog.save()
-    response.status(201).json(result)
+    const savedBlog = await blog.save()
+    user.blogs.push(savedBlog._id)
+    await user.save()
+
+    response.status(201).json(savedBlog)
   } catch (error) {
     response.status(400).json({ error: error.message })
   }
