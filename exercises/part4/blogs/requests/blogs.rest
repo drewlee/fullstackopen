@@ -12,3 +12,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRyZ
   "url": "https://deadsimpletech.com/blog/ai-proof-engineer",
   "likes": 3
 }
+
+###
+
+DELETE http://localhost:3003/api/blogs/6a5eb003938bcd94c58858ac
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRyZXdsZWUiLCJpZCI6IjZhNWFjMjY1NzViZjUxYWIxMzBkMGM3ZSIsImlhdCI6MTc4NDU5MDMwNH0.UdH4B8sre4D8sX2BPMmov0Yo9wjAhWjwTT5fZC4XsX4

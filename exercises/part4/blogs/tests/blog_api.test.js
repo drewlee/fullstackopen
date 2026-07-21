@@ -172,6 +172,27 @@ describe('blog API', () => {
       const blogs = await blogsInDb()
       assert.strictEqual(blogs.length, initialBlogs.length)
     })
+
+    test('fails with status 401 if token is missing', async () => {
+      const users = await usersInDb()
+      const blog = {
+        title: 'First class tests',
+        author: 'Robert C. Martin',
+        like: 1,
+        user: users[1].id,
+      }
+
+      const response = await api
+        .post('/api/blogs')
+        .send(blog)
+        .expect(401)
+        .expect('Content-Type', /application\/json/)
+
+      const blogs = await blogsInDb()
+
+      assert.strictEqual(blogs.length, initialBlogs.length)
+      assert(response.body.error.match(/invalid.*token/i))
+    })
   })
 
   describe('update', () => {
@@ -192,19 +213,37 @@ describe('blog API', () => {
   })
 
   describe('delete', () => {
-    test('succeeds if id is valid', async () => {
+    test('succeeds with valid id', async () => {
+      const users = await usersInDb()
+      const token = getAuthToken(users[0])
       const blogsAtStart = await blogsInDb()
       const blogToDelete = blogsAtStart[0]
 
       await api
         .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `Bearer ${token}`)
         .expect(204)
 
       const blogsAtEnd = await blogsInDb()
-      const ids = blogsAtEnd.map(n => n.id)
+      const ids = blogsAtEnd.map(note => note.id)
 
       assert(!ids.includes(blogToDelete.id))
       assert.strictEqual(blogsAtEnd.length, initialBlogs.length - 1)
+    })
+
+    test('fails with status 401 if token is missing', async () => {
+      const blogsAtStart = await blogsInDb()
+      const blogToDelete = blogsAtStart[0]
+
+      const response = await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(401)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtEnd = await blogsInDb()
+
+      assert.strictEqual(blogsAtEnd.length, initialBlogs.length)
+      assert(response.body.error.match(/invalid.*token/i))
     })
   })
 })
