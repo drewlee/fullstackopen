@@ -168,7 +168,7 @@ describe('blog API', () => {
         .send(blog)
         .expect(400)
         .expect('Content-Type', /application\/json/)
-      
+
       const blogs = await blogsInDb()
       assert.strictEqual(blogs.length, initialBlogs.length)
     })
