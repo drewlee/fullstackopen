@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const { MONGODB_URI } = require('./config')
-const { tokenExtractor, userExtractor } = require('./middleware/middleware')
+const { tokenExtractor, userExtractor } = require('./utils/middleware')
 const loginRouter = require('./controllers/login')
 const usersRouter = require('./controllers/users')
 const blogsRouter = require('./controllers/blogs')

@@ -40,16 +40,16 @@ const mostBlogs = blogs => {
   const most = {
     author: '',
     blogs: 0,
-  };
+  }
 
   for (const [key, value] of Object.entries(authorCount)) {
     if (value > most.blogs) {
-      most.author = key;
-      most.blogs = value;
+      most.author = key
+      most.blogs = value
     }
   }
 
-  return most;
+  return most
 }
 
 const mostLikes = blogs => {
@@ -67,16 +67,16 @@ const mostLikes = blogs => {
   const most = {
     author: '',
     likes: 0,
-  };
+  }
 
   for (const [key, value] of Object.entries(likesCount)) {
     if (value > most.likes) {
-      most.author = key;
-      most.likes = value;
+      most.author = key
+      most.likes = value
     }
   }
 
-  return most;
+  return most
 }
 
 module.exports = {

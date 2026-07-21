@@ -8,8 +8,8 @@ const {
   mostLikes,
 } = require('../utils/list_helper')
 
-let singleBlog = null;
-let multipleBlogs = null;
+let singleBlog = null
+let multipleBlogs = null
 
 beforeEach(() => {
   singleBlog = [

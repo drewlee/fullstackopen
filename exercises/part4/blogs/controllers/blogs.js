@@ -16,14 +16,14 @@ blogsRouter.post('/', async (request, response) => {
     return
   }
 
-  const foundUser = await User.findById(user.id);
+  const foundUser = await User.findById(user.id)
 
   if (!foundUser) {
     response.status(400).json({ error: 'Missing or invalid user id' })
     return
   }
 
-  const { body } = request;
+  const { body } = request
   const blog = new Blog({
     title: body.title,
     author: body.author,
