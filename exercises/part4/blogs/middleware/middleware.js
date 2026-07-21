@@ -11,4 +11,19 @@ const tokenExtractor = (request, response, next) => {
   next()
 }
 
-module.exports = { tokenExtractor }
+const userExtractor = (request, response, next) => {
+  if (request.token) {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+    if (decodedToken && decodedToken.id) {
+      request.user = {
+        username: decodedToken.username,
+        id: decodedToken.id,
+      }
+    }
+  }
+
+  next()
+}
+
+module.exports = { tokenExtractor, userExtractor }

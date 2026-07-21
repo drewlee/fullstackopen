@@ -9,20 +9,16 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response) => {
-  let decodedToken = null
+  const { user } = request
 
-  if (request.token) {
-    decodedToken = jwt.verify(request.token, process.env.SECRET)
-  }
-
-  if (!decodedToken || !decodedToken.id) {
+  if (!user || !user.id) {
     response.status(401).json({ error: 'Invalid token' })
     return
   }
 
-  const user = await User.findById(decodedToken.id);
+  const foundUser = await User.findById(user.id);
 
-  if (!user) {
+  if (!foundUser) {
     response.status(400).json({ error: 'Missing or invalid user id' })
     return
   }
@@ -33,13 +29,13 @@ blogsRouter.post('/', async (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes ?? 0,
-    user: user._id,
+    user: foundUser._id,
   })
 
   try {
     const savedBlog = await blog.save()
-    user.blogs.push(savedBlog._id)
-    await user.save()
+    foundUser.blogs.push(savedBlog._id)
+    await foundUser.save()
 
     response.status(201).json(savedBlog)
   } catch (error) {
@@ -55,13 +51,9 @@ blogsRouter.delete('/:id', async (request, response) => {
     return
   }
 
-  let decodedToken = null
+  const { user } = request
 
-  if (request.token) {
-    decodedToken = jwt.verify(request.token, process.env.SECRET)
-  }
-
-  if (!decodedToken || !decodedToken.id || blog.user.toString() !== decodedToken.id) {
+  if (!user || !user.id || blog.user.toString() !== user.id) {
     response.status(401).json({ error: 'Invalid token' })
     return
   }
