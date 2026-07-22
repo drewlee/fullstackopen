@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Footer from './components/Footer'
 import Note from './components/Note'
 import noteService from './services/notes'
+import loginService from './services/login'
 import Notification from './components/Notification'
 
 const App = () => {
@@ -9,8 +10,8 @@ const App = () => {
   const [newNote, setNewNote] = useState('a new note...')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
+  const [credentials, setCredentials] = useState({ username: '', password: '' })
+  const [user, setUser] = useState(null)
 
   useEffect(() => {
     noteService
@@ -18,6 +19,17 @@ const App = () => {
       .then(initialNotes => {
         setNotes(initialNotes)
       })
+  }, [])
+
+  useEffect(() => {
+    const loggedUserJSON = localStorage.getItem('loggedNoteappUser')
+
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+
+      setUser(user)
+      noteService.setToken(user.token)
+    }
   }, [])
 
   const addNote = (event) => {
@@ -75,20 +87,29 @@ const App = () => {
     setNewNote(event.target.value)
   }
 
-  const handleLogin = (event) => {
+  const handleLogin = async event => {
     event.preventDefault()
-    console.log('logging in with', username, password)
+
+    try {
+      const { username, password } = credentials
+      const user = await loginService.login({ username, password })
+
+      localStorage.setItem('loggedNoteappUser', JSON.stringify(user))
+      noteService.setToken(user.token)
+
+      setUser(user)
+      setCredentials({ username: '', password: '' })
+    } catch (error) {
+      console.error(error);
+      setErrorMessage('wrong credentials')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
   }
 
-  const notesToShow = showAll
-    ? notes
-    : notes.filter(note => note.important)
-
-  return (
-    <div>
-      <h1>Notes</h1>
-      <Notification message={errorMessage} />
-
+  const loginForm = () => (
+    <>
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div>
@@ -96,8 +117,10 @@ const App = () => {
             username
             <input
               type="text"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
+              value={credentials.username}
+              onChange={({ target }) => setCredentials(
+                { ...credentials, username: target.value }
+              )}
             />
           </label>
         </div>
@@ -106,13 +129,45 @@ const App = () => {
             password
             <input
               type="password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
+              value={credentials.password}
+              onChange={({ target }) => setCredentials(
+                { ...credentials, password: target.value})
+              }
             />
           </label>
         </div>
         <button type="submit">login</button>
       </form>
+    </>
+  )
+
+  const noteForm = () => (
+    <form onSubmit={addNote}>
+      <input type="text" value={newNote} onChange={handleNoteChange} />
+      <button type="submit">save</button>
+    </form>
+  )
+
+  const notesToShow = showAll
+    ? notes
+    : notes.filter(note => note.important)
+
+  return (
+    <div>
+      <h1>Notes</h1>
+
+      <Notification message={errorMessage} />
+
+      {
+        user
+          ? (
+            <div>
+              <p>{user.name} logged in</p>
+              {noteForm()}
+            </div>
+          )
+          : loginForm()
+      }
 
       <div>
         <button type="button" onClick={() => setShowAll(!showAll)}>
@@ -128,10 +183,7 @@ const App = () => {
           />
         ))}
       </ul>
-      <form onSubmit={addNote}>
-        <input type="text" value={newNote} onChange={handleNoteChange} />
-        <button type="submit">save</button>
-      </form>
+
       <Footer />
     </div>
   )
