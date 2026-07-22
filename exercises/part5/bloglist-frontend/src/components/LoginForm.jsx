@@ -2,7 +2,8 @@ import { useState } from 'react'
 import userService from '../services/users'
 
 const LoginForm = ({ onLogin }) => {
-  const [credentials, setCredentials] = useState({ username: '', password: '' })
+  const defaultCredentials = { username: '', password: '' }
+  const [credentials, setCredentials] = useState(defaultCredentials)
 
   const handleFormSubmit = async (evt) => {
     evt.preventDefault()
@@ -12,7 +13,7 @@ const LoginForm = ({ onLogin }) => {
       const user = await userService.login({ username, password })
 
       onLogin(user)
-      setCredentials({ username: '', password: '' })
+      setCredentials(defaultCredentials)
     } catch {
       alert('Invalid username or password')
     }

@@ -7,7 +7,6 @@ import blogService from './services/blogs'
 const AUTH_USER_KEY = 'blogListAuthUser'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -16,15 +15,13 @@ const App = () => {
     if (authUserValue) {
       const authUser = JSON.parse(authUserValue)
       setUser(authUser)
+      blogService.setToken(authUser.token)
     }
-
-    blogService
-      .getAll()
-      .then(blogs => setBlogs(blogs))
   }, [])
 
   const handleOnLogin = (authUser) => {
     setUser(authUser)
+    blogService.setToken(authUser.token)
     localStorage.setItem(AUTH_USER_KEY, JSON.stringify(authUser))
   }
 
@@ -37,7 +34,7 @@ const App = () => {
     <>
       {
         user
-          ? <Blogs blogs={blogs} user={user} onLogout={handleOnLogout} />
+          ? <Blogs user={user} onLogout={handleOnLogout} />
           : <LoginForm onLogin={handleOnLogin} />
       }
     </>
