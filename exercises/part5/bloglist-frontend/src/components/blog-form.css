@@ -1,0 +1,10 @@
+.new-blog-form_container {
+  margin: 12px 0;
+}
+
+.new-blog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px 0;
+  align-items: flex-start;
+}

@@ -4,6 +4,7 @@ import blogService from '../services/blogs'
 import Notification from './Notification'
 import BlogForm from './BlogForm'
 import Blog from './Blog'
+import Togglable from './Togglable'
 
 const Blogs = ({ user, onLogout }) => {
   const nullNotification = { message: '', type: '' }
@@ -42,10 +43,12 @@ const Blogs = ({ user, onLogout }) => {
         onDismiss={() => setNotification(nullNotification)}
       />
 
-      <p>{user.name} logged in</p>
+      <p>Logged in as {user.name}</p>
       <button type="button" onClick={onLogout}>logout</button>
 
-      <BlogForm onNewBlog={handleNewBlog} />
+      <Togglable buttonLabel="create new blog">
+        <BlogForm onNewBlog={handleNewBlog} />
+      </Togglable>
 
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />

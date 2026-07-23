@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
+import './blog-form.css'
 
 const BlogForm = ({ onNewBlog }) => {
   const nullBlog = {
@@ -36,10 +37,10 @@ const BlogForm = ({ onNewBlog }) => {
   }
 
   return (
-    <div>
+    <section className="new-blog-form_container">
       <h2>create new</h2>
 
-      <form onSubmit={handleFormSubmit} noValidate>
+      <form onSubmit={handleFormSubmit} noValidate className="new-blog-form">
         <div>
           <label htmlFor="blog-title">title</label>
           <input
@@ -83,8 +84,7 @@ const BlogForm = ({ onNewBlog }) => {
 
         <button type="submit">create</button>
       </form>
-      <br />
-    </div>
+    </section>
   )
 }
 
