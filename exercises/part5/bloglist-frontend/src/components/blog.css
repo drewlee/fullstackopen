@@ -1,0 +1,26 @@
+.blog-container {
+  margin: 16px 0;
+  padding: 8px 16px;
+  background-color: #eee;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.blog-heading {
+  display: flex;
+  gap: 0 8px;
+
+  > * {
+    margin: 0;
+  }
+}
+
+.blog-content-list {
+  margin: 16px 0;
+  padding: 0;
+  list-style-position: inside;
+}
+
+.blog-content-list-item {
+  margin: 8px 0;
+}
