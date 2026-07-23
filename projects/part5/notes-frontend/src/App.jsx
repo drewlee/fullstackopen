@@ -4,6 +4,7 @@ import Note from './components/Note'
 import noteService from './services/notes'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
 
 const App = () => {
   const [notes, setNotes] = useState([])
@@ -12,6 +13,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [credentials, setCredentials] = useState({ username: '', password: '' })
   const [user, setUser] = useState(null)
+  const [loginVisible, setLoginVisible] = useState(false)
 
   useEffect(() => {
     noteService
@@ -108,38 +110,34 @@ const App = () => {
     }
   }
 
-  const loginForm = () => (
-    <>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>
-            username
-            <input
-              type="text"
-              value={credentials.username}
-              onChange={({ target }) => setCredentials(
-                { ...credentials, username: target.value }
-              )}
-            />
-          </label>
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
         </div>
-        <div>
-          <label>
-            password
-            <input
-              type="password"
-              value={credentials.password}
-              onChange={({ target }) => setCredentials(
-                { ...credentials, password: target.value})
-              }
-            />
-          </label>
+        <div style={showWhenVisible}>
+          <LoginForm
+            username={credentials.username}
+            password={credentials.password}
+            handleUsernameChange={({ target }) => setCredentials({
+              ...credentials,
+              username: target.value,
+            })}
+            handlePasswordChange={({ target }) => setCredentials({
+              ...credentials,
+              password: target.value,
+            })}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
         </div>
-        <button type="submit">login</button>
-      </form>
-    </>
-  )
+      </div>
+    )
+  }
 
   const noteForm = () => (
     <form onSubmit={addNote}>
