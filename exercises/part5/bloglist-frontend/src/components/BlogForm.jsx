@@ -20,16 +20,17 @@ const BlogForm = ({ onNewBlog }) => {
     }
 
     if (!newBlog.title || !newBlog.url) {
-      alert('Title and url required')
+      onNewBlog({ message: 'Title and url are required' })
       return
     }
 
     try {
       const result = await blogService.createNew(newBlog)
 
-      onNewBlog(result)
+      onNewBlog(null, result)
       setBlog(nullBlog)
     } catch (error) {
+      onNewBlog({ message: 'Something went wrong, try again later' })
       console.error(error)
     }
   }

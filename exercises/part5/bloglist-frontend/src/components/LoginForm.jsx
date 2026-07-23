@@ -1,9 +1,13 @@
 import { useState } from 'react'
 import userService from '../services/users'
+import Notification from './Notification'
+import { NOTIFICATION } from '../shared/config'
 
 const LoginForm = ({ onLogin }) => {
-  const defaultCredentials = { username: '', password: '' }
-  const [credentials, setCredentials] = useState(defaultCredentials)
+  const nullCredentials = { username: '', password: '' }
+  const nullNotification = { message: '', type: '' }
+  const [credentials, setCredentials] = useState(nullCredentials)
+  const [notification, setNotification] = useState(nullNotification)
 
   const handleFormSubmit = async (evt) => {
     evt.preventDefault()
@@ -13,15 +17,30 @@ const LoginForm = ({ onLogin }) => {
       const user = await userService.login({ username, password })
 
       onLogin(user)
-      setCredentials(defaultCredentials)
-    } catch {
-      alert('Invalid username or password')
+      setCredentials(nullCredentials)
+    } catch (error) {
+      const newNotification = {
+        message: 'Something went wrong, try again later',
+        type: NOTIFICATION.ERROR,
+      }
+
+      if (error?.request?.status === 401) {
+        newNotification.message = 'Invalid username or password'
+      }
+
+      setNotification(newNotification)
     }
   }
 
   return (
     <div>
       <h2>log in to application</h2>
+
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        onDismiss={() => setNotification(nullNotification)}
+      />
 
       <form onSubmit={handleFormSubmit}>
         <div>

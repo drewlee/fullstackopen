@@ -1,0 +1,23 @@
+.notification-success,
+.notification-error {
+  border-width: 4px;
+  border-style: solid;
+  border-radius: 4px;
+  padding: 8px 12px;
+  background-color: #ddd;
+}
+
+.notification-success {
+  border-color: forestgreen;
+  color: forestgreen;
+}
+
+.notification-error {
+  border-color: crimson;
+  color: crimson;
+}
+
+.notification-message {
+  margin: 0;
+  font-size: 18px;
+}

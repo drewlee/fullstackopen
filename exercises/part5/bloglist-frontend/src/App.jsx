@@ -14,6 +14,7 @@ const App = () => {
 
     if (authUserValue) {
       const authUser = JSON.parse(authUserValue)
+
       setUser(authUser)
       blogService.setToken(authUser.token)
     }
