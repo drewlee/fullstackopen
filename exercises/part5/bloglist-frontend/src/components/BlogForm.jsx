@@ -41,7 +41,7 @@ const BlogForm = ({ onNewBlog }) => {
       <h2>create new</h2>
 
       <form onSubmit={handleFormSubmit} noValidate className="new-blog-form">
-        <div>
+        <div className="new-blog-form_field">
           <label htmlFor="blog-title">title</label>
           <input
             type="text"
@@ -55,7 +55,7 @@ const BlogForm = ({ onNewBlog }) => {
           />
         </div>
 
-        <div>
+        <div className="new-blog-form_field">
           <label htmlFor="blog-author">author</label>
           <input
             type="text"
@@ -68,7 +68,7 @@ const BlogForm = ({ onNewBlog }) => {
           />
         </div>
 
-        <div>
+        <div className="new-blog-form_field">
           <label htmlFor="blog-url">url</label>
           <input
             type="text"

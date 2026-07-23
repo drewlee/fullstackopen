@@ -8,3 +8,12 @@
   gap: 16px 0;
   align-items: flex-start;
 }
+
+.new-blog-form_field {
+  display: flex;
+  gap: 0 8px;
+
+  label {
+    min-width: 40px;
+  }
+}
