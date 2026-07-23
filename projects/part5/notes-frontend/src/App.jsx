@@ -5,6 +5,7 @@ import noteService from './services/notes'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [notes, setNotes] = useState([])
@@ -13,7 +14,6 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [credentials, setCredentials] = useState({ username: '', password: '' })
   const [user, setUser] = useState(null)
-  const [loginVisible, setLoginVisible] = useState(false)
 
   useEffect(() => {
     noteService
@@ -111,31 +111,22 @@ const App = () => {
   }
 
   const loginForm = () => {
-    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-    const showWhenVisible = { display: loginVisible ? '' : 'none' }
-
     return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
-        </div>
-        <div style={showWhenVisible}>
-          <LoginForm
-            username={credentials.username}
-            password={credentials.password}
-            handleUsernameChange={({ target }) => setCredentials({
-              ...credentials,
-              username: target.value,
-            })}
-            handlePasswordChange={({ target }) => setCredentials({
-              ...credentials,
-              password: target.value,
-            })}
-            handleSubmit={handleLogin}
-          />
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
-        </div>
-      </div>
+      <Togglable buttonLabel="login">
+        <LoginForm
+          username={credentials.username}
+          password={credentials.password}
+          handleUsernameChange={({ target }) => setCredentials({
+            ...credentials,
+            username: target.value,
+          })}
+          handlePasswordChange={({ target }) => setCredentials({
+            ...credentials,
+            password: target.value,
+          })}
+          handleSubmit={handleLogin}
+        />
+      </Togglable>
     )
   }
 
