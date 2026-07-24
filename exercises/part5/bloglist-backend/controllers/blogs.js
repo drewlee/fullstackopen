@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
@@ -35,7 +34,7 @@ blogsRouter.post('/', async (request, response) => {
   try {
     const savedBlog = await blog.save()
     foundUser.blogs.push(savedBlog._id)
-    savedBlog.populate('user', { username: 1, name: 1 })
+    await savedBlog.populate('user', { username: 1, name: 1 })
     await foundUser.save()
 
     response.status(201).json(savedBlog)
@@ -48,7 +47,7 @@ blogsRouter.delete('/:id', async (request, response) => {
   const blog = await Blog.findById(request.params.id)
 
   if (!blog) {
-    response.status(400).json({ error: 'Invalid blog id' })
+    response.status(404).json({ error: 'Blog not found' })
     return
   }
 
@@ -64,20 +63,32 @@ blogsRouter.delete('/:id', async (request, response) => {
 })
 
 blogsRouter.put('/:id', async (request, response) => {
-  const { title, author, url, likes } = request.body
-  const blog = await Blog.findById(request.params.id)
+  const { user: authUser } = request
 
-  if (!blog) {
-    response.status(404).end()
+  if (!authUser || !authUser.id) {
+    response.status(401).json({ error: 'Invalid token' })
     return
   }
 
+  const blog = await Blog.findById(request.params.id)
+
+  if (!blog) {
+    response.status(404).end({ error: 'Blog not found' })
+    return
+  }
+
+  const { title, author, url, likes, user } = request.body
+
+  blog.user = user
   blog.title = title
   blog.author = author
   blog.url = url
   blog.likes = likes
 
   const updatedBlog = await blog.save()
+  await updatedBlog.populate('user', { username: 1, name: 1 })
+  console.log(updatedBlog)
+
   response.status(201).json(updatedBlog)
 })
 

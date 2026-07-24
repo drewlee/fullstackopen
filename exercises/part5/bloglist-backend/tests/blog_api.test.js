@@ -197,11 +197,14 @@ describe('blog API', () => {
 
   describe('update', () => {
     test('succeeds with valid data', async () => {
+      const users = await usersInDb()
+      const token = getAuthToken(users[1])
       const blogsAtStart = await blogsInDb()
       const blogToUpdate = blogsAtStart[0]
 
       await api
         .put(`/api/blogs/${blogToUpdate.id}`)
+        .set('Authorization', `Bearer ${token}`)
         .send({ ...blogToUpdate, likes: blogToUpdate.likes + 1 })
         .expect(201)
 

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './blog.css'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, onBlogLike }) => {
   const [isVisible, setIsVisible] = useState(false)
 
   return (
@@ -18,7 +18,7 @@ const Blog = ({ blog }) => {
           <li className="blog-content-list-item">{blog.url}</li>
           <li className="blog-content-list-item">
             {blog.likes}
-            <button type="button">like</button>
+            <button type="button" onClick={() => onBlogLike(blog)}>like</button>
           </li>
           <li className="blog-content-list-item">{blog.user.name}</li>
         </ul>

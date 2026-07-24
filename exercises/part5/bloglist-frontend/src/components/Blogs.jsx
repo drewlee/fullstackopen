@@ -33,6 +33,31 @@ const Blogs = ({ user, onLogout }) => {
     setBlogs([...blogs, blog])
   }
 
+  const handleBlogLike = (blog) => {
+    const { id } = blog
+    const updatedBlog = {
+      ...blog,
+      user: blog.user.id,
+      likes: blog.likes + 1,
+    }
+
+    blogService
+      .update(id, updatedBlog)
+      .then((savedBlog) => {
+        setBlogs(blogs.map((blog) => {
+          if (blog.id === id) {
+            return savedBlog
+          }
+          return blog
+        }))
+      }).catch(() => {
+        setNotification({
+          message: 'Something went wrong, try again later',
+          type: NOTIFICATION.ERROR,
+        })
+      })
+  }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -51,7 +76,11 @@ const Blogs = ({ user, onLogout }) => {
       </Togglable>
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog 
+          key={blog.id}
+          blog={blog}
+          onBlogLike={handleBlogLike}
+        />
       )}
     </div>
   )
