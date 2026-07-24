@@ -14,7 +14,10 @@ const Blogs = ({ user, onLogout }) => {
   useEffect(() => {
     blogService
       .getAll()
-      .then(blogs => setBlogs(blogs))
+      .then(blogs => {
+        blogs.sort((a, b) => b.likes - a.likes)
+        setBlogs(blogs)
+      })
   }, [])
 
   const handleNewBlog = (error, blog) => {
