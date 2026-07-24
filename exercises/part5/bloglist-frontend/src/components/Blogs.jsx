@@ -19,16 +19,14 @@ const Blogs = ({ user, onLogout }) => {
       })
   }, [])
 
+  const handleCreateBlogError = () => {
+    setNotification({
+      message: 'Title and url are required',
+      type: NOTIFICATION.TYPE.ERROR,
+    })
+  }
+
   const handleCreateBlog = (newBlog) => {
-    if (!newBlog.title || !newBlog.url) {
-      setNotification({
-        message: 'Title and url are required',
-        type: NOTIFICATION.TYPE.ERROR,
-      })
-
-      return Promise.resolve(false)
-    }
-
     return blogService
       .createNew(newBlog)
       .then((createdBlog) => {
@@ -37,7 +35,6 @@ const Blogs = ({ user, onLogout }) => {
           type: NOTIFICATION.TYPE.SUCCESS,
         })
         setBlogs([...blogs, createdBlog])
-
         return true
       })
       .catch((error) => {
@@ -46,7 +43,6 @@ const Blogs = ({ user, onLogout }) => {
           message: 'Something went wrong, try again later',
           type: NOTIFICATION.TYPE.ERROR,
         })
-
         return false
       })
   }
@@ -115,7 +111,10 @@ const Blogs = ({ user, onLogout }) => {
       <button type="button" onClick={onLogout}>logout</button>
 
       <Togglable buttonLabel="create new blog">
-        <BlogForm handleCreateBlog={handleCreateBlog} />
+        <BlogForm
+          handleCreateBlog={handleCreateBlog}
+          handleCreateBlogError={handleCreateBlogError}
+        />
       </Togglable>
 
       {blogs.map(blog =>

@@ -44,9 +44,17 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
-  const blog = await Blog.findById(request.params.id)
+  let blog
 
-  if (!blog) {
+  try {
+    const { id } = request.params
+
+    blog = await Blog.findById(id)
+    if (!blog) {
+      throw new Error(`Invalid blog id: ${id}`)
+    }
+  } catch (error) {
+    console.error(error)
     response.status(404).json({ error: 'Blog not found' })
     return
   }
@@ -70,9 +78,16 @@ blogsRouter.put('/:id', async (request, response) => {
     return
   }
 
-  const blog = await Blog.findById(request.params.id)
+  let blog
 
-  if (!blog) {
+  try {
+    const { id } = request.params
+    blog = await Blog.findById(id)
+    if (!blog) {
+      throw new Error(`Invalid blog id: ${id}`)
+    }
+  } catch (error) {
+    console.error(error)
     response.status(404).end({ error: 'Blog not found' })
     return
   }

@@ -196,7 +196,7 @@ describe('blog API', () => {
   })
 
   describe('update', () => {
-    test('succeeds with valid data', async () => {
+    test('succeeds with valid data and id', async () => {
       const users = await usersInDb()
       const token = getAuthToken(users[1])
       const blogsAtStart = await blogsInDb()
@@ -207,16 +207,34 @@ describe('blog API', () => {
         .set('Authorization', `Bearer ${token}`)
         .send({ ...blogToUpdate, likes: blogToUpdate.likes + 1 })
         .expect(201)
+        .expect('Content-Type', /application\/json/)
 
       const blogsAtEnd = await blogsInDb()
       const updatedBlog = blogsAtEnd.find(blog => blog.id === blogToUpdate.id)
 
       assert.strictEqual(updatedBlog.likes, blogToUpdate.likes + 1)
     })
+
+    test('fails with status 401 if token is missing', async () => {
+      const blogsAtStart = await blogsInDb()
+      const blogToUpdate = blogsAtStart[0]
+
+      const response = await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send({ ...blogToUpdate, likes: blogToUpdate.likes + 1 })
+        .expect(401)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtEnd = await blogsInDb()
+      const updatedBlog = blogsAtEnd.find(blog => blog.id === blogToUpdate.id)
+
+      assert.strictEqual(updatedBlog.likes, blogToUpdate.likes)
+      assert(response.body.error.match(/invalid.*token/i))
+    })
   })
 
   describe('delete', () => {
-    test('succeeds with valid id', async () => {
+    test('succeeds with valid blog id', async () => {
       const users = await usersInDb()
       const token = getAuthToken(users[0])
       const blogsAtStart = await blogsInDb()
@@ -231,7 +249,23 @@ describe('blog API', () => {
       const ids = blogsAtEnd.map(note => note.id)
 
       assert(!ids.includes(blogToDelete.id))
-      assert.strictEqual(blogsAtEnd.length, initialBlogs.length - 1)
+      assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
+    })
+
+    test('fails with status 404 for non-existing blog id', async () => {
+      const users = await usersInDb()
+      const token = getAuthToken(users[0])
+      const blogsAtStart = await blogsInDb()
+
+      await api
+        .delete('/api/blogs/6a55c0cc322d11b446ba8470')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(404)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtEnd = await blogsInDb()
+
+      assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
     })
 
     test('fails with status 401 if token is missing', async () => {

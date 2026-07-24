@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import '../styles/blog-form.css'
 
-const BlogForm = ({ handleCreateBlog }) => {
+const BlogForm = ({ handleCreateBlog, handleCreateBlogError }) => {
   const nullBlog = {
     title: '',
     author: '',
@@ -18,11 +18,17 @@ const BlogForm = ({ handleCreateBlog }) => {
       newBlog[key] = value.trim()
     }
 
-    handleCreateBlog(newBlog).then((wasCreated) => {
-      if (wasCreated) {
-        setBlog(nullBlog)
-      }
-    })
+    if (!newBlog.title || !newBlog.url) {
+      handleCreateBlogError()
+      return
+    }
+
+    handleCreateBlog(newBlog)
+      .then((wasCreated) => {
+        if (wasCreated) {
+          setBlog(nullBlog)
+        }
+      })
   }
 
   return (
