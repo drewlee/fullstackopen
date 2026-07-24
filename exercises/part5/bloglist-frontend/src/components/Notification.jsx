@@ -1,10 +1,25 @@
 import { useEffect } from 'react'
-import './notification.css'
+import '../styles/notification.css'
 
-const Notification = ({ message, type, onDismiss }) => {
+const NOTIFICATION = {
+  TYPE: {
+    SUCCESS: 'success',
+    ERROR: 'error',
+  },
+}
+
+const Notification = ({ message, type, handleDismiss }) => {
   useEffect(() => {
+    let toId
+
     if (message) {
-      setTimeout(onDismiss, 5000)
+      toId = setTimeout(handleDismiss, 5000)
+    }
+
+    return () => {
+      if (toId) {
+        clearTimeout(toId)
+      }
     }
   })
 
@@ -19,4 +34,4 @@ const Notification = ({ message, type, onDismiss }) => {
   )
 }
 
-export default Notification
+export { Notification as default, NOTIFICATION }

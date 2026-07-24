@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import userService from '../services/users'
-import Notification from './Notification'
-import { NOTIFICATION } from '../shared/config'
+import Notification, { NOTIFICATION } from './Notification'
 
 const LoginForm = ({ onLogin }) => {
   const nullCredentials = { username: '', password: '' }
@@ -21,7 +20,7 @@ const LoginForm = ({ onLogin }) => {
     } catch (error) {
       const newNotification = {
         message: 'Something went wrong, try again later',
-        type: NOTIFICATION.ERROR,
+        type: NOTIFICATION.TYPE.ERROR,
       }
 
       if (error?.request?.status === 401) {
@@ -39,7 +38,7 @@ const LoginForm = ({ onLogin }) => {
       <Notification
         message={notification.message}
         type={notification.type}
-        onDismiss={() => setNotification(nullNotification)}
+        handleDismiss={() => setNotification(nullNotification)}
       />
 
       <form onSubmit={handleFormSubmit}>

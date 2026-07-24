@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import blogService from '../services/blogs'
-import './blog-form.css'
+import '../styles/blog-form.css'
 
-const BlogForm = ({ onNewBlog }) => {
+const BlogForm = ({ handleCreateBlog }) => {
   const nullBlog = {
     title: '',
     author: '',
@@ -10,30 +9,20 @@ const BlogForm = ({ onNewBlog }) => {
   }
   const [blog, setBlog] = useState(nullBlog)
 
-  const handleFormSubmit = async (evt) => {
+  const handleFormSubmit = (evt) => {
     evt.preventDefault()
 
-    const blogEntries = Object.entries(blog)
-    const newBlog = {}
+    const newBlog = { ...blog }
 
-    for (const [key, value] of blogEntries) {
+    for (const [key, value] of Object.entries(newBlog)) {
       newBlog[key] = value.trim()
     }
 
-    if (!newBlog.title || !newBlog.url) {
-      onNewBlog({ message: 'Title and url are required' })
-      return
-    }
-
-    try {
-      const result = await blogService.createNew(newBlog)
-
-      onNewBlog(null, result)
-      setBlog(nullBlog)
-    } catch (error) {
-      onNewBlog({ message: 'Something went wrong, try again later' })
-      console.error(error)
-    }
+    handleCreateBlog(newBlog).then((wasCreated) => {
+      if (wasCreated) {
+        setBlog(nullBlog)
+      }
+    })
   }
 
   return (

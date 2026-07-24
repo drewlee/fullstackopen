@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import { NOTIFICATION } from '../shared/config'
 import blogService from '../services/blogs'
-import Notification from './Notification'
+import Notification, { NOTIFICATION } from './Notification'
 import BlogForm from './BlogForm'
 import Blog from './Blog'
 import Togglable from './Togglable'
@@ -14,26 +13,42 @@ const Blogs = ({ user, onLogout }) => {
   useEffect(() => {
     blogService
       .getAll()
-      .then(blogs => {
+      .then((blogs) => {
         blogs.sort((a, b) => b.likes - a.likes)
         setBlogs(blogs)
       })
   }, [])
 
-  const handleNewBlog = (error, blog) => {
-    if (error) {
+  const handleCreateBlog = (newBlog) => {
+    if (!newBlog.title || !newBlog.url) {
       setNotification({
-        message: error.message,
-        type: NOTIFICATION.ERROR,
+        message: 'Title and url are required',
+        type: NOTIFICATION.TYPE.ERROR,
       })
-      return
+
+      return Promise.resolve(false)
     }
 
-    setNotification({
-      message: `${blog.title} added by ${blog.author}`,
-      type: NOTIFICATION.SUCCESS,
-    })
-    setBlogs([...blogs, blog])
+    return blogService
+      .createNew(newBlog)
+      .then((createdBlog) => {
+        setNotification({
+          message: `${createdBlog.title} by ${createdBlog.author} added`,
+          type: NOTIFICATION.TYPE.SUCCESS,
+        })
+        setBlogs([...blogs, createdBlog])
+
+        return true
+      })
+      .catch((error) => {
+        console.error(error)
+        setNotification({
+          message: 'Something went wrong, try again later',
+          type: NOTIFICATION.TYPE.ERROR,
+        })
+
+        return false
+      })
   }
 
   const handleBlogLike = (blog) => {
@@ -56,7 +71,7 @@ const Blogs = ({ user, onLogout }) => {
       }).catch(() => {
         setNotification({
           message: 'Something went wrong, try again later',
-          type: NOTIFICATION.ERROR,
+          type: NOTIFICATION.TYPE.ERROR,
         })
       })
   }
@@ -75,12 +90,13 @@ const Blogs = ({ user, onLogout }) => {
         setBlogs(blogs.filter((blog) => blog.id !== blogToRemove.id))
         setNotification({
           message: `Removed blog "${blogToRemove.title}" by ${blogToRemove.author}`,
-          type: NOTIFICATION.SUCCESS,
+          type: NOTIFICATION.TYPE.SUCCESS,
         })
-      }).catch(() => {
+      }).catch((error) => {
+        console.error(error)
         setNotification({
           message: 'Something went wrong, try again later',
-          type: NOTIFICATION.ERROR,
+          type: NOTIFICATION.TYPE.ERROR,
         })
       })
   }
@@ -92,18 +108,18 @@ const Blogs = ({ user, onLogout }) => {
       <Notification
         message={notification.message}
         type={notification.type}
-        onDismiss={() => setNotification(nullNotification)}
+        handleDismiss={() => setNotification(nullNotification)}
       />
 
       <p>Logged in as {user.name}</p>
       <button type="button" onClick={onLogout}>logout</button>
 
       <Togglable buttonLabel="create new blog">
-        <BlogForm onNewBlog={handleNewBlog} />
+        <BlogForm handleCreateBlog={handleCreateBlog} />
       </Togglable>
 
       {blogs.map(blog =>
-        <Blog 
+        <Blog
           key={blog.id}
           user={user}
           blog={blog}

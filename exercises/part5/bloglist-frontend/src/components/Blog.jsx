@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './blog.css'
+import '../styles/blog.css'
 
 const Blog = ({ user, blog, handleBlogLike, handleBlogRemove }) => {
   const [isVisible, setIsVisible] = useState(false)
@@ -23,14 +23,14 @@ const Blog = ({ user, blog, handleBlogLike, handleBlogRemove }) => {
           <li className="blog-content-list-item">{blog.user.name}</li>
         </ul>
 
-        {user.username === blog.user.username && (
+        {user.username === blog.user.username &&
           <button
             type="button"
             onClick={() => handleBlogRemove(blog)}
           >
             remove
           </button>
-        )}
+        }
       </div>
     </article>
   )
