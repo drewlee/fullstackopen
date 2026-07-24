@@ -61,6 +61,30 @@ const Blogs = ({ user, onLogout }) => {
       })
   }
 
+  const handleBlogRemove = (blogToRemove) => {
+    const shouldRemove = confirm(
+      `Remove blog "${blogToRemove.title}" by ${blogToRemove.author}?`
+    )
+    if (!shouldRemove) {
+      return
+    }
+
+    blogService
+      .remove(blogToRemove.id)
+      .then(() => {
+        setBlogs(blogs.filter((blog) => blog.id !== blogToRemove.id))
+        setNotification({
+          message: `Removed blog "${blogToRemove.title}" by ${blogToRemove.author}`,
+          type: NOTIFICATION.SUCCESS,
+        })
+      }).catch(() => {
+        setNotification({
+          message: 'Something went wrong, try again later',
+          type: NOTIFICATION.ERROR,
+        })
+      })
+  }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -81,8 +105,10 @@ const Blogs = ({ user, onLogout }) => {
       {blogs.map(blog =>
         <Blog 
           key={blog.id}
+          user={user}
           blog={blog}
-          onBlogLike={handleBlogLike}
+          handleBlogLike={handleBlogLike}
+          handleBlogRemove={handleBlogRemove}
         />
       )}
     </div>
