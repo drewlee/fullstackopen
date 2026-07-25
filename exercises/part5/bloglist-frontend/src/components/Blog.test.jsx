@@ -1,0 +1,49 @@
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import Blog from './Blog'
+
+describe('<Blog />', () => {
+  const blog = {
+    id: '123abc',
+    title: 'React patterns',
+    author: 'Michael Chan',
+    url: 'https://reactpatterns.com/',
+    likes: 7,
+    user: {
+      username: 'jameskirk',
+      name: 'James T. Kirk',
+      id: 'abc123'
+    }
+  }
+  const blogUser = {
+    username: 'jameskirk',
+  }
+
+  test('blog url and likes are hidden by default', () => {
+    render(<Blog blog={blog} user={blogUser} />)
+
+    const title = screen.getByText(`${blog.title} - ${blog.author}`)
+    const url = screen.getByText(blog.url)
+    const likes = screen.getByText(blog.likes)
+
+    expect(title).toBeVisible()
+    expect(url).not.toBeVisible()
+    expect(likes).not.toBeVisible()
+  })
+
+  test('blog url and likes are visible on `view` button click', async () => {
+    render(<Blog blog={blog} user={blogUser} />)
+
+    const user = userEvent.setup()
+    const button = screen.getByText('view')
+
+    await user.click(button)
+
+    const url = screen.getByText(blog.url)
+    const likes = screen.getByText(blog.likes)
+
+    expect(url).toBeVisible()
+    expect(likes).toBeVisible()
+    expect(button).toHaveTextContent('hide')
+  })
+})
