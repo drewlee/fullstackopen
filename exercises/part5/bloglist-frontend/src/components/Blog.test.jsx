@@ -46,4 +46,25 @@ describe('<Blog />', () => {
     expect(likes).toBeVisible()
     expect(button).toHaveTextContent('hide')
   })
+
+  test(
+    'calls the provided props event handler when clicking the `like` button',
+    async () => {
+      const likeHandler = vi.fn()
+
+      render(<Blog blog={blog} user={blogUser} handleBlogLike={likeHandler} />)
+
+      const user = userEvent.setup()
+      const viewButton = screen.getByText('view')
+
+      await user.click(viewButton)
+
+      const likeButton = screen.getByText('like')
+
+      await user.click(likeButton)
+      await user.click(likeButton)
+
+      expect(likeHandler).toHaveBeenCalledTimes(2)
+    }
+  )
 })
