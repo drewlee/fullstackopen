@@ -1,0 +1,23 @@
+{
+  "name": "notes-tests",
+  "version": "1.0.0",
+  "description": "Notes app end-to-end tests",
+  "author": "Andrew A. Lee",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.58.2",
+    "@types/node": "^26.1.1"
+  },
+  "allowScripts": {
+    "fsevents@2.3.2": true
+  },
+  "volta": {
+    "node": "24.18.0",
+    "npm": "11.18.0"
+  }
+}

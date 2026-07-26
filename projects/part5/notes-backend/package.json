@@ -12,6 +12,7 @@
     "dev": "NODE_ENV=development node --watch index.js",
     "lint": "eslint .",
     "start": "NODE_ENV=production node index.js",
+    "start:test": "NODE_ENV=test node --watch index.js",
     "test": "NODE_ENV=test node --test --test-isolation=none",
     "test:dev": "npm run test -- --watch"
   },
