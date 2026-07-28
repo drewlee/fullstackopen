@@ -5,15 +5,15 @@ const { beforeEach, describe } = test;
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('http://localhost:5173/api/testing/reset')
-    await request.post('http://localhost:5173/api/users', {
+    await request.post('/api/testing/reset')
+    await request.post('/api/users', {
       data: {
         name: 'James T. Kirk',
         username: 'jameskirk',
         password: 'enterprise',
       },
     })
-    await page.goto('http://localhost:5173')
+    await page.goto('/')
   })
 
   test('Login form is shown', async ({ page }) => {
@@ -83,12 +83,11 @@ describe('Blog app', () => {
           await createBlog(page, title, author, url)
         })
 
-        test('blog details can be expanded', async ({ page }) => {
+        test('new blog details can be expanded', async ({ page }) => {
           const blogContainer = page
             .locator('.blog-container', { hasText: `${title} - ${author}` })
-          const blogHeading = blogContainer.locator('.blog-heading')
 
-          await blogHeading.getByRole('button', { name: 'view' }).click()
+          await blogContainer.getByRole('button', { name: 'view' }).click()
 
           const blogContent = blogContainer.locator('.blog-content')
           await expect(blogContent).toBeVisible()
@@ -97,6 +96,33 @@ describe('Blog app', () => {
           await expect(blogItems.nth(0)).toHaveText(url)
           await expect(blogItems.nth(1)).toHaveText('0like')
           await expect(blogItems.nth(2)).toHaveText('James T. Kirk')
+        })
+
+        test('new blog can be liked', async ({ page }) => {
+          const blogContainer = page
+            .locator('.blog-container', { hasText: `${title} - ${author}` })
+
+          await blogContainer.getByRole('button', { name: 'view' }).click()
+
+          const blogLikeItem = blogContainer
+            .locator('.blog-content-list-item', { hasText: '0like' })
+
+          await blogLikeItem.getByRole('button', { name: 'like' }).click()
+
+          const updatedBlogLikeItem = await blogContainer
+            .locator('.blog-content-list-item', { hasText: '1like' })
+          await expect(updatedBlogLikeItem).toHaveText('1like')
+        })
+
+        test('new blog can be deleted', async ({ page }) => {
+          page.on('dialog', (dialog) => dialog.accept())
+
+          const blogContainer = page
+            .locator('.blog-container', { hasText: `${title} - ${author}` })
+
+          await blogContainer.getByRole('button', { name: 'view' }).click()
+          await blogContainer.getByRole('button', { name: 'remove' }).click()
+          await expect(blogContainer).not.toBeVisible()
         })
       })
     })
