@@ -33,6 +33,8 @@ describe('Note app', () => {
     await loginWith(page, 'jameskirk', 'wrong')
 
     const errorDiv = page.locator('.error')
+
+    await errorDiv.waitFor()
     await expect(errorDiv).toContainText('wrong credentials')
     await expect(errorDiv).toHaveCSS('border-style', 'solid')
     await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
@@ -49,14 +51,21 @@ describe('Note app', () => {
       await expect(page.getByText('a note created by playwright')).toBeVisible()
     })
 
-    describe('and a note exists', () => {
+    describe('and several notes exist', () => {
       beforeEach(async ({ page }) => {
-        await createNote(page, 'another note by playwright')
+        await createNote(page, 'first note')
+        await createNote(page, 'second note')
+        await createNote(page, 'third note')
       })
 
-      test('importance can be changed', async ({ page }) => {
-        await page.getByRole('button', { name: 'make not important' }).click()
-        await expect(page.getByText('make important')).toBeVisible()
+      test('one of those can be made non-important', async ({ page }) => {
+        const otherNoteElement = page
+          .locator('li')
+          .filter({ hasText: 'second note' })
+          .getByRole('button')
+
+        await otherNoteElement.click()
+        await expect(otherNoteElement).toHaveText('make important')
       })
     })
   })
