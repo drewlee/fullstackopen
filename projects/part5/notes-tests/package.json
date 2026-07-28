@@ -4,7 +4,6 @@
   "description": "Notes app end-to-end tests",
   "author": "Andrew A. Lee",
   "type": "commonjs",
-  "main": "index.js",
   "scripts": {
     "test": "playwright test",
     "test:report": "playwright show-report"
