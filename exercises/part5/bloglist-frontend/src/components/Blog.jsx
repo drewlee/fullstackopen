@@ -6,8 +6,8 @@ const Blog = ({ user, blog, handleBlogLike, handleBlogRemove }) => {
 
   return (
     <article className="blog-container">
-      <div className="blog-heading">
-        <p>{blog.title} - {blog.author}</p>
+      <div className="blog-header">
+        <h3 className="blog-heading">{blog.title} - {blog.author}</h3>
         <button type="button" onClick={() => setIsVisible(!isVisible)}>
           {!isVisible ? 'view' : 'hide'}
         </button>
@@ -16,8 +16,10 @@ const Blog = ({ user, blog, handleBlogLike, handleBlogRemove }) => {
       <div className="blog-content" hidden={!isVisible}>
         <ul className="blog-content-list">
           <li className="blog-content-list-item">{blog.url}</li>
-          <li className="blog-content-list-item">
-            {blog.likes}
+          <li className="blog-content-list-item blog-content-list-item_like">
+            <span data-testid="blog-likes-count">
+              {`${blog.likes} ${blog.likes === 1 ? 'like' : 'likes'}`}
+            </span>
             <button type="button" onClick={() => handleBlogLike(blog)}>like</button>
           </li>
           <li className="blog-content-list-item">{blog.user.name}</li>

@@ -6,13 +6,17 @@
   border-radius: 4px;
 }
 
-.blog-heading {
+.blog-header {
   display: flex;
   gap: 0 8px;
+  align-items: center;
+}
 
-  > * {
-    margin: 0;
-  }
+.blog-heading {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.2;
+  font-weight: normal;
 }
 
 .blog-content-list {
@@ -23,4 +27,10 @@
 
 .blog-content-list-item {
   margin: 8px 0;
+}
+
+.blog-content-list-item_like {
+  button {
+    margin-left: 8px;
+  }
 }

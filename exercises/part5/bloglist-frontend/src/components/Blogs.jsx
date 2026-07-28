@@ -58,12 +58,15 @@ const Blogs = ({ user, onLogout }) => {
     blogService
       .update(id, updatedBlog)
       .then((savedBlog) => {
-        setBlogs(blogs.map((blog) => {
+        const updatedBlogs = blogs.map((blog) => {
           if (blog.id === id) {
             return savedBlog
           }
           return blog
-        }))
+        })
+
+        updatedBlogs.sort((a, b) => b.likes - a.likes)
+        setBlogs(updatedBlogs)
       }).catch(() => {
         setNotification({
           message: 'Something went wrong, try again later',

@@ -1,3 +1,7 @@
+export const createUser = async (request, data) => {
+  await request.post('/api/users', { data })
+}
+
 export const loginWith = async (page, username, password)  => {
   await page.getByLabel('username').fill(username)
   await page.getByLabel('password').fill(password)
@@ -11,4 +15,8 @@ export const createBlog = async (page, title, author, url) => {
 
   await page.getByRole('button', { name: 'create' }).click()
   await page.getByText(`${title} - ${author}`).waitFor()
+}
+
+export const logout = async (page) => {
+  await page.getByRole('button', { name: 'logout' }).click()
 }
