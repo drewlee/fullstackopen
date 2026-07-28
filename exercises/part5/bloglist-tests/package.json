@@ -1,17 +1,18 @@
 {
-  "name": "notes-tests",
+  "name": "bloglist-tests",
   "version": "1.0.0",
-  "description": "Notes app end-to-end tests",
+  "description": "Bloglist app end-to-end tests",
   "private": true,
   "author": "Andrew A. Lee",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "test": "playwright test",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "test:ui": "playwright test --ui"
   },
   "devDependencies": {
-    "@playwright/test": "1.58.2",
-    "@types/node": "^26.1.1"
+    "@playwright/test": "~1.61.1",
+    "@types/node": "^26.1.2"
   },
   "allowScripts": {
     "fsevents@2.3.2": true
