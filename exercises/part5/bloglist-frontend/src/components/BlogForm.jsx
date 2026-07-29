@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import '../styles/blog-form.css'
 
-const BlogForm = ({ handleCreateBlog, handleCreateBlogError }) => {
+const BlogForm = ({ handleCreateBlog, showValidationError }) => {
   const nullBlog = {
     title: '',
     author: '',
@@ -19,16 +19,13 @@ const BlogForm = ({ handleCreateBlog, handleCreateBlogError }) => {
     }
 
     if (!newBlog.title || !newBlog.url) {
-      handleCreateBlogError()
+      showValidationError('Title and url are required')
       return
     }
 
     handleCreateBlog(newBlog)
-      .then((wasCreated) => {
-        if (wasCreated) {
-          setBlog(nullBlog)
-        }
-      })
+      .then(() => setBlog(nullBlog))
+      .catch()
   }
 
   return (

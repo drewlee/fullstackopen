@@ -1,14 +1,18 @@
-export const createUser = async (request, data) => {
+const createUser = async (request, data) => {
   await request.post('/api/users', { data })
 }
 
-export const loginWith = async (page, username, password)  => {
+const loginWith = async (page, username, password)  => {
   await page.getByLabel('username').fill(username)
   await page.getByLabel('password').fill(password)
   await page.getByRole('button', { name: 'login' }).click()
 }
 
-export const createBlog = async (page, title, author, url) => {
+const logout = async (page) => {
+  await page.getByRole('button', { name: 'logout' }).click()
+}
+
+const createBlog = async (page, title, author, url) => {
   await page.getByLabel('title').fill(title)
   await page.getByLabel('author').fill(author)
   await page.getByLabel('url').fill(url)
@@ -17,6 +21,31 @@ export const createBlog = async (page, title, author, url) => {
   await page.getByText(`${title} - ${author}`).waitFor()
 }
 
-export const logout = async (page) => {
-  await page.getByRole('button', { name: 'logout' }).click()
+const getBlogLocatorByHeading = async (page, title, author, shouldExpand = false) => {
+  const blogLocator = page
+    .getByRole('article')
+    .filter({ hasText: new RegExp(`${title}.+${author}`) })
+
+  if (shouldExpand) {
+    await blogLocator.getByRole('button', { name: 'view' }).click()
+  }
+
+  return blogLocator
+}
+
+const clickLikeButtonTimes = async (times, locator) => {
+  const likeLocator = locator.getByRole('button', { name: 'like' })
+
+  for (let i = 0; i < times; i++) {
+    await likeLocator.click()
+  }
+}
+
+export {
+  createUser,
+  loginWith,
+  logout,
+  createBlog,
+  getBlogLocatorByHeading,
+  clickLikeButtonTimes,
 }

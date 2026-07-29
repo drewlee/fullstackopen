@@ -24,7 +24,7 @@ describe('<Blog />', () => {
 
     const title = screen.getByText(`${blog.title} - ${blog.author}`)
     const url = screen.getByText(blog.url)
-    const likes = screen.getByText(blog.likes)
+    const likes = screen.getByText(`${blog.likes} likes`)
 
     expect(title).toBeVisible()
     expect(url).not.toBeVisible()
@@ -40,7 +40,7 @@ describe('<Blog />', () => {
     await user.click(button)
 
     const url = screen.getByText(blog.url)
-    const likes = screen.getByText(blog.likes)
+    const likes = screen.getByText(`${blog.likes} likes`)
 
     expect(url).toBeVisible()
     expect(likes).toBeVisible()
@@ -48,7 +48,7 @@ describe('<Blog />', () => {
   })
 
   test('calls the provided props handler when clicking the `like` button', async () => {
-    const likeHandler = vi.fn()
+    const likeHandler = vi.fn().mockResolvedValue()
 
     render(<Blog blog={blog} user={blogUser} handleBlogLike={likeHandler} />)
 

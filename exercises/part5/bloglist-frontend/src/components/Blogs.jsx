@@ -16,12 +16,13 @@ const Blogs = ({ user, onLogout }) => {
       .then((blogs) => {
         blogs.sort((a, b) => b.likes - a.likes)
         setBlogs(blogs)
+        console.log(blogs)
       })
   }, [])
 
-  const handleCreateBlogError = () => {
+  const showValidationError = (message) => {
     setNotification({
-      message: 'Title and url are required',
+      message,
       type: NOTIFICATION.TYPE.ERROR,
     })
   }
@@ -35,39 +36,45 @@ const Blogs = ({ user, onLogout }) => {
           type: NOTIFICATION.TYPE.SUCCESS,
         })
         setBlogs([...blogs, createdBlog])
-        return true
       })
-      .catch((error) => {
-        console.error(error)
+      .catch(() => {
         setNotification({
           message: 'Something went wrong, try again later',
           type: NOTIFICATION.TYPE.ERROR,
         })
-        return false
+        return Promise.reject()
       })
   }
 
   const handleBlogLike = (blog) => {
     const { id } = blog
+    const prevBlogs = blogs
     const updatedBlog = {
       ...blog,
-      user: blog.user.id,
+      user: {
+        ...blog.user,
+      },
       likes: blog.likes + 1,
     }
+    const updatedBlogs = blogs.map((blog) => {
+      if (blog.id === id) {
+        return updatedBlog
+      }
+      return blog
+    })
 
-    blogService
-      .update(id, updatedBlog)
-      .then((savedBlog) => {
-        const updatedBlogs = blogs.map((blog) => {
-          if (blog.id === id) {
-            return savedBlog
-          }
-          return blog
-        })
+    // Update UI immediately to provide user feedback
+    updatedBlogs.sort((a, b) => b.likes - a.likes)
+    setBlogs(updatedBlogs)
 
-        updatedBlogs.sort((a, b) => b.likes - a.likes)
-        setBlogs(updatedBlogs)
-      }).catch(() => {
+    return blogService
+      .update(id, {
+        ...updatedBlog,
+        user: blog.user.id,
+      })
+      .catch(() => {
+        // Revert blogs if server error
+        setBlogs(prevBlogs)
         setNotification({
           message: 'Something went wrong, try again later',
           type: NOTIFICATION.TYPE.ERROR,
@@ -116,7 +123,7 @@ const Blogs = ({ user, onLogout }) => {
       <Togglable buttonLabel="create new blog">
         <BlogForm
           handleCreateBlog={handleCreateBlog}
-          handleCreateBlogError={handleCreateBlogError}
+          showValidationError={showValidationError}
         />
       </Togglable>
 
