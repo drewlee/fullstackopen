@@ -11,11 +11,12 @@ describe('Note app', () => {
         password: 'enterprise',
       },
     })
-    await page.goto('/')
   })
 
   test('front page can be opened', async ({ page }) => {
-    let locator = page.getByText('Notes')
+    await page.goto('/')
+
+    let locator = page.getByText(/Lorem ipsum dolor sit amet/)
     await expect(locator).toBeVisible()
 
     locator = page.getByText(
@@ -34,16 +35,16 @@ describe('Note app', () => {
 
     const errorDiv = page.locator('.error')
 
-    await errorDiv.waitFor()
     await expect(errorDiv).toContainText('wrong credentials')
     await expect(errorDiv).toHaveCSS('border-style', 'solid')
     await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
-    await expect(page.getByText('James T. Kirk logged in')).not.toBeVisible()
+    await expect(page.getByText('James T. Kirk logged in')).toBeHidden()
   })
 
   describe('when logged in', () => {
     beforeEach(async ({ page }) => {
       await loginWith(page, 'jameskirk', 'enterprise')
+      await page.getByText('James T. Kirk logged in').waitFor()
     })
 
     test('a new note can be created', async ({ page }) => {
@@ -59,13 +60,9 @@ describe('Note app', () => {
       })
 
       test('one of those can be made non-important', async ({ page }) => {
-        const otherNoteElement = page
-          .locator('li')
-          .filter({ hasText: 'second note' })
-          .getByRole('button')
-
-        await otherNoteElement.click()
-        await expect(otherNoteElement).toHaveText('make important')
+        await page.getByRole('link', { name: 'second note' }).click()
+        await page.getByRole('button', { name: 'make not important' }).click()
+        await expect(page.getByRole('button', { name: 'make important' })).toBeVisible()
       })
     })
   })

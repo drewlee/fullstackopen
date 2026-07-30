@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import { createRoutesStub } from 'react-router'
 import userEvent from '@testing-library/user-event'
 import Note from './Note'
 
@@ -8,9 +9,14 @@ test('renders content', () => {
     important: true
   }
 
-  render(<Note note={note} />)
+  const Stub = createRoutesStub([{
+    path: '/notes/:id',
+    Component: () => <Note note={note} />,
+  }])
 
-  const element = screen.getByText('Component testing is done with react-testing-library')
+  render(<Stub initialEntries={['/notes/1234']} />)
+
+  const element = screen.getByText(note.content)
   expect(element).toBeDefined()
 })
 
@@ -19,11 +25,14 @@ test('clicking the button calls event handler once', async () => {
     content: 'Component testing is done with react-testing-library',
     important: true
   }
-  const mockHandler = vi.fn()
+  const mockHandler = vi.fn().mockResolvedValue()
 
-  render(
-    <Note note={note} toggleImportance={mockHandler} />
-  )
+  const Stub = createRoutesStub([{
+    path: '/notes/:id',
+    Component: () => <Note note={note} toggleImportanceOf={mockHandler} />,
+  }])
+
+  render(<Stub initialEntries={['/notes/1234']} />)
 
   const user = userEvent.setup()
   const button = screen.getByText('make not important')

@@ -1,10 +1,25 @@
 import axios from 'axios'
 
 const baseUrl = '/api/notes'
-let token = null
 
-const setToken = newToken => {
-  token = `Bearer ${newToken}`
+const getToken = () => {
+  const user = getUser()
+
+  if (user && user.token) {
+    return `Bearer ${user.token}`
+  }
+
+  return null
+}
+
+const getUser = () => {
+  const loggedUserJSON = localStorage.getItem('loggedNoteappUser')
+
+  if (loggedUserJSON) {
+    return JSON.parse(loggedUserJSON)
+  }
+
+  return null
 }
 
 const getAll = () => {
@@ -15,7 +30,7 @@ const getAll = () => {
 
 const create = newObject => {
   const config = {
-    headers: { Authorization: token }
+    headers: { Authorization: getToken() }
   }
 
   return axios
@@ -29,9 +44,14 @@ const update = (id, newObject) => {
     .then(response => response.data)
 }
 
+const remove = (id) => {
+  return axios.delete(`${baseUrl}/${id}`)
+}
+
 export default {
   getAll,
   create,
   update,
-  setToken,
+  remove,
+  getUser,
 }
