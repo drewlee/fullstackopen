@@ -17,7 +17,7 @@ const Blog = ({
     setIsLikeDisabled(true)
 
     try {
-      handleBlogLike(blog)
+      await handleBlogLike()
     } catch (error) {
       notifyError(error.message)
     } finally {
