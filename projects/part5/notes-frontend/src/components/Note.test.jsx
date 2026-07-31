@@ -6,7 +6,7 @@ import Note from './Note'
 test('renders content', () => {
   const note = {
     content: 'Component testing is done with react-testing-library',
-    important: true
+    important: true,
   }
 
   const Stub = createRoutesStub([{

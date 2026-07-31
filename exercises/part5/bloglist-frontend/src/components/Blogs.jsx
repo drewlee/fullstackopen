@@ -1,24 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import blogService from '../services/blogs'
 import Notification, { NOTIFICATION } from './Notification'
 import BlogForm from './BlogForm'
 import Blog from './Blog'
 import Togglable from './Togglable'
 
-const Blogs = ({ user, onLogout }) => {
+const Blogs = ({ user, data }) => {
   const nullNotification = { message: '', type: '' }
-  const [blogs, setBlogs] = useState([])
+  const [blogs, setBlogs] = useState(data)
   const [notification, setNotification] = useState(nullNotification)
 
-  useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) => {
-        blogs.sort((a, b) => b.likes - a.likes)
-        setBlogs(blogs)
-        console.log(blogs)
-      })
-  }, [])
+  // useEffect(() => {
+  //   blogService.getAll().then((blogs) => {
+  //     blogs.sort((a, b) => b.likes - a.likes)
+  //     setBlogs(blogs)
+  //   })
+  // }, [])
 
   const showValidationError = (message) => {
     setNotification({
@@ -84,7 +81,7 @@ const Blogs = ({ user, onLogout }) => {
 
   const handleBlogRemove = (blogToRemove) => {
     const shouldRemove = confirm(
-      `Remove blog "${blogToRemove.title}" by ${blogToRemove.author}?`
+      `Remove blog "${blogToRemove.title}" by ${blogToRemove.author}?`,
     )
     if (!shouldRemove) {
       return
@@ -98,7 +95,8 @@ const Blogs = ({ user, onLogout }) => {
           message: `Removed blog "${blogToRemove.title}" by ${blogToRemove.author}`,
           type: NOTIFICATION.TYPE.SUCCESS,
         })
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.error(error)
         setNotification({
           message: 'Something went wrong, try again later',
@@ -117,8 +115,7 @@ const Blogs = ({ user, onLogout }) => {
         handleDismiss={() => setNotification(nullNotification)}
       />
 
-      <p>Logged in as {user.name}</p>
-      <button type="button" onClick={onLogout}>logout</button>
+      {user && <p>Logged in as {user.name}</p>}
 
       <Togglable buttonLabel="create new blog">
         <BlogForm
@@ -127,7 +124,7 @@ const Blogs = ({ user, onLogout }) => {
         />
       </Togglable>
 
-      {blogs.map(blog =>
+      {blogs.map((blog) => (
         <Blog
           key={blog.id}
           user={user}
@@ -135,7 +132,7 @@ const Blogs = ({ user, onLogout }) => {
           handleBlogLike={handleBlogLike}
           handleBlogRemove={handleBlogRemove}
         />
-      )}
+      ))}
     </div>
   )
 }

@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react'
+import { Routes, Route, Link } from 'react-router'
+import { Outlet } from 'react-router'
 import Blogs from './components/Blogs'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import blogService from './services/blogs'
+import userService from './services/users'
+import './App.css'
 
 const AUTH_USER_KEY = 'blogListAuthUser'
 
@@ -10,34 +14,38 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    const authUserValue = localStorage.getItem(AUTH_USER_KEY)
-
-    if (authUserValue) {
-      const authUser = JSON.parse(authUserValue)
-
-      setUser(authUser)
+    const authUser = userService.getStoredUser()
+    if (authUser) {
       blogService.setToken(authUser.token)
+      setUser(authUser)
     }
   }, [])
 
-  const handleOnLogin = (authUser) => {
-    setUser(authUser)
-    blogService.setToken(authUser.token)
-    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(authUser))
-  }
-
-  const handleOnLogout = () => {
+  const handleLogoutClick = () => {
     setUser(null)
-    localStorage.removeItem(AUTH_USER_KEY)
+    userService.removeStoredUser()
   }
 
   return (
     <>
-      {
-        user
-          ? <Blogs user={user} onLogout={handleOnLogout} />
-          : <LoginForm onLogin={handleOnLogin} />
-      }
+      <nav className="primary-nav">
+        <ul className="primary-nav_list">
+          <li className="primary-nav_list-item">
+            <Link to="/">blogs</Link>
+          </li>
+          <li className="primary-nav_list-item">
+            {user ? (
+              <button type="button" onClick={handleLogoutClick}>
+                logout
+              </button>
+            ) : (
+              <Link to="/login">login</Link>
+            )}
+          </li>
+        </ul>
+      </nav>
+
+      <Outlet context={{ user, setUser }} />
     </>
   )
 }

@@ -44,7 +44,7 @@ describe('Note app', () => {
   describe('when logged in', () => {
     beforeEach(async ({ page }) => {
       await loginWith(page, 'jameskirk', 'enterprise')
-      await page.getByText('James T. Kirk logged in').waitFor()
+      await page.locator('form').waitFor({ state: 'detached' })
     })
 
     test('a new note can be created', async ({ page }) => {

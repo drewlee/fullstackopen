@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import userService from '../services/users'
 import Notification, { NOTIFICATION } from './Notification'
 
-const LoginForm = ({ onLogin }) => {
+const LoginForm = ({ loginHandler }) => {
   const nullCredentials = { username: '', password: '' }
   const nullNotification = { message: '', type: '' }
   const [credentials, setCredentials] = useState(nullCredentials)
@@ -12,22 +11,26 @@ const LoginForm = ({ onLogin }) => {
     evt.preventDefault()
 
     try {
+      for (const [key, value] of Object.entries(credentials)) {
+        credentials[key] = value.trim()
+      }
       const { username, password } = credentials
-      const user = await userService.login({ username, password })
 
-      onLogin(user)
+      if (!username || !password) {
+        setNotification({
+          message: 'Username and password required',
+          type: NOTIFICATION.TYPE.ERROR,
+        })
+        return
+      }
+
+      await loginHandler(credentials)
       setCredentials(nullCredentials)
     } catch (error) {
-      const newNotification = {
-        message: 'Something went wrong, try again later',
+      setNotification({
+        message: error.message,
         type: NOTIFICATION.TYPE.ERROR,
-      }
-
-      if (error?.request?.status === 401) {
-        newNotification.message = 'Invalid username or password'
-      }
-
-      setNotification(newNotification)
+      })
     }
   }
 
@@ -48,9 +51,9 @@ const LoginForm = ({ onLogin }) => {
             id="login-username"
             type="text"
             value={credentials.username}
-            onChange={(evt) => setCredentials(
-              { ...credentials, username: evt.target.value }
-            )}
+            onChange={(evt) =>
+              setCredentials({ ...credentials, username: evt.target.value })
+            }
           />
         </div>
 
@@ -60,9 +63,9 @@ const LoginForm = ({ onLogin }) => {
             id="login-password"
             type="password"
             value={credentials.password}
-            onChange={(evt) => setCredentials(
-              { ...credentials, password: evt.target.value }
-            )}
+            onChange={(evt) =>
+              setCredentials({ ...credentials, password: evt.target.value })
+            }
           />
         </div>
 

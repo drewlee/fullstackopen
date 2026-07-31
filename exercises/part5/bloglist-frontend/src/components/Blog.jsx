@@ -13,7 +13,9 @@ const Blog = ({ user, blog, handleBlogLike, handleBlogRemove }) => {
   return (
     <article className="blog-container">
       <div className="blog-header">
-        <h3 className="blog-heading">{blog.title} - {blog.author}</h3>
+        <h3 className="blog-heading">
+          {blog.title} - {blog.author}
+        </h3>
         <button type="button" onClick={() => setIsVisible(!isVisible)}>
           {!isVisible ? 'view' : 'hide'}
         </button>
@@ -37,14 +39,11 @@ const Blog = ({ user, blog, handleBlogLike, handleBlogRemove }) => {
           <li className="blog-content-list-item">{blog.user.name}</li>
         </ul>
 
-        {user.username === blog.user.username &&
-          <button
-            type="button"
-            onClick={() => handleBlogRemove(blog)}
-          >
+        {user?.username === blog.user.username && (
+          <button type="button" onClick={() => handleBlogRemove(blog)}>
             remove
           </button>
-        }
+        )}
       </div>
     </article>
   )
