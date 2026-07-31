@@ -24,7 +24,7 @@ const BlogPage = () => {
       return blog
     })
 
-    // Update the UI for immediate visual feedback
+    // Updates the UI for immediate visual feedback
     updatedBlogs.sort((a, b) => b.likes - a.likes)
     setBlogs(updatedBlogs)
 
@@ -35,7 +35,7 @@ const BlogPage = () => {
       })
     } catch (error) {
       console.error(error)
-      // Revert blogs if there was a server error
+      // Roll back the blogs if there was a server error
       setBlogs(prevBlogs)
       throw new Error('Something went wrong, try again later')
     }

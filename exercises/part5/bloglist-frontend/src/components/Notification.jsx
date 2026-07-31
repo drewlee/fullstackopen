@@ -8,29 +8,29 @@ const NOTIFICATION = {
   },
 }
 
-const Notification = ({ message, type, handleDismiss }) => {
+const Notification = ({ message, type = NOTIFICATION.TYPE.ERROR, handleDismiss }) => {
   useEffect(() => {
-    let toId
+    let timeoutId
 
     if (message) {
-      toId = setTimeout(handleDismiss, 5000)
+      timeoutId = setTimeout(handleDismiss, 5000)
     }
 
     return () => {
-      if (toId) {
-        clearTimeout(toId)
+      if (timeoutId) {
+        clearTimeout(timeoutId)
       }
     }
   })
 
+  if (!message) {
+    return null
+  }
+
   return (
-    <>
-      {message && (
-        <div className={`notification-${type}`}>
-          <p className="notification-message">{message}</p>
-        </div>
-      )}
-    </>
+    <div className={`notification-${type}`}>
+      <p className="notification-message">{message}</p>
+    </div>
   )
 }
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useLoaderData } from 'react-router'
+import { Link, useLoaderData, useNavigate } from 'react-router'
 import { Outlet } from 'react-router'
 import Notification, { NOTIFICATION } from './components/Notification'
 import Blogs from './components/Blogs'
@@ -11,6 +11,7 @@ import './App.css'
 
 const App = () => {
   const nullNotification = { message: '', type: '' }
+  const navigate = useNavigate()
   const { blogs: blogData } = useLoaderData()
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState(blogData)
@@ -41,6 +42,7 @@ const App = () => {
   const handleLogoutClick = () => {
     setUser(null)
     userService.removeStoredUser()
+    navigate('/')
   }
 
   return (

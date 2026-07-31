@@ -1,4 +1,4 @@
-import { useNavigate, useOutletContext } from 'react-router'
+import { useNavigate, useOutletContext, Navigate } from 'react-router'
 import userService from '../services/users'
 import LoginForm from './LoginForm'
 
@@ -24,7 +24,7 @@ const LoginFormPage = () => {
   }
 
   if (user) {
-    return null
+    return <Navigate to="/" replace />
   }
 
   return <LoginForm loginHandler={loginHandler} notifyError={notifyError} />
