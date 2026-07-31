@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLoaderData } from 'react-router'
 import { Outlet } from 'react-router'
+import Notification, { NOTIFICATION } from './components/Notification'
 import Blogs from './components/Blogs'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
@@ -9,9 +10,11 @@ import userService from './services/users'
 import './App.css'
 
 const App = () => {
+  const nullNotification = { message: '', type: '' }
   const { blogs: blogData } = useLoaderData()
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState(blogData)
+  const [notification, setNotification] = useState(nullNotification)
 
   useEffect(() => {
     const authUser = userService.getStoredUser()
@@ -20,6 +23,20 @@ const App = () => {
       setUser(authUser)
     }
   }, [])
+
+  const notifySuccess = (message) => {
+    setNotification({
+      message,
+      type: NOTIFICATION.TYPE.SUCCESS,
+    })
+  }
+
+  const notifyError = (message) => {
+    setNotification({
+      message,
+      type: NOTIFICATION.TYPE.ERROR,
+    })
+  }
 
   const handleLogoutClick = () => {
     setUser(null)
@@ -50,7 +67,17 @@ const App = () => {
         </ul>
       </nav>
 
-      <Outlet context={{ user, setUser, blogs, setBlogs }} />
+      {user && <p>Logged in as {user.name}</p>}
+
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        handleDismiss={() => setNotification(nullNotification)}
+      />
+
+      <Outlet
+        context={{ user, setUser, blogs, setBlogs, notifySuccess, notifyError }}
+      />
     </>
   )
 }

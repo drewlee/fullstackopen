@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router'
+import { createBrowserRouter, redirect } from 'react-router'
 import blogService from './services/blogs'
 import App from './App'
 import BlogsPage from './components/BlogsPage'
@@ -35,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: '/create',
         Component: BlogFormPage,
+      },
+      {
+        path: '/blogs',
+        loader: () => redirect('/'),
       },
       { path: '/blogs/:id', Component: BlogPage },
     ],

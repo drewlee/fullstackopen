@@ -1,9 +1,10 @@
-import { useParams, useOutletContext } from 'react-router'
+import { useParams, useOutletContext, useNavigate } from 'react-router'
 import blogService from '../services/blogs'
 import Blog from './Blog'
 
 const BlogPage = () => {
-  const { blogs, setBlogs, user } = useOutletContext()
+  const { blogs, setBlogs, user, notifyError, notifySuccess } = useOutletContext()
+  const navigate = useNavigate()
   const { id } = useParams()
   const blog = blogs.find((blog) => blog.id === id)
 
@@ -41,7 +42,18 @@ const BlogPage = () => {
   }
 
   const handleBlogRemove = async () => {
-    // todo
+    try {
+      await blogService.remove(blog.id)
+      setBlogs(blogs.filter((currBlog) => currBlog.id !== blog.id))
+      navigate('/')
+    } catch (error) {
+      console.error(error)
+      throw new Error('Something went wrong, try again later')
+    }
+  }
+
+  if (!blog) {
+    return null
   }
 
   return (
@@ -50,6 +62,8 @@ const BlogPage = () => {
       user={user}
       handleBlogLike={handleBlogLike}
       handleBlogRemove={handleBlogRemove}
+      notifyError={notifyError}
+      notifySuccess={notifySuccess}
     />
   )
 }

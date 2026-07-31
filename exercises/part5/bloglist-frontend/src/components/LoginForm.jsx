@@ -1,11 +1,9 @@
 import { useState } from 'react'
 import Notification, { NOTIFICATION } from './Notification'
 
-const LoginForm = ({ loginHandler }) => {
+const LoginForm = ({ loginHandler, notifyError }) => {
   const nullCredentials = { username: '', password: '' }
-  const nullNotification = { message: '', type: '' }
   const [credentials, setCredentials] = useState(nullCredentials)
-  const [notification, setNotification] = useState(nullNotification)
 
   const handleFormSubmit = async (evt) => {
     evt.preventDefault()
@@ -17,32 +15,20 @@ const LoginForm = ({ loginHandler }) => {
       const { username, password } = credentials
 
       if (!username || !password) {
-        setNotification({
-          message: 'Username and password required',
-          type: NOTIFICATION.TYPE.ERROR,
-        })
+        notifyError('Username and password required')
         return
       }
 
       await loginHandler(credentials)
       setCredentials(nullCredentials)
     } catch (error) {
-      setNotification({
-        message: error.message,
-        type: NOTIFICATION.TYPE.ERROR,
-      })
+      notifyError(error.message)
     }
   }
 
   return (
     <div>
       <h2>log in to application</h2>
-
-      <Notification
-        message={notification.message}
-        type={notification.type}
-        handleDismiss={() => setNotification(nullNotification)}
-      />
 
       <form onSubmit={handleFormSubmit}>
         <div>

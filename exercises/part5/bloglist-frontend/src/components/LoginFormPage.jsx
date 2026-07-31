@@ -4,7 +4,7 @@ import LoginForm from './LoginForm'
 
 const LoginFormPage = () => {
   const navigate = useNavigate()
-  const { setUser } = useOutletContext()
+  const { user, setUser, notifyError } = useOutletContext()
 
   const loginHandler = async (credentials) => {
     try {
@@ -23,7 +23,11 @@ const LoginFormPage = () => {
     }
   }
 
-  return <LoginForm loginHandler={loginHandler} />
+  if (user) {
+    return null
+  }
+
+  return <LoginForm loginHandler={loginHandler} notifyError={notifyError} />
 }
 
 export default LoginFormPage

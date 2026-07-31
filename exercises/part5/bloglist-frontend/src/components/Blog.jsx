@@ -1,12 +1,17 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
-import Notification, { NOTIFICATION } from './Notification'
 import '../styles/blog.css'
 
-const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
-  const nullNotification = { message: '', type: '' }
-  const [notification, setNotification] = useState(nullNotification)
+const Blog = ({
+  blog,
+  user,
+  handleBlogLike,
+  handleBlogRemove,
+  notifyError,
+  notifySuccess,
+}) => {
   const [isLikeDisabled, setIsLikeDisabled] = useState(false)
+  const [isRemoveDisabled, setIsRemoveDisabled] = useState(false)
 
   const handleLikeClick = async () => {
     setIsLikeDisabled(true)
@@ -14,23 +19,32 @@ const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
     try {
       handleBlogLike(blog)
     } catch (error) {
-      setNotification({
-        message: error.message,
-        type: NOTIFICATION.TYPE.ERROR,
-      })
+      notifyError(error.message)
     } finally {
       setIsLikeDisabled(false)
     }
   }
 
+  const handleRemoveClick = async () => {
+    const shouldRemove = confirm(`Remove blog "${blog.title}" by ${blog.author}?`)
+    if (!shouldRemove) {
+      return
+    }
+
+    setIsRemoveDisabled(true)
+
+    try {
+      await handleBlogRemove()
+      notifySuccess(`Removed blog "${blog.title}" by ${blog.author}`)
+    } catch (error) {
+      notifyError(error.message)
+    } finally {
+      setIsRemoveDisabled(false)
+    }
+  }
+
   return (
     <div>
-      <Notification
-        message={notification.message}
-        type={notification.type}
-        handleDismiss={() => setNotification(nullNotification)}
-      />
-
       <article className="blog-container">
         <h3 className="blog-heading">
           {blog.title} - {blog.author}
@@ -61,7 +75,11 @@ const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
           </ul>
 
           {user?.username === blog.user.username && (
-            <button type="button" onClick={() => handleBlogRemove(blog)}>
+            <button
+              type="button"
+              onClick={handleRemoveClick}
+              disabled={isRemoveDisabled}
+            >
               remove
             </button>
           )}

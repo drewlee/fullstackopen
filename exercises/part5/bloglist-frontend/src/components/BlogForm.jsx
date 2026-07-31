@@ -1,16 +1,13 @@
 import { useState } from 'react'
-import Notification, { NOTIFICATION } from './Notification'
 import '../styles/blog-form.css'
 
-const BlogForm = ({ handleCreateBlog }) => {
+const BlogForm = ({ handleCreateBlog, notifyError, notifySuccess }) => {
   const nullBlog = {
     title: '',
     author: '',
     url: '',
   }
-  const nullNotification = { message: '', type: '' }
   const [blog, setBlog] = useState(nullBlog)
-  const [notification, setNotification] = useState(nullNotification)
 
   const handleFormSubmit = async (evt) => {
     evt.preventDefault()
@@ -22,33 +19,21 @@ const BlogForm = ({ handleCreateBlog }) => {
     }
 
     if (!newBlog.title || !newBlog.url) {
-      setNotification({
-        message: 'Title and url are required',
-        type: NOTIFICATION.TYPE.ERROR,
-      })
+      notifyError('Title and url are required')
       return
     }
 
     try {
       await handleCreateBlog(newBlog)
+      notifySuccess(`Added ${newBlog.title} by ${newBlog.author}`)
       setBlog(nullBlog)
     } catch (error) {
-      console.error(error)
-      setNotification({
-        message: error.message,
-        type: NOTIFICATION.TYPE.ERROR,
-      })
+      notifyError(error.message)
     }
   }
 
   return (
     <>
-      <Notification
-        message={notification.message}
-        type={notification.type}
-        handleDismiss={() => setNotification(nullNotification)}
-      />
-
       <section className="new-blog-form_container">
         <h2>create new</h2>
 
