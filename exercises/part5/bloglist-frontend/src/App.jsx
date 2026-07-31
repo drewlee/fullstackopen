@@ -9,9 +9,9 @@ import userService from './services/users'
 import './App.css'
 
 const App = () => {
-  const { blogs: data } = useLoaderData()
+  const { blogs: blogData } = useLoaderData()
   const [user, setUser] = useState(null)
-  const [blogs, setBlogs] = useState(data)
+  const [blogs, setBlogs] = useState(blogData)
 
   useEffect(() => {
     const authUser = userService.getStoredUser()
@@ -33,6 +33,11 @@ const App = () => {
           <li className="primary-nav_list-item">
             <Link to="/">blogs</Link>
           </li>
+          {user && (
+            <li className="primary-nav_list-item">
+              <Link to="/create">new blog</Link>
+            </li>
+          )}
           <li className="primary-nav_list-item">
             {user ? (
               <button type="button" onClick={handleLogoutClick}>

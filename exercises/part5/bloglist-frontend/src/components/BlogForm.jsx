@@ -1,15 +1,18 @@
 import { useState } from 'react'
+import Notification, { NOTIFICATION } from './Notification'
 import '../styles/blog-form.css'
 
-const BlogForm = ({ handleCreateBlog, showValidationError }) => {
+const BlogForm = ({ handleCreateBlog }) => {
   const nullBlog = {
     title: '',
     author: '',
     url: '',
   }
+  const nullNotification = { message: '', type: '' }
   const [blog, setBlog] = useState(nullBlog)
+  const [notification, setNotification] = useState(nullNotification)
 
-  const handleFormSubmit = (evt) => {
+  const handleFormSubmit = async (evt) => {
     evt.preventDefault()
 
     const newBlog = { ...blog }
@@ -19,64 +22,88 @@ const BlogForm = ({ handleCreateBlog, showValidationError }) => {
     }
 
     if (!newBlog.title || !newBlog.url) {
-      showValidationError('Title and url are required')
+      setNotification({
+        message: 'Title and url are required',
+        type: NOTIFICATION.TYPE.ERROR,
+      })
       return
     }
 
-    handleCreateBlog(newBlog)
-      .then(() => setBlog(nullBlog))
-      .catch()
+    try {
+      await handleCreateBlog(newBlog)
+      setBlog(nullBlog)
+    } catch (error) {
+      console.error(error)
+      setNotification({
+        message: error.message,
+        type: NOTIFICATION.TYPE.ERROR,
+      })
+    }
   }
 
   return (
-    <section className="new-blog-form_container">
-      <h2>create new</h2>
+    <>
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        handleDismiss={() => setNotification(nullNotification)}
+      />
 
-      <form onSubmit={handleFormSubmit} noValidate className="new-blog-form">
-        <div className="new-blog-form_field">
-          <label htmlFor="blog-title">title</label>
-          <input
-            type="text"
-            id="blog-title"
-            value={blog.title}
-            onChange={(evt) => setBlog({
-              ...blog,
-              title: evt.target.value,
-            })}
-            required
-          />
-        </div>
+      <section className="new-blog-form_container">
+        <h2>create new</h2>
 
-        <div className="new-blog-form_field">
-          <label htmlFor="blog-author">author</label>
-          <input
-            type="text"
-            id="blog-author"
-            value={blog.author}
-            onChange={(evt) => setBlog({
-              ...blog,
-              author: evt.target.value,
-            })}
-          />
-        </div>
+        <form onSubmit={handleFormSubmit} noValidate className="new-blog-form">
+          <div className="new-blog-form_field">
+            <label htmlFor="blog-title">title</label>
+            <input
+              type="text"
+              id="blog-title"
+              value={blog.title}
+              onChange={(evt) =>
+                setBlog({
+                  ...blog,
+                  title: evt.target.value,
+                })
+              }
+              required
+            />
+          </div>
 
-        <div className="new-blog-form_field">
-          <label htmlFor="blog-url">url</label>
-          <input
-            type="text"
-            id="blog-url"
-            value={blog.url}
-            onChange={(evt) => setBlog({
-              ...blog,
-              url: evt.target.value,
-            })}
-            required
-          />
-        </div>
+          <div className="new-blog-form_field">
+            <label htmlFor="blog-author">author</label>
+            <input
+              type="text"
+              id="blog-author"
+              value={blog.author}
+              onChange={(evt) =>
+                setBlog({
+                  ...blog,
+                  author: evt.target.value,
+                })
+              }
+            />
+          </div>
 
-        <button type="submit">create</button>
-      </form>
-    </section>
+          <div className="new-blog-form_field">
+            <label htmlFor="blog-url">url</label>
+            <input
+              type="text"
+              id="blog-url"
+              value={blog.url}
+              onChange={(evt) =>
+                setBlog({
+                  ...blog,
+                  url: evt.target.value,
+                })
+              }
+              required
+            />
+          </div>
+
+          <button type="submit">create</button>
+        </form>
+      </section>
+    </>
   )
 }
 

@@ -4,6 +4,7 @@ import App from './App'
 import BlogsPage from './components/BlogsPage'
 import BlogPage from './components/BlogPage'
 import LoginFormPage from './components/LoginFormPage'
+import BlogFormPage from './components/BlogFormPage'
 
 const appPageLoader = async () => {
   let blogs = []
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: '/login',
         Component: LoginFormPage,
+      },
+      {
+        path: '/create',
+        Component: BlogFormPage,
       },
       { path: '/blogs/:id', Component: BlogPage },
     ],

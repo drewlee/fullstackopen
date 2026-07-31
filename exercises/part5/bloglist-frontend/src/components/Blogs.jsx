@@ -5,25 +5,6 @@ import Blog from './Blog'
 import Togglable from './Togglable'
 
 const Blogs = ({ user, blogs }) => {
-  // const handleCreateBlog = (newBlog) => {
-  //   return blogService
-  //     .createNew(newBlog)
-  //     .then((createdBlog) => {
-  //       setNotification({
-  //         message: `${createdBlog.title} by ${createdBlog.author} added`,
-  //         type: NOTIFICATION.TYPE.SUCCESS,
-  //       })
-  //       setBlogs([...blogs, createdBlog])
-  //     })
-  //     .catch(() => {
-  //       setNotification({
-  //         message: 'Something went wrong, try again later',
-  //         type: NOTIFICATION.TYPE.ERROR,
-  //       })
-  //       return Promise.reject()
-  //     })
-  // }
-
   // const handleBlogRemove = (blogToRemove) => {
   //   const shouldRemove = confirm(
   //     `Remove blog "${blogToRemove.title}" by ${blogToRemove.author}?`,
@@ -55,13 +36,6 @@ const Blogs = ({ user, blogs }) => {
       <h2>blogs</h2>
 
       {user && <p>Logged in as {user.name}</p>}
-
-      {/* <Togglable buttonLabel="create new blog">
-        <BlogForm
-          handleCreateBlog={handleCreateBlog}
-          showValidationError={showValidationError}
-        />
-      </Togglable> */}
 
       <ul>
         {blogs.map((blog) => (

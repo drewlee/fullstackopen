@@ -40,7 +40,7 @@ const BlogPage = () => {
     }
   }
 
-  const handleBlogRemove = () => {
+  const handleBlogRemove = async () => {
     // todo
   }
 
