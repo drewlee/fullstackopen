@@ -14,11 +14,10 @@ const LoginFormPage = () => {
       userService.setStoredUser(user)
       navigate('/')
     } catch (error) {
-      let message = 'Something went wrong, try again later'
-
-      if (error?.request?.status === 401) {
-        message = 'Invalid username or password'
-      }
+      const message =
+        error?.request?.status === 401
+          ? 'Invalid username or password'
+          : 'Something went wrong, try again later'
 
       throw new Error(message)
     }

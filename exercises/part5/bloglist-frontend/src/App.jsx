@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, Link } from 'react-router'
+import { Link, useLoaderData } from 'react-router'
 import { Outlet } from 'react-router'
 import Blogs from './components/Blogs'
 import Blog from './components/Blog'
@@ -8,10 +8,10 @@ import blogService from './services/blogs'
 import userService from './services/users'
 import './App.css'
 
-const AUTH_USER_KEY = 'blogListAuthUser'
-
 const App = () => {
+  const { blogs: data } = useLoaderData()
   const [user, setUser] = useState(null)
+  const [blogs, setBlogs] = useState(data)
 
   useEffect(() => {
     const authUser = userService.getStoredUser()
@@ -45,7 +45,7 @@ const App = () => {
         </ul>
       </nav>
 
-      <Outlet context={{ user, setUser }} />
+      <Outlet context={{ user, setUser, blogs, setBlogs }} />
     </>
   )
 }

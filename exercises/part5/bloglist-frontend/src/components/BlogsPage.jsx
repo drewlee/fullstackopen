@@ -1,11 +1,10 @@
-import { useOutletContext, useLoaderData } from 'react-router'
+import { useOutletContext } from 'react-router'
 import Blogs from './Blogs'
 
 const BlogsPage = () => {
-  const { user } = useOutletContext()
-  const { blogs } = useLoaderData()
+  const { user, blogs } = useOutletContext()
 
-  return <Blogs user={user} data={blogs} />
+  return <Blogs user={user} blogs={blogs} />
 }
 
 export default BlogsPage

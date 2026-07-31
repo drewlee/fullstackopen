@@ -1,51 +1,73 @@
 import { useState } from 'react'
+import { Link } from 'react-router'
+import Notification, { NOTIFICATION } from './Notification'
 import '../styles/blog.css'
 
-const Blog = ({ user, blog, handleBlogLike, handleBlogRemove }) => {
-  const [isVisible, setIsVisible] = useState(false)
+const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
+  const nullNotification = { message: '', type: '' }
+  const [notification, setNotification] = useState(nullNotification)
   const [isLikeDisabled, setIsLikeDisabled] = useState(false)
 
-  const handleLikeButtonClick = () => {
+  const handleLikeClick = async () => {
     setIsLikeDisabled(true)
-    handleBlogLike(blog).then(() => setIsLikeDisabled(false))
+
+    try {
+      handleBlogLike(blog)
+    } catch (error) {
+      setNotification({
+        message: error.message,
+        type: NOTIFICATION.TYPE.ERROR,
+      })
+    } finally {
+      setIsLikeDisabled(false)
+    }
   }
 
   return (
-    <article className="blog-container">
-      <div className="blog-header">
+    <div>
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        handleDismiss={() => setNotification(nullNotification)}
+      />
+
+      <article className="blog-container">
         <h3 className="blog-heading">
           {blog.title} - {blog.author}
         </h3>
-        <button type="button" onClick={() => setIsVisible(!isVisible)}>
-          {!isVisible ? 'view' : 'hide'}
-        </button>
-      </div>
 
-      <div className="blog-content" hidden={!isVisible}>
-        <ul className="blog-content-list">
-          <li className="blog-content-list-item">{blog.url}</li>
-          <li className="blog-content-list-item blog-content-list-item_like">
-            <span data-testid="blog-likes-count">
-              {blog.likes} {blog.likes === 1 ? 'like' : 'likes'}
-            </span>
-            <button
-              type="button"
-              onClick={handleLikeButtonClick}
-              disabled={isLikeDisabled}
-            >
-              like
+        <div className="blog-content">
+          <ul className="blog-content-list">
+            <li className="blog-content-list-item">
+              <a href={blog.url} target="_blank">
+                {blog.url}
+              </a>
+            </li>
+            <li className="blog-content-list-item blog-content-list-item_like">
+              <span data-testid="blog-likes-count">
+                {blog.likes} {blog.likes === 1 ? 'like' : 'likes'}
+              </span>
+              {user && (
+                <button
+                  type="button"
+                  onClick={handleLikeClick}
+                  disabled={isLikeDisabled}
+                >
+                  like
+                </button>
+              )}
+            </li>
+            <li className="blog-content-list-item">Added by {blog.user.name}</li>
+          </ul>
+
+          {user?.username === blog.user.username && (
+            <button type="button" onClick={() => handleBlogRemove(blog)}>
+              remove
             </button>
-          </li>
-          <li className="blog-content-list-item">{blog.user.name}</li>
-        </ul>
-
-        {user?.username === blog.user.username && (
-          <button type="button" onClick={() => handleBlogRemove(blog)}>
-            remove
-          </button>
-        )}
-      </div>
-    </article>
+          )}
+        </div>
+      </article>
+    </div>
   )
 }
 
