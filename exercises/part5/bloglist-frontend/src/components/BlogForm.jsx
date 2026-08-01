@@ -35,9 +35,14 @@ const BlogForm = ({ handleCreateBlog, notifyError, notifySuccess }) => {
   return (
     <>
       <section className="new-blog-form_container">
-        <h2>create new</h2>
+        <h2 id="create-blog-heading">create new</h2>
 
-        <form onSubmit={handleFormSubmit} noValidate className="new-blog-form">
+        <form
+          onSubmit={handleFormSubmit}
+          noValidate
+          className="new-blog-form"
+          aria-labelledby="create-blog-heading"
+        >
           <div className="new-blog-form_field">
             <label htmlFor="blog-title">title</label>
             <input

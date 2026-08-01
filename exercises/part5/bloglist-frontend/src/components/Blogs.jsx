@@ -9,9 +9,9 @@ const Blogs = ({ blogs }) => {
     <div>
       <h2>blogs</h2>
 
-      <ul>
+      <ul className="blogs-list">
         {blogs.map((blog) => (
-          <li key={blog.id}>
+          <li key={blog.id} className="blogs-list-item">
             <Link to={`/blogs/${blog.id}`}>
               {blog.title} - {blog.author}
             </Link>

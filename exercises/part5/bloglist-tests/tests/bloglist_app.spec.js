@@ -5,7 +5,7 @@ import {
   loginWith,
   logout,
   createBlog,
-  getBlogLocatorByHeading,
+  getBlogLocatorByText,
   clickLikeButtonTimes,
 } from './helper.js'
 
@@ -49,7 +49,9 @@ describe('Blog app', () => {
   })
 
   test('Login form is shown', async ({ page }) => {
-    const locator = page.getByRole('heading', { name: 'log in to application' })
+    await page.goto('/login')
+
+    const locator = page.getByRole('form', { name: 'log in to application' })
     await expect(locator).toBeVisible()
   })
 
@@ -71,26 +73,20 @@ describe('Blog app', () => {
     describe('When logged in', () => {
       beforeEach(async ({ page }) => {
         await loginWith(page, users[0].username, users[0].password)
-        await page.getByRole('button', { name: 'create new blog' }).click()
+        await page.getByRole('button', { name: 'logout' }).waitFor()
+        await page.goto('/create')
       })
 
       test('can log out', async ({ page }) => {
         await logout(page)
 
-        const locator = page.getByRole('heading', { name: 'log in to application' })
+        const locator = page.getByRole('link', { name: 'login' })
         await expect(locator).toBeVisible()
       })
 
       test('create a new blog form is shown', async ({ page }) => {
-        const locator = page.getByRole('heading', { name: 'create new' })
+        const locator = page.getByRole('form', { name: 'create new' })
         await expect(locator).toBeVisible()
-      })
-
-      test('create a new blog form can be hidden', async ({ page }) => {
-        const locator = page.getByRole('heading', { name: 'create new' })
-
-        await page.getByRole('button', { name: 'cancel' }).click()
-        await expect(locator).toBeHidden()
       })
 
       test('new blog is created', async ({ page }) => {
@@ -98,7 +94,7 @@ describe('Blog app', () => {
 
         await createBlog(page, title, author, url)
 
-        const blogLocator = await getBlogLocatorByHeading(page, title, author)
+        const blogLocator = await getBlogLocatorByText(page, title, author)
 
         await expect(blogLocator).toHaveCount(1)
         await expect(blogLocator).toBeVisible()
@@ -112,31 +108,25 @@ describe('Blog app', () => {
           }
         })
 
-        test('blog details can be expanded', async ({ page }) => {
+        test('blog details can be viewed', async ({ page }) => {
           const { title, author, url } = blogs[1]
-          const blogLocator = await getBlogLocatorByHeading(page, title, author)
 
-          await blogLocator.getByRole('button', { name: 'view' }).click()
-          await expect(
-            blogLocator.getByRole('button', { name: 'hide' })
-          ).toBeVisible()
+          await getBlogLocatorByText(page, title, author, true)
 
-          const blogContent = blogLocator.getByRole('list')
-          await expect(blogContent).toBeVisible()
+          const blogItems = page.getByRole('article').getByRole('listitem')
 
-          const blogItems = blogContent.getByRole('listitem')
           await expect(blogItems.nth(0)).toHaveText(url)
           await expect(blogItems.nth(1)).toHaveText(/0 likes/)
-          await expect(blogItems.nth(2)).toHaveText(users[0].name)
+          await expect(blogItems.nth(2)).toHaveText(`Added by ${users[0].name}`)
         })
 
         test('new blog can be liked', async ({ page }) => {
           const { title, author } = blogs[1]
-          const blogLocator = await getBlogLocatorByHeading(page, title, author, true)
+          await getBlogLocatorByText(page, title, author, true)
 
-          await blogLocator.getByRole('button', { name: 'like' }).click()
+          await page.getByRole('button', { name: 'like' }).click()
           await expect(
-            blogLocator.getByTestId('blog-likes-count')
+            page.getByTestId('blog-likes-count')
           ).toHaveText('1 like')
         })
 
@@ -144,9 +134,12 @@ describe('Blog app', () => {
           page.on('dialog', (dialog) => dialog.accept())
 
           const { title, author } = blogs[1]
-          const blogLocator = await getBlogLocatorByHeading(page, title, author, true)
 
-          await blogLocator.getByRole('button', { name: 'remove' }).click()
+          await getBlogLocatorByText(page, title, author, true)
+          await page.getByRole('button', { name: 'remove' }).click()
+
+          const blogLocator = await getBlogLocatorByText(page, title, author)
+
           await expect(blogLocator).toBeHidden()
           await expect(blogLocator).toHaveCount(0)
         })
@@ -157,10 +150,10 @@ describe('Blog app', () => {
           await loginWith(page, users[1].username, users[1].password)
 
           const { title, author } = blogs[1]
-          const blogLocator = await getBlogLocatorByHeading(page, title, author, true)
+          await getBlogLocatorByText(page, title, author, true)
 
           await expect(
-            blogLocator.getByRole('button', { name: 'remove' })
+            page.getByRole('button', { name: 'remove' })
           ).toBeHidden()
         })
 
@@ -168,26 +161,25 @@ describe('Blog app', () => {
           test.setTimeout(30000)
 
           const likes = [2, 6, 3]
+          const count = blogs.length
 
-          for (let i = 0; i < blogs.length; i++) {
+          for (let i = 0; i < count; i++) {
             const { title, author } = blogs[i]
-            const blogLocator = await getBlogLocatorByHeading(page, title, author, true)
 
-            await clickLikeButtonTimes(likes[i], blogLocator)
+            await getBlogLocatorByText(page, title, author, true)
+            await clickLikeButtonTimes(likes[i], page)
+            await page.getByRole('link', { name: 'blogs' }).click()
           }
 
-          const allBlogsLocator = page.getByRole('article')
+          const allBlogsLocator = page.locator('.blogs-list-item')
+          await expect(allBlogsLocator).toHaveCount(count)
+          likes.sort((a, b) => b - a)
 
-          await expect(allBlogsLocator).toHaveCount(3)
-          await expect(
-            allBlogsLocator.nth(0).getByTestId('blog-likes-count')
-          ).toHaveText('6 likes')
-          await expect(
-            allBlogsLocator.nth(1).getByTestId('blog-likes-count')
-          ).toHaveText('3 likes')
-          await expect(
-            allBlogsLocator.nth(2).getByTestId('blog-likes-count')
-          ).toHaveText('2 likes')
+          for (let i = 0; i < count; i++) {
+            await allBlogsLocator.nth(i).getByRole('link').click()
+            await expect(page.getByTestId('blog-likes-count')).toHaveText(`${likes[i]} likes`)
+            await page.getByRole('link', { name: 'blogs' }).click()
+          }
         })
       })
     })

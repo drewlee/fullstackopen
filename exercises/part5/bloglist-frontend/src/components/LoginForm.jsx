@@ -28,9 +28,9 @@ const LoginForm = ({ loginHandler, notifyError }) => {
 
   return (
     <div>
-      <h2>log in to application</h2>
+      <h2 id="login-heading">log in to application</h2>
 
-      <form onSubmit={handleFormSubmit}>
+      <form onSubmit={handleFormSubmit} aria-labelledby="login-heading">
         <div>
           <label htmlFor="login-username">username</label>
           <input
