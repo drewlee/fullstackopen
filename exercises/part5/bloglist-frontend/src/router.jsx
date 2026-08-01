@@ -1,4 +1,5 @@
 import { createBrowserRouter, redirect } from 'react-router'
+import authService from './services/auth'
 import blogService from './services/blogs'
 import App from './App'
 import BlogsPage from './components/BlogsPage'
@@ -7,7 +8,12 @@ import LoginFormPage from './components/LoginFormPage'
 import BlogFormPage from './components/BlogFormPage'
 
 const appPageLoader = async () => {
+  const user = authService.getUserFromStorage()
   let blogs = []
+
+  if (user) {
+    authService.setUser(user)
+  }
 
   try {
     blogs = await blogService.getAll()
@@ -16,7 +22,21 @@ const appPageLoader = async () => {
     console.error(error)
   }
 
-  return { blogs }
+  return { blogs, user }
+}
+
+const loginPageLoader = () => {
+  const user = authService.getUser()
+  if (user) {
+    return redirect('/')
+  }
+}
+
+const createPageLoader = () => {
+  const user = authService.getUser()
+  if (!user) {
+    return redirect('/')
+  }
 }
 
 const router = createBrowserRouter([
@@ -30,10 +50,12 @@ const router = createBrowserRouter([
       },
       {
         path: '/login',
+        loader: loginPageLoader,
         Component: LoginFormPage,
       },
       {
         path: '/create',
+        loader: createPageLoader,
         Component: BlogFormPage,
       },
       {

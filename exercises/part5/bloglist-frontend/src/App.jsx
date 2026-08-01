@@ -1,29 +1,20 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link, useLoaderData, useNavigate } from 'react-router'
 import { Outlet } from 'react-router'
 import Notification, { NOTIFICATION } from './components/Notification'
 import Blogs from './components/Blogs'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
-import blogService from './services/blogs'
-import userService from './services/users'
+import authService from './services/auth'
 import './App.css'
 
 const App = () => {
   const nullNotification = { message: '', type: '' }
   const navigate = useNavigate()
-  const { blogs: blogData } = useLoaderData()
-  const [user, setUser] = useState(null)
+  const { blogs: blogData, user: userData } = useLoaderData()
+  const [user, setUser] = useState(userData)
   const [blogs, setBlogs] = useState(blogData)
   const [notification, setNotification] = useState(nullNotification)
-
-  useEffect(() => {
-    const authUser = userService.getStoredUser()
-    if (authUser) {
-      blogService.setToken(authUser.token)
-      setUser(authUser)
-    }
-  }, [])
 
   const notifySuccess = (message) => {
     setNotification({
@@ -41,7 +32,9 @@ const App = () => {
 
   const handleLogoutClick = () => {
     setUser(null)
-    userService.removeStoredUser()
+    authService.setUser(null)
+    authService.removeUserFromStorage()
+
     navigate('/')
   }
 

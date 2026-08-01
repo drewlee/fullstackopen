@@ -1,17 +1,20 @@
-import { useNavigate, useOutletContext, Navigate } from 'react-router'
+import { useNavigate, useOutletContext } from 'react-router'
 import userService from '../services/users'
+import authService from '../services/auth'
 import LoginForm from './LoginForm'
 
 const LoginFormPage = () => {
   const navigate = useNavigate()
-  const { user, setUser, notifyError } = useOutletContext()
+  const { setUser, notifyError } = useOutletContext()
 
   const loginHandler = async (credentials) => {
     try {
       const user = await userService.login(credentials)
 
       setUser(user)
-      userService.setStoredUser(user)
+      authService.setUser(user)
+      authService.setUserInStorage(user)
+
       navigate('/')
     } catch (error) {
       const message =
@@ -21,10 +24,6 @@ const LoginFormPage = () => {
 
       throw new Error(message)
     }
-  }
-
-  if (user) {
-    return <Navigate to="/" replace />
   }
 
   return <LoginForm loginHandler={loginHandler} notifyError={notifyError} />
