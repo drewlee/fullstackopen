@@ -1,13 +1,12 @@
 import { Link } from 'react-router'
-import Notification, { NOTIFICATION } from './Notification'
-import BlogForm from './BlogForm'
-import Blog from './Blog'
-import Togglable from './Togglable'
+import { Typography } from '@mui/material'
 
 const Blogs = ({ blogs }) => {
   return (
     <div>
-      <h2>blogs</h2>
+      <Typography variant="h4" component="h2" sx={{ margin: '24px 0' }}>
+        blogs
+      </Typography>
 
       <ul className="blogs-list">
         {blogs.map((blog) => (

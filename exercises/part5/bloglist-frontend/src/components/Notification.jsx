@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import '../styles/notification.css'
+import { Alert } from '@mui/material'
 
 const NOTIFICATION = {
   TYPE: {
@@ -27,11 +27,7 @@ const Notification = ({ message, type = NOTIFICATION.TYPE.ERROR, handleDismiss }
     return null
   }
 
-  return (
-    <div className={`notification-${type}`}>
-      <p className="notification-message">{message}</p>
-    </div>
-  )
+  return <Alert severity={type}>{message}</Alert>
 }
 
 export { Notification as default, NOTIFICATION }

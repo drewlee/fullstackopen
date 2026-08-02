@@ -1,8 +1,14 @@
 import { useState } from 'react'
 import { Link, useLoaderData, useNavigate } from 'react-router'
 import { Outlet } from 'react-router'
-import CssBaseline from '@mui/material/CssBaseline'
-import Container from '@mui/material/Container'
+import {
+  CssBaseline,
+  Container,
+  AppBar,
+  Toolbar,
+  Button,
+  Typography,
+} from '@mui/material'
 import Notification, { NOTIFICATION } from './components/Notification'
 import Blogs from './components/Blogs'
 import Blog from './components/Blog'
@@ -44,29 +50,43 @@ const App = () => {
     <>
       <CssBaseline />
       <Container>
-        <nav className="primary-nav">
-          <ul className="primary-nav_list">
-            <li className="primary-nav_list-item">
-              <Link to="/">blogs</Link>
-            </li>
-            {user && (
-              <li className="primary-nav_list-item">
-                <Link to="/create">new blog</Link>
-              </li>
-            )}
-            <li className="primary-nav_list-item">
-              {user ? (
-                <button type="button" onClick={handleLogoutClick}>
-                  logout
-                </button>
-              ) : (
-                <Link to="/login">login</Link>
-              )}
-            </li>
-          </ul>
-        </nav>
+        <AppBar position="static">
+          <Toolbar>
+            <nav className="primary-nav">
+              <ul className="primary-nav_list">
+                <li className="primary-nav_list-item">
+                  <Button component={Link} to="/" color="inherit">
+                    blogs
+                  </Button>
+                </li>
+                {user && (
+                  <li className="primary-nav_list-item">
+                    <Button component={Link} to="/create" color="inherit">
+                      create
+                    </Button>
+                  </li>
+                )}
+                <li className="primary-nav_list-item">
+                  {user ? (
+                    <Button type="button" onClick={handleLogoutClick} color="inherit">
+                      logout
+                    </Button>
+                  ) : (
+                    <Button component={Link} to="/login" color="inherit">
+                      login
+                    </Button>
+                  )}
+                </li>
+              </ul>
+            </nav>
+          </Toolbar>
+        </AppBar>
 
-        {user && <p>Logged in as {user.name}</p>}
+        {user && (
+          <Typography variant="body1" sx={{ margin: '16px 0' }}>
+            Logged in as {user.name}
+          </Typography>
+        )}
 
         <Notification
           message={notification.message}
