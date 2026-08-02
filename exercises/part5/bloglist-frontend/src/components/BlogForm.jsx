@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Stack, TextField, Button } from '@mui/material'
 import '../styles/blog-form.css'
 
 const BlogForm = ({ handleCreateBlog, notifyError, notifySuccess }) => {
@@ -43,11 +44,12 @@ const BlogForm = ({ handleCreateBlog, notifyError, notifySuccess }) => {
           className="new-blog-form"
           aria-labelledby="create-blog-heading"
         >
-          <div className="new-blog-form_field">
-            <label htmlFor="blog-title">title</label>
-            <input
+          <Stack spacing={2}>
+            <TextField
               type="text"
+              label="title"
               id="blog-title"
+              required
               value={blog.title}
               onChange={(evt) =>
                 setBlog({
@@ -55,14 +57,11 @@ const BlogForm = ({ handleCreateBlog, notifyError, notifySuccess }) => {
                   title: evt.target.value,
                 })
               }
-              required
             />
-          </div>
 
-          <div className="new-blog-form_field">
-            <label htmlFor="blog-author">author</label>
-            <input
+            <TextField
               type="text"
+              label="author"
               id="blog-author"
               value={blog.author}
               onChange={(evt) =>
@@ -72,13 +71,12 @@ const BlogForm = ({ handleCreateBlog, notifyError, notifySuccess }) => {
                 })
               }
             />
-          </div>
 
-          <div className="new-blog-form_field">
-            <label htmlFor="blog-url">url</label>
-            <input
+            <TextField
               type="text"
+              label="url"
               id="blog-url"
+              required
               value={blog.url}
               onChange={(evt) =>
                 setBlog({
@@ -86,11 +84,18 @@ const BlogForm = ({ handleCreateBlog, notifyError, notifySuccess }) => {
                   url: evt.target.value,
                 })
               }
-              required
             />
-          </div>
 
-          <button type="submit">create</button>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                alignSelf: 'flex-start',
+              }}
+            >
+              create
+            </Button>
+          </Stack>
         </form>
       </section>
     </>

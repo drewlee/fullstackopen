@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Stack, TextField, Button } from '@mui/material'
 import Notification, { NOTIFICATION } from './Notification'
 
 const LoginForm = ({ loginHandler, notifyError }) => {
@@ -31,31 +32,37 @@ const LoginForm = ({ loginHandler, notifyError }) => {
       <h2 id="login-heading">log in to application</h2>
 
       <form onSubmit={handleFormSubmit} aria-labelledby="login-heading">
-        <div>
-          <label htmlFor="login-username">username</label>
-          <input
-            id="login-username"
+        <Stack spacing={2}>
+          <TextField
             type="text"
+            label="username"
+            id="login-username"
             value={credentials.username}
             onChange={(evt) =>
               setCredentials({ ...credentials, username: evt.target.value })
             }
           />
-        </div>
 
-        <div>
-          <label htmlFor="login-password">password</label>
-          <input
-            id="login-password"
+          <TextField
             type="password"
+            label="password"
+            id="login-password"
             value={credentials.password}
             onChange={(evt) =>
               setCredentials({ ...credentials, password: evt.target.value })
             }
           />
-        </div>
 
-        <button type="submit">login</button>
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              alignSelf: 'flex-start',
+            }}
+          >
+            login
+          </Button>
+        </Stack>
       </form>
     </div>
   )

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useLoaderData, useNavigate } from 'react-router'
 import { Outlet } from 'react-router'
+import CssBaseline from '@mui/material/CssBaseline'
+import Container from '@mui/material/Container'
 import Notification, { NOTIFICATION } from './components/Notification'
 import Blogs from './components/Blogs'
 import Blog from './components/Blog'
@@ -40,39 +42,42 @@ const App = () => {
 
   return (
     <>
-      <nav className="primary-nav">
-        <ul className="primary-nav_list">
-          <li className="primary-nav_list-item">
-            <Link to="/">blogs</Link>
-          </li>
-          {user && (
+      <CssBaseline />
+      <Container>
+        <nav className="primary-nav">
+          <ul className="primary-nav_list">
             <li className="primary-nav_list-item">
-              <Link to="/create">new blog</Link>
+              <Link to="/">blogs</Link>
             </li>
-          )}
-          <li className="primary-nav_list-item">
-            {user ? (
-              <button type="button" onClick={handleLogoutClick}>
-                logout
-              </button>
-            ) : (
-              <Link to="/login">login</Link>
+            {user && (
+              <li className="primary-nav_list-item">
+                <Link to="/create">new blog</Link>
+              </li>
             )}
-          </li>
-        </ul>
-      </nav>
+            <li className="primary-nav_list-item">
+              {user ? (
+                <button type="button" onClick={handleLogoutClick}>
+                  logout
+                </button>
+              ) : (
+                <Link to="/login">login</Link>
+              )}
+            </li>
+          </ul>
+        </nav>
 
-      {user && <p>Logged in as {user.name}</p>}
+        {user && <p>Logged in as {user.name}</p>}
 
-      <Notification
-        message={notification.message}
-        type={notification.type}
-        handleDismiss={() => setNotification(nullNotification)}
-      />
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          handleDismiss={() => setNotification(nullNotification)}
+        />
 
-      <Outlet
-        context={{ user, setUser, blogs, setBlogs, notifySuccess, notifyError }}
-      />
+        <Outlet
+          context={{ user, setUser, blogs, setBlogs, notifySuccess, notifyError }}
+        />
+      </Container>
     </>
   )
 }
