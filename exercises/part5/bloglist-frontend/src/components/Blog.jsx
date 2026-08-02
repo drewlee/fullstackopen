@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
-import '../styles/blog.css'
+import Button from '@mui/material/Button'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
+import './Blog.css'
 
 const Blog = ({
   blog,
@@ -45,10 +48,14 @@ const Blog = ({
 
   return (
     <div>
-      <article className="blog-container">
-        <h3 className="blog-heading">
+      <Paper
+        elevation={6}
+        sx={{ marginTop: '24px', padding: '24px' }}
+        component="article"
+      >
+        <Typography variant="h6" component="h2">
           {blog.title} - {blog.author}
-        </h3>
+        </Typography>
 
         <div className="blog-content">
           <ul className="blog-content-list">
@@ -62,29 +69,32 @@ const Blog = ({
                 {blog.likes} {blog.likes === 1 ? 'like' : 'likes'}
               </span>
               {user && (
-                <button
+                <Button
                   type="button"
+                  variant="contained"
                   onClick={handleLikeClick}
                   disabled={isLikeDisabled}
                 >
                   like
-                </button>
+                </Button>
               )}
             </li>
             <li className="blog-content-list-item">Added by {blog.user.name}</li>
           </ul>
 
           {user?.username === blog.user.username && (
-            <button
+            <Button
               type="button"
+              variant="outlined"
+              color="error"
               onClick={handleRemoveClick}
               disabled={isRemoveDisabled}
             >
               remove
-            </button>
+            </Button>
           )}
         </div>
-      </article>
+      </Paper>
     </div>
   )
 }

@@ -1,5 +1,8 @@
 import { useState } from 'react'
-import { Stack, TextField, Button } from '@mui/material'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
 import Notification, { NOTIFICATION } from './Notification'
 
 const LoginForm = ({ loginHandler, notifyError }) => {
@@ -29,7 +32,14 @@ const LoginForm = ({ loginHandler, notifyError }) => {
 
   return (
     <div>
-      <h2 id="login-heading">log in to application</h2>
+      <Typography
+        variant="h4"
+        component="h2"
+        sx={{ margin: '24px 0' }}
+        id="login-heading"
+      >
+        log in to application
+      </Typography>
 
       <form onSubmit={handleFormSubmit} aria-labelledby="login-heading">
         <Stack spacing={2}>

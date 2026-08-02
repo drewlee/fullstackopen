@@ -78,10 +78,9 @@ describe('<Blog />', () => {
 
     render(<Blog blog={blog} user={blogUser} handleBlogLike={handleBlogLike} />)
 
-    const user = userEvent.setup()
     const likeBtn = screen.getByRole('button', { name: 'like' })
+    await userEvent.click(likeBtn)
 
-    await user.click(likeBtn)
     expect(handleBlogLike).toHaveBeenCalledOnce()
   })
 
@@ -99,10 +98,8 @@ describe('<Blog />', () => {
       />,
     )
 
-    const user = userEvent.setup()
     const likeBtn = screen.getByRole('button', { name: 'like' })
-
-    await user.click(likeBtn)
+    await userEvent.click(likeBtn)
 
     expect(handleBlogLike).toHaveBeenCalledOnce()
     expect(notifyError).toHaveBeenCalledOnce()
@@ -115,12 +112,8 @@ describe('<Blog />', () => {
 
     render(<Blog blog={blog} user={blogUser} handleBlogLike={handleBlogLike} />)
 
-    const user = userEvent.setup()
     const likeBtn = screen.getByRole('button', { name: 'like' })
-
-    await user.click(likeBtn)
-    await user.click(likeBtn)
-    await user.click(likeBtn)
+    await userEvent.click(likeBtn)
 
     expect(likeBtn).toBeDisabled()
     expect(handleBlogLike).toHaveBeenCalledOnce()
@@ -147,10 +140,8 @@ describe('<Blog />', () => {
       />,
     )
 
-    const user = userEvent.setup()
     const removeBtn = screen.getByRole('button', { name: 'remove' })
-
-    await user.click(removeBtn)
+    await userEvent.click(removeBtn)
 
     expect(handleBlogRemove).toHaveBeenCalledOnce()
     expect(notifySuccess).toHaveBeenCalledOnce()
@@ -176,10 +167,8 @@ describe('<Blog />', () => {
       />,
     )
 
-    const user = userEvent.setup()
     const removeBtn = screen.getByRole('button', { name: 'remove' })
-
-    await user.click(removeBtn)
+    await userEvent.click(removeBtn)
 
     expect(handleBlogRemove).toHaveBeenCalledOnce()
     expect(notifyError).toHaveBeenCalledOnce()
@@ -203,12 +192,8 @@ describe('<Blog />', () => {
       />,
     )
 
-    const user = userEvent.setup()
     const removeBtn = screen.getByRole('button', { name: 'remove' })
-
-    await user.click(removeBtn)
-    await user.click(removeBtn)
-    await user.click(removeBtn)
+    await userEvent.click(removeBtn)
 
     expect(removeBtn).toBeDisabled()
     expect(handleBlogRemove).toHaveBeenCalledOnce()

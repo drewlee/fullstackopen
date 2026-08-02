@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Alert } from '@mui/material'
+import Alert from '@mui/material/Alert'
 
 const NOTIFICATION = {
   TYPE: {
@@ -8,17 +8,27 @@ const NOTIFICATION = {
   },
 }
 
-const Notification = ({ message, type = NOTIFICATION.TYPE.ERROR, handleDismiss }) => {
+const Notification = ({
+  message,
+  type = NOTIFICATION.TYPE.ERROR,
+  onDismiss,
+  duration = 5000,
+}) => {
   useEffect(() => {
-    let timeoutId
+    if (!duration) {
+      return
+    }
+
+    let timeoutId = null
 
     if (message) {
-      timeoutId = setTimeout(handleDismiss, 5000)
+      timeoutId = setTimeout(onDismiss, duration)
     }
 
     return () => {
       if (timeoutId) {
         clearTimeout(timeoutId)
+        timeoutId = null
       }
     }
   })
@@ -27,7 +37,11 @@ const Notification = ({ message, type = NOTIFICATION.TYPE.ERROR, handleDismiss }
     return null
   }
 
-  return <Alert severity={type}>{message}</Alert>
+  return (
+    <Alert severity={type} sx={{ marginTop: '24px' }}>
+      {message}
+    </Alert>
+  )
 }
 
 export { Notification as default, NOTIFICATION }

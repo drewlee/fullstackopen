@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { Stack, TextField, Button } from '@mui/material'
-import '../styles/blog-form.css'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
 
 const BlogForm = ({ handleCreateBlog, notifyError, notifySuccess }) => {
   const nullBlog = {
@@ -36,7 +38,14 @@ const BlogForm = ({ handleCreateBlog, notifyError, notifySuccess }) => {
   return (
     <>
       <section className="new-blog-form_container">
-        <h2 id="create-blog-heading">create new</h2>
+        <Typography
+          variant="h4"
+          component="h2"
+          sx={{ margin: '24px 0' }}
+          id="create-blog-heading"
+        >
+          create new
+        </Typography>
 
         <form
           onSubmit={handleFormSubmit}

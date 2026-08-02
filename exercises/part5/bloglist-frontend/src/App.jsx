@@ -1,14 +1,12 @@
 import { useState } from 'react'
 import { Link, useLoaderData, useNavigate } from 'react-router'
 import { Outlet } from 'react-router'
-import {
-  CssBaseline,
-  Container,
-  AppBar,
-  Toolbar,
-  Button,
-  Typography,
-} from '@mui/material'
+import CssBaseline from '@mui/material/CssBaseline'
+import Container from '@mui/material/Container'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
 import Notification, { NOTIFICATION } from './components/Notification'
 import Blogs from './components/Blogs'
 import Blog from './components/Blog'
@@ -62,13 +60,18 @@ const App = () => {
                 {user && (
                   <li className="primary-nav_list-item">
                     <Button component={Link} to="/create" color="inherit">
-                      create
+                      new blog
                     </Button>
                   </li>
                 )}
                 <li className="primary-nav_list-item">
                   {user ? (
-                    <Button type="button" onClick={handleLogoutClick} color="inherit">
+                    <Button
+                      type="button"
+                      onClick={handleLogoutClick}
+                      color="inherit"
+                      variant="outlined"
+                    >
                       logout
                     </Button>
                   ) : (
@@ -91,7 +94,7 @@ const App = () => {
         <Notification
           message={notification.message}
           type={notification.type}
-          handleDismiss={() => setNotification(nullNotification)}
+          onDismiss={() => setNotification(nullNotification)}
         />
 
         <Outlet

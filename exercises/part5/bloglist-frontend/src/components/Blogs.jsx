@@ -1,5 +1,9 @@
 import { Link } from 'react-router'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
 
 const Blogs = ({ blogs }) => {
   return (
@@ -8,15 +12,15 @@ const Blogs = ({ blogs }) => {
         blogs
       </Typography>
 
-      <ul className="blogs-list">
+      <List>
         {blogs.map((blog) => (
-          <li key={blog.id} className="blogs-list-item">
-            <Link to={`/blogs/${blog.id}`}>
-              {blog.title} - {blog.author}
-            </Link>
-          </li>
+          <ListItem key={blog.id} disablePadding className="blogs-list-item">
+            <ListItemButton component={Link} to={`/blogs/${blog.id}`}>
+              <ListItemText primary={`${blog.title} - ${blog.author}`} />
+            </ListItemButton>
+          </ListItem>
         ))}
-      </ul>
+      </List>
     </div>
   )
 }

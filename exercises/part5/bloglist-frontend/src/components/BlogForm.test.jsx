@@ -17,11 +17,10 @@ describe('<BlogForm />', () => {
       <BlogForm handleCreateBlog={handleCreateBlog} notifySuccess={notifySuccess} />,
     )
 
-    const titleEl = screen.getByLabelText('title')
+    const titleEl = screen.getByLabelText('title *')
     const authorEl = screen.getByLabelText('author')
-    const urlEl = screen.getByLabelText('url')
+    const urlEl = screen.getByLabelText('url *')
     const createButtonEl = screen.getByText('create')
-
     const user = userEvent.setup()
 
     await user.type(titleEl, blog.title)
@@ -50,9 +49,9 @@ describe('<BlogForm />', () => {
       />,
     )
 
-    const titleEl = screen.getByLabelText('title')
+    const titleEl = screen.getByLabelText('title *')
     const authorEl = screen.getByLabelText('author')
-    const urlEl = screen.getByLabelText('url')
+    const urlEl = screen.getByLabelText('url *')
     const createButtonEl = screen.getByText('create')
 
     const user = userEvent.setup()
@@ -77,9 +76,7 @@ describe('<BlogForm />', () => {
     render(<BlogForm handleCreateBlog={handleCreateBlog} notifyError={notifyError} />)
 
     const createButtonEl = screen.getByText('create')
-    const user = userEvent.setup()
-
-    await user.click(createButtonEl)
+    await userEvent.click(createButtonEl)
 
     expect(handleCreateBlog).not.toHaveBeenCalled()
     expect(notifyError).toHaveBeenCalledOnce()
