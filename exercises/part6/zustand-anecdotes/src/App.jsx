@@ -2,11 +2,16 @@ import { useAnecdotes, useAnecdoteActions } from './store'
 
 const App = () => {
   const anecdotes = useAnecdotes()
-  const { addVote } = useAnecdoteActions()
+  const { addVote, addNew } = useAnecdoteActions()
 
-  // const vote = (id) => {
-  //   console.log('vote', id)
-  // }
+  const handleFormSubmit = (evt) => {
+    evt.preventDefault()
+
+    const content = evt.target.anecdote.value
+    addNew(content)
+
+    evt.target.reset()
+  }
 
   return (
     <div>
@@ -24,9 +29,9 @@ const App = () => {
 
       <h2>create new</h2>
 
-      <form>
+      <form onSubmit={handleFormSubmit}>
         <div>
-          <input />
+          <input type="text" name="anecdote" aria-label="New anecdote" />
         </div>
         <button>create</button>
       </form>
