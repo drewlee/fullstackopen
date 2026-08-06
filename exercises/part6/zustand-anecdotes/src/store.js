@@ -29,7 +29,7 @@ const useAnecdoteStore = create((set) => ({
               votes: anecdote.votes + 1,
             }
           }
-          return anecdote
+          return { ...anecdote }
         })
       }
     }),
