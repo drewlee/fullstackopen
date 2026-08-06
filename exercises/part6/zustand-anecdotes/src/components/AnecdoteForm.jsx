@@ -1,9 +1,10 @@
 import { useAnecdoteActions } from '../store'
+import { formContainer } from './AnecdoteForm.module.css'
 
 const AnecdoteForm = () => {
   const { addNew } = useAnecdoteActions()
 
-  const handleFormSubmit = (evt) => {
+  const handleFormSubmit = async (evt) => {
     evt.preventDefault()
 
     const content = evt.target.anecdote.value.trim()
@@ -12,22 +13,27 @@ const AnecdoteForm = () => {
       return
     }
 
-    addNew(content)
+    await addNew(content)
 
     evt.target.reset()
   }
 
   return (
-    <>
-      <h2>create new</h2>
+    <section>
+      <h2>Create New</h2>
 
-      <form onSubmit={handleFormSubmit}>
+      <form onSubmit={handleFormSubmit} className={formContainer}>
         <div>
-          <input type="text" name="anecdote" aria-label="New anecdote" />
+          <input
+            type="text"
+            name="anecdote"
+            aria-label="New anecdote"
+            placeholder="New anecdote"
+          />
         </div>
         <button>create</button>
       </form>
-    </>
+    </section>
   )
 }
 
