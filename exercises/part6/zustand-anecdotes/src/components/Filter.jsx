@@ -11,7 +11,7 @@ const Filter = () => {
 
   return (
     <label className={container}>
-      filter: <input onChange={handleChange} />
+      filter: <input type="text" id="anecdote-filter" onChange={handleChange} />
     </label>
   )
 }
