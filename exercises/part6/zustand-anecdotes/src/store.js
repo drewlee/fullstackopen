@@ -32,6 +32,16 @@ const useAnecdoteStore = create((set, get) => ({
   },
 }))
 
+const useNotificationStore = create((set) => ({
+  notification: null,
+  actions: {
+    setNotification(notification) {
+      set(() => ({ notification }))
+      setTimeout(() => set(() => ({ notification: null })), 5000)
+    },
+  },
+}))
+
 export const useAnecdotes = () => {
   const anecdotes = useAnecdoteStore((state) => state.anecdotes)
   const sorted = anecdotes.toSorted((a, b) => b.votes - a.votes)
@@ -42,5 +52,6 @@ export const useAnecdotes = () => {
   }
   return sorted
 }
-
 export const useAnecdoteActions = () => useAnecdoteStore((state) => state.actions)
+export const useNotification = () => useNotificationStore((state) => state.notification)
+export const useNotificationActions = () => useNotificationStore((state) => state.actions)

@@ -1,8 +1,9 @@
-import { useAnecdoteActions } from '../store'
+import { useAnecdoteActions, useNotificationActions } from '../store'
 import { formContainer } from './AnecdoteForm.module.css'
 
 const AnecdoteForm = () => {
   const { addNew } = useAnecdoteActions()
+  const { setNotification } = useNotificationActions()
 
   const handleFormSubmit = async (evt) => {
     evt.preventDefault()
@@ -14,6 +15,7 @@ const AnecdoteForm = () => {
     }
 
     await addNew(content)
+    setNotification(`Added "${content}"`)
 
     evt.target.reset()
   }
