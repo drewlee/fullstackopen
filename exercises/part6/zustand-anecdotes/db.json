@@ -34,16 +34,6 @@
       "content": "What's the weather today?",
       "votes": 3,
       "id": "PbaqE8_SG-c"
-    },
-    {
-      "content": "This is new",
-      "votes": 0,
-      "id": "c-lIJzfUxSM"
-    },
-    {
-      "content": "another new anecdote",
-      "votes": 0,
-      "id": "jgODSOMNVt8"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

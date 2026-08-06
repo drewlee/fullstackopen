@@ -1,0 +1,11 @@
+.container {
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+}
+
+.actions {
+  display: flex;
+  column-gap: 8px;
+}
