@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import anecdoteService from '../services/anecdotes'
 
-const useAnecdoteStore = create((set) => ({
+const useAnecdoteStore = create((set, get) => ({
   anecdotes: [],
   filter: '',
   actions: {
@@ -15,19 +15,16 @@ const useAnecdoteStore = create((set) => ({
       set((state) => ({ anecdotes: [...state.anecdotes, newAnecdote] }))
     },
 
-    addVote: (id) => set((state) => {
-      return {
-        anecdotes: state.anecdotes.map((anecdote) => {
-          if (anecdote.id === id) {
-            return {
-              ...anecdote,
-              votes: anecdote.votes + 1,
-            }
-          }
-          return { ...anecdote }
+    async addVote(id) {
+      const anecdote = get().anecdotes.find((item) => item.id === id)
+      const updated = await anecdoteService.update(id, { ...anecdote, votes: anecdote.votes + 1 })
+
+      set(
+        (state) => ({
+          anecdotes: state.anecdotes.map((item) => item.id === updated.id ? updated : item)
         })
-      }
-    }),
+      )
+    },
 
     setFilter(value) {
       set(() => ({ filter: value }))
@@ -37,12 +34,13 @@ const useAnecdoteStore = create((set) => ({
 
 export const useAnecdotes = () => {
   const anecdotes = useAnecdoteStore((state) => state.anecdotes)
+  const sorted = anecdotes.toSorted((a, b) => b.votes - a.votes)
   const filter = useAnecdoteStore((state) => state.filter)
 
   if (filter) {
-    return anecdotes.filter((anecdote) => anecdote.content.includes(filter))
+    return sorted.filter((anecdote) => anecdote.content.includes(filter))
   }
-  return anecdotes
+  return sorted
 }
 
 export const useAnecdoteActions = () => useAnecdoteStore((state) => state.actions)

@@ -10,11 +10,11 @@ const getAll = async () => {
   return await response.json()
 }
 
-const addNew = async (anecdote) => {
+const addNew = async (newAnecdote) => {
   const options = {
     method: 'POST',
-    'Content-Type': 'application/json',
-    body: JSON.stringify(anecdote),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(newAnecdote),
   }
 
   const response = await fetch(baseUrl, options)
@@ -26,4 +26,21 @@ const addNew = async (anecdote) => {
   return await response.json()
 }
 
-export default { getAll, addNew }
+const update = async (id, anecdote) => {
+  const url = `${baseUrl}/${id}`
+  const options = {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(anecdote),
+  }
+
+  const response = await fetch(url, options)
+
+  if (!response.ok) {
+    throw new Error('Failed to update anecdote')
+  }
+
+  return await response.json()
+}
+
+export default { getAll, addNew, update }
