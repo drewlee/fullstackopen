@@ -1,7 +1,20 @@
 import { create } from 'zustand'
+import { devtools } from 'zustand/middleware'
 import noteService from './services/notes'
 
-const useNoteStore = create((set, get) => ({
+
+// Custom logger middleware
+// eslint-disable-next-line no-unused-vars
+const logger = (config) => (set, get) => config(
+  (...args) => {
+    console.log('prev state', get());
+    set(...args);
+    console.log('next state', get());
+  },
+  get
+)
+
+const useNoteStore = create(devtools((set, get) => ({
   notes: [],
   filter: 'all',
   actions: {
@@ -25,7 +38,7 @@ const useNoteStore = create((set, get) => ({
       set(() => ({ notes }))
     },
   }
-}))
+})))
 
 export const useNotes = () => {
   const notes = useNoteStore((state) => state.notes)
@@ -43,3 +56,4 @@ export const useNotes = () => {
 }
 export const useFilter = () => useNoteStore((state) => state.filter)
 export const useNoteActions = () => useNoteStore((state) => state.actions)
+export default useNoteStore
