@@ -1,28 +1,34 @@
+import { useNotes } from './hooks/use-notes'
+
 const App = () => {
+  const { notes, isPending, addNote: addNoteToServer, toggleImportance } = useNotes()
+
   const addNote = async (event) => {
     event.preventDefault()
+
     const content = event.target.note.value
-    event.target.note.value = ''
-    console.log(content)
+    event.target.reset()
+
+    addNoteToServer(content)
   }
 
-  const toggleImportance = (note) => {
-    console.log('toggle importance of', note.id)
+  if (isPending) {
+    return <div>loading data...</div>
   }
-
-  const notes = []
 
   return (
     <div>
       <h2>Notes app</h2>
+
       <form onSubmit={addNote}>
         <input name="note" />
         <button type="submit">add</button>
       </form>
+
       {notes.map((note) => (
         <li key={note.id}>
           {note.important ? <strong>{note.content}</strong> : note.content}
-          <button onClick={() => toggleImportance(note.id)}>
+          <button onClick={() => toggleImportance(note)}>
             {note.important ? 'make not important' : 'make important'}
           </button>
         </li>

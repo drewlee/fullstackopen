@@ -9,6 +9,27 @@
       "id": "2",
       "content": "context api provides an alternative way for sharing data between components",
       "important": false
+    },
+    {
+      "content": "wow, so amazing",
+      "important": true,
+      "id": "palA9WyhyTU"
+    },
+    {
+      "content": "dsfsdfsdf",
+      "important": true,
+      "id": "qJUzjMOjxRw"
+    },
+    {
+      "content": "asdfsdfsdfsdfasdfas",
+      "important": true,
+      "id": "akMm09ZQ1Co"
+    },
+    {
+      "content": "adfasfasdfasdf",
+      "important": true,
+      "id": "2RKUBsmHU5c"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
