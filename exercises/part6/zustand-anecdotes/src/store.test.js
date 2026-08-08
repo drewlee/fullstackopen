@@ -20,6 +20,8 @@ const anecdotes = [
   { id: '4', content: 'The fourth anecdote', votes: 3 },
 ]
 
+const sortHandler = (a, b) => b.votes - a.votes
+
 beforeEach(() => {
   useAnecdoteStore.setState({ anecdotes: [], filter: '' })
   vi.clearAllMocks()
@@ -41,7 +43,7 @@ describe('useAnecdoteActions', () => {
   })
 
   it('returns anecdotes sorted by votes', async () => {
-    const sortedAnecdotes = anecdotes.toSorted((a, b) => b.votes - a.votes)
+    const sortedAnecdotes = anecdotes.toSorted(sortHandler)
     anecdoteService.getAll.mockResolvedValue(anecdotes)
 
     const { result: actionsResult } = renderHook(() => useAnecdoteActions())
@@ -54,7 +56,7 @@ describe('useAnecdoteActions', () => {
     expect(anecdotesResult.current).toStrictEqual(sortedAnecdotes)
   })
 
-  it('returns a filtered list of anecdotes', async () => {
+  it('returns a filtered array of anecdotes', async () => {
     const filter = 'third'
     anecdoteService.getAll.mockResolvedValue(anecdotes)
 
@@ -69,5 +71,58 @@ describe('useAnecdoteActions', () => {
 
     expect(useAnecdoteStore.getState().filter).toBe(filter)
     expect(anecdotesResult.current).toStrictEqual([anecdotes[2]])
+  })
+
+  it('increments the vote count for an anecdote', async () => {
+    const mockAnecdote = anecdotes[1]
+
+    anecdoteService.getAll.mockResolvedValue(anecdotes)
+    anecdoteService.update.mockResolvedValue({ ...mockAnecdote, votes: mockAnecdote.votes + 1 })
+
+    const { result: actionsResult } = renderHook(() => useAnecdoteActions())
+
+    await act(async () => {
+      await actionsResult.current.initialize()
+      await actionsResult.current.addVote(mockAnecdote.id)
+    })
+
+    const { result: anecdotesResult } = renderHook(() => useAnecdotes())
+    const updatedAnecdote = anecdotesResult.current.find((a) => a.id === mockAnecdote.id)
+
+    expect(updatedAnecdote.votes).toBe(mockAnecdote.votes + 1)
+  })
+
+  it('can add a new anecdote', async () => {
+    const newAnecdote = { id: '5', content: 'The fifth anecdote', votes: 0 }
+
+    anecdoteService.getAll.mockResolvedValue(anecdotes)
+    anecdoteService.addNew.mockResolvedValue(newAnecdote)
+
+    const { result: actionsResult } = renderHook(() => useAnecdoteActions())
+
+    await act(async () => {
+      await actionsResult.current.initialize()
+      await actionsResult.current.addNew(newAnecdote.content)
+    })
+
+    const { result: anecdotesResult } = renderHook(() => useAnecdotes())
+    expect(anecdotesResult.current.find((a) => a.id === newAnecdote.id)).toStrictEqual(newAnecdote)
+  })
+
+  it('can remove an anecdote', async () => {
+    const removeId = '3'
+
+    anecdoteService.getAll.mockResolvedValue(anecdotes)
+    anecdoteService.remove.mockResolvedValue()
+
+    const { result: actionsResult } = renderHook(() => useAnecdoteActions())
+
+    await act(async () => {
+      await actionsResult.current.initialize()
+      await actionsResult.current.remove(removeId)
+    })
+
+    const { result: anecdotesResult } = renderHook(() => useAnecdotes())
+    expect(anecdotesResult.current.map((a) => a.id)).not.toContain(removeId)
   })
 })
