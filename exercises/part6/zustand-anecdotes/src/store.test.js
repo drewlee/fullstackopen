@@ -21,8 +21,8 @@ const anecdotes = [
 ]
 
 beforeEach(() => {
-  vi.restoreAllMocks()
-  useAnecdoteStore.setState({ anecdotes: [] })
+  useAnecdoteStore.setState({ anecdotes: [], filter: '' })
+  vi.clearAllMocks()
 })
 
 describe('useAnecdoteActions', () => {
@@ -38,5 +38,19 @@ describe('useAnecdoteActions', () => {
 
     const { result: anecdotesResult } = renderHook(() => useAnecdotes())
     expect(anecdotesResult.current).toStrictEqual(mockAnecdotes)
+  })
+
+  it('returns anecdotes sorted by votes', async () => {
+    const sortedAnecdotes = anecdotes.toSorted((a, b) => b.votes - a.votes)
+    anecdoteService.getAll.mockResolvedValue(anecdotes)
+
+    const { result: actionsResult } = renderHook(() => useAnecdoteActions())
+
+    await act(async () => {
+      await actionsResult.current.initialize()
+    })
+
+    const { result: anecdotesResult } = renderHook(() => useAnecdotes())
+    expect(anecdotesResult.current).toStrictEqual(sortedAnecdotes)
   })
 })
