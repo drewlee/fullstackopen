@@ -53,8 +53,11 @@ export const useAnecdotes = () => {
   const filter = useAnecdoteStore((state) => state.filter)
 
   if (filter) {
-    return sorted.filter((anecdote) => anecdote.content.includes(filter))
+    return sorted.filter(
+      (anecdote) => anecdote.content.toLowerCase().includes(filter.toLowerCase())
+    )
   }
+
   return sorted
 }
 export const useAnecdoteActions = () => useAnecdoteStore((state) => state.actions)

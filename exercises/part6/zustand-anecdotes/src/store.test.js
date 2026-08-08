@@ -27,7 +27,7 @@ beforeEach(() => {
 
 describe('useAnecdoteActions', () => {
   it('initialize loads anecdotes from service', async () => {
-    const mockAnecdotes = anecdotes.slice(0, 1)
+    const mockAnecdotes = [anecdotes[0]]
     anecdoteService.getAll.mockResolvedValue(mockAnecdotes)
 
     const { result: actionsResult } = renderHook(() => useAnecdoteActions())
@@ -52,5 +52,22 @@ describe('useAnecdoteActions', () => {
 
     const { result: anecdotesResult } = renderHook(() => useAnecdotes())
     expect(anecdotesResult.current).toStrictEqual(sortedAnecdotes)
+  })
+
+  it('returns a filtered list of anecdotes', async () => {
+    const filter = 'third'
+    anecdoteService.getAll.mockResolvedValue(anecdotes)
+
+    const { result: actionsResult } = renderHook(() => useAnecdoteActions())
+
+    await act(async () => {
+      actionsResult.current.initialize()
+      actionsResult.current.setFilter(filter)
+    })
+
+    const { result: anecdotesResult } = renderHook(() => useAnecdotes())
+
+    expect(useAnecdoteStore.getState().filter).toBe(filter)
+    expect(anecdotesResult.current).toStrictEqual([anecdotes[2]])
   })
 })
