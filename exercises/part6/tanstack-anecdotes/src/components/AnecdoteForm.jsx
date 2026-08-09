@@ -8,7 +8,6 @@ const AnecdoteForm = () => {
 
     const content = event.target.anecdote.value
     addAnecdote({ content, votes: 0 })
-
     event.target.reset()
   }
 
