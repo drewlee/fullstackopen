@@ -17,8 +17,12 @@ export async function addAnecdote(newAnecdote) {
   }
 
   const response = await fetch(baseUrl, options)
+
   if (!response.ok) {
-    throw new Error('Failed to post anecdote')
+    const data = await response.json()
+    const msg = data?.error ? data.error : 'Failed to post anecdote'
+
+    throw new Error(msg)
   }
 
   return await response.json()
