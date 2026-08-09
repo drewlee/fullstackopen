@@ -23,3 +23,19 @@ export async function addAnecdote(newAnecdote) {
 
   return await response.json()
 }
+
+export async function updateAnecdote(anecdote) {
+  const url = `${baseUrl}/${anecdote.id}`
+  const options = {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(anecdote)
+  }
+
+  const response = await fetch(url, options)
+  if (!response.ok) {
+    throw new Error('Failed to post anecdote')
+  }
+
+  return await response.json()
+}
