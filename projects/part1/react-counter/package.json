@@ -1,5 +1,5 @@
 {
-  "name": "part1",
+  "name": "react-counter",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -25,6 +25,6 @@
     "vite": "^7.2.4"
   },
   "volta": {
-    "node": "24.13.0"
+    "extends": "../../../volta.config.json"
   }
 }
