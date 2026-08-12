@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { useAnecdotes } from './hooks'
 import Menu from './components/Menu'
@@ -8,13 +7,7 @@ import Footer from './components/Footer'
 import CreateNew from './components/CreateNew'
 
 const App = () => {
-  const { anecdotes, setAnecdotes } = useAnecdotes()
-
-  const addAnecdote = (anecdote) => {
-    setAnecdotes(
-      anecdotes.concat({ ...anecdote, id: Math.round(Math.random() * 10000) }),
-    )
-  }
+  const { anecdotes, addAnecdote } = useAnecdotes()
 
   return (
     <Router>
