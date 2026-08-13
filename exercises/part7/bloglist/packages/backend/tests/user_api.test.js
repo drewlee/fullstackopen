@@ -1,0 +1,136 @@
+const { test, after, before, beforeEach, describe } = require('node:test')
+const assert = require('node:assert')
+const mongoose = require('mongoose')
+const supertest = require('supertest')
+const app = require('../app')
+const User = require('../models/user')
+const { getInitialUsers, usersInDb } = require('./test_helper')
+
+const api = supertest(app)
+let initialUsers = []
+
+after(async () => {
+  await mongoose.connection.close()
+})
+
+describe('user API', () => {
+  before(async () => {
+    initialUsers = await getInitialUsers()
+  })
+
+  beforeEach(async () => {
+    await User.deleteMany({})
+    await User.insertMany(initialUsers)
+  })
+
+  describe('fetch all', () => {
+    test('users are returned as JSON', async () => {
+      await api
+        .get('/api/users')
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+    })
+
+    test('returns all users in the db', async () => {
+      const response = await api.get('/api/users')
+      assert.strictEqual(response.body.length, initialUsers.length)
+    })
+
+    test('returned users include the expected properties', async () => {
+      const response = await api.get('/api/users')
+      const user = response.body[0]
+      const props = ['username', 'name', 'id', 'blogs']
+
+      assert.deepEqual(Object.keys(user).length, props.length)
+      props.forEach(prop => assert(prop in user))
+    })
+  })
+
+  describe('create new', () => {
+    test('successfully adds a new user', async () => {
+      const newUser = {
+        username: 'scotty',
+        name: 'Montgomery Scott',
+        password: 'beam_me_up',
+      }
+
+      await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(201)
+
+      const users = await usersInDb()
+
+      assert.strictEqual(users.length, initialUsers.length + 1)
+      assert(users.map(user => user.username).includes(newUser.username))
+    })
+
+    test('new user includes the expected properties', async () => {
+      const newUser = {
+        username: 'scotty',
+        name: 'Montgomery Scott',
+        password: 'beam_me_up',
+      }
+
+      const response = await api.post('/api/users').send(newUser)
+      const props = ['username', 'name', 'id', 'blogs']
+
+      assert.strictEqual(Object.keys(response.body).length, props.length)
+      props.forEach(prop => assert(prop in response.body))
+    })
+
+    test('fails validation when username is too short', async () => {
+      const newUser = {
+        username: 'sc',
+        name: 'Montgomery Scott',
+        password: 'beam_me_up',
+      }
+
+      const response = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+
+      const users = await usersInDb()
+
+      assert.strictEqual(users.length, initialUsers.length)
+      assert(response.body.error.includes('User validation failed'))
+    })
+
+    test('fails validation when username is not unique', async () => {
+      const newUser = {
+        username: 'spock',
+        name: 'Montgomery Scott',
+        password: 'beam_me_up',
+      }
+
+      const response = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+
+      const users = await usersInDb()
+
+      assert.strictEqual(users.length, initialUsers.length)
+      assert(response.body.error.includes('duplicate key error'))
+    })
+
+    test('fails validation when password is too short', async () => {
+      const newUser = {
+        username: 'scotty',
+        name: 'Montgomery Scott',
+        password: 'be',
+      }
+
+      const response = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+
+      const users = await usersInDb()
+
+      assert.strictEqual(users.length, initialUsers.length)
+      assert(response.body.error)
+    })
+  })
+})

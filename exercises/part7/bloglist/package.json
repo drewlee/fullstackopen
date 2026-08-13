@@ -1,0 +1,28 @@
+{
+  "name": "bloglist",
+  "version": "1.0.0",
+  "description": "Blog bookmarking application",
+  "private": true,
+  "workspaces": [
+    "./packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace bloglist-frontend",
+    "dev": "concurrently \"npm run dev --workspace bloglist-backend\" \"npm run dev --workspace bloglist-frontend\"",
+    "lint": "npm run lint --workspaces --if-present",
+    "preview": "npm run preview --workspace bloglist-frontend",
+    "start": "npm run build && npm run start --workspace bloglist-backend",
+    "test": "npm run test --workspaces"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.0",
+    "concurrently": "^10.0.4",
+    "eslint": "^9.25.0",
+    "globals": "^16.0.0",
+    "prettier": "^3.9.6",
+    "vitest": "^4.1.10"
+  },
+  "volta": {
+    "extends": "../../../volta.config.json"
+  }
+}
