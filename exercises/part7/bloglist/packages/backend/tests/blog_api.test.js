@@ -32,7 +32,7 @@ describe('blog API', () => {
     await User.insertMany(initialUsers)
 
     const users = await usersInDb()
-    const blogsWithUsers = initialBlogs.map(blog => {
+    const blogsWithUsers = initialBlogs.map((blog) => {
       blog.user = users[0].id
       return blog
     })
@@ -60,7 +60,7 @@ describe('blog API', () => {
       const props = ['id', 'title', 'author', 'url', 'likes', 'user']
 
       assert.deepEqual(Object.keys(blog).length, props.length)
-      props.forEach(prop => assert(prop in blog))
+      props.forEach((prop) => assert(prop in blog))
     })
   })
 
@@ -107,7 +107,7 @@ describe('blog API', () => {
       const props = ['id', 'title', 'author', 'url', 'likes', 'user']
 
       assert.deepEqual(Object.keys(response.body).length, props.length)
-      props.forEach(prop => assert(prop in response.body))
+      props.forEach((prop) => assert(prop in response.body))
     })
 
     test('defaults likes to 0 if not provided', async () => {
@@ -127,7 +127,7 @@ describe('blog API', () => {
         .expect('Content-Type', /application\/json/)
 
       const blogs = await blogsInDb()
-      const newBlog = blogs.find(blog => blog.title === 'First class tests')
+      const newBlog = blogs.find((blog) => blog.title === 'First class tests')
 
       assert.strictEqual(newBlog.likes, 0)
     })
@@ -210,7 +210,7 @@ describe('blog API', () => {
         .expect('Content-Type', /application\/json/)
 
       const blogsAtEnd = await blogsInDb()
-      const updatedBlog = blogsAtEnd.find(blog => blog.id === blogToUpdate.id)
+      const updatedBlog = blogsAtEnd.find((blog) => blog.id === blogToUpdate.id)
 
       assert.strictEqual(updatedBlog.likes, blogToUpdate.likes + 1)
     })
@@ -226,7 +226,7 @@ describe('blog API', () => {
         .expect('Content-Type', /application\/json/)
 
       const blogsAtEnd = await blogsInDb()
-      const updatedBlog = blogsAtEnd.find(blog => blog.id === blogToUpdate.id)
+      const updatedBlog = blogsAtEnd.find((blog) => blog.id === blogToUpdate.id)
 
       assert.strictEqual(updatedBlog.likes, blogToUpdate.likes)
       assert(response.body.error.match(/invalid.*token/i))
@@ -246,7 +246,7 @@ describe('blog API', () => {
         .expect(204)
 
       const blogsAtEnd = await blogsInDb()
-      const ids = blogsAtEnd.map(note => note.id)
+      const ids = blogsAtEnd.map((note) => note.id)
 
       assert(!ids.includes(blogToDelete.id))
       assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)

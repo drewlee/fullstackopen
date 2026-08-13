@@ -10,11 +10,15 @@ const Togglable = ({ buttonLabel, children }) => {
   return (
     <div>
       <div hidden={isVisible}>
-        <button type="button" onClick={toggleVisibility}>{buttonLabel}</button>
+        <button type="button" onClick={toggleVisibility}>
+          {buttonLabel}
+        </button>
       </div>
       <div hidden={!isVisible}>
         {children}
-        <button type="button" onClick={toggleVisibility}>cancel</button>
+        <button type="button" onClick={toggleVisibility}>
+          cancel
+        </button>
       </div>
     </div>
   )

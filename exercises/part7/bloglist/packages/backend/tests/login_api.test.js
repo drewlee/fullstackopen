@@ -30,7 +30,8 @@ describe('login API', () => {
       password,
     }
 
-    await api.post('/api/login')
+    await api
+      .post('/api/login')
       .send(user)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -47,7 +48,7 @@ describe('login API', () => {
     const props = ['name', 'username', 'token']
 
     assert.strictEqual(Object.keys(response.body).length, props.length)
-    props.forEach(prop => assert(prop in response.body))
+    props.forEach((prop) => assert(prop in response.body))
     assert.strictEqual(response.body.name, name)
     assert.strictEqual(response.body.username, username)
   })
@@ -60,7 +61,8 @@ describe('login API', () => {
     }
     delete user.passwordHash
 
-    const response = await api.post('/api/login')
+    const response = await api
+      .post('/api/login')
       .send(user)
       .expect(401)
       .expect('Content-Type', /application\/json/)
@@ -76,7 +78,8 @@ describe('login API', () => {
     }
     delete user.passwordHash
 
-    const response = await api.post('/api/login')
+    const response = await api
+      .post('/api/login')
       .send(user)
       .expect(401)
       .expect('Content-Type', /application\/json/)

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Blog bookmarking application",
   "private": true,
+  "type": "module",
   "workspaces": [
     "./packages/*"
   ],
@@ -10,6 +11,8 @@
     "build": "npm run build --workspace bloglist-frontend",
     "dev": "concurrently \"npm run dev --workspace bloglist-backend\" \"npm run dev --workspace bloglist-frontend\"",
     "lint": "npm run lint --workspaces --if-present",
+    "prettier": "npm run prettier --workspaces --if-present",
+    "prettier:check": "npm run prettier:check --workspaces --if-present",
     "preview": "npm run preview --workspace bloglist-frontend",
     "start": "npm run build && npm run start --workspace bloglist-backend",
     "test": "npm run test --workspaces"

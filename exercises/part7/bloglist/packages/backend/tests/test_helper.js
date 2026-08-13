@@ -33,29 +33,31 @@ const initialUsers = [
     username: 'doc_mccoy',
     name: 'Leonard McCoy',
     password: 'bones',
-  }
+  },
 ]
 
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
-  return blogs.map(blog => blog.toJSON())
+  return blogs.map((blog) => blog.toJSON())
 }
 
 const usersInDb = async () => {
   const users = await User.find({})
-  return users.map(user => user.toJSON())
+  return users.map((user) => user.toJSON())
 }
 
 const getInitialUsers = async () => {
-  return await Promise.all(initialUsers.map(async (user) => {
-    return {
-      ...user,
-      passwordHash: await bcrypt.hash(user.password, 10)
-    }
-  }))
+  return await Promise.all(
+    initialUsers.map(async (user) => {
+      return {
+        ...user,
+        passwordHash: await bcrypt.hash(user.password, 10),
+      }
+    }),
+  )
 }
 
-const getAuthToken = user => {
+const getAuthToken = (user) => {
   const userForToken = {
     username: user.username,
     id: user.id,

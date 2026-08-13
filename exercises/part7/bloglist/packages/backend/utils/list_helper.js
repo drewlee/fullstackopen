@@ -1,8 +1,8 @@
-const dummy = blogs => {
+const dummy = (blogs) => {
   return 1
 }
 
-const totalLikes = blogs => {
+const totalLikes = (blogs) => {
   if (!blogs.length) {
     return 0
   }
@@ -12,7 +12,7 @@ const totalLikes = blogs => {
   }, 0)
 }
 
-const favoriteBlog = blogs => {
+const favoriteBlog = (blogs) => {
   if (!blogs.length) {
     return null
   }
@@ -25,7 +25,7 @@ const favoriteBlog = blogs => {
   })
 }
 
-const mostBlogs = blogs => {
+const mostBlogs = (blogs) => {
   if (!blogs.length) {
     return null
   }
@@ -52,7 +52,7 @@ const mostBlogs = blogs => {
   return most
 }
 
-const mostLikes = blogs => {
+const mostLikes = (blogs) => {
   if (!blogs.length) {
     return null
   }

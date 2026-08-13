@@ -42,7 +42,7 @@ describe('user API', () => {
       const props = ['username', 'name', 'id', 'blogs']
 
       assert.deepEqual(Object.keys(user).length, props.length)
-      props.forEach(prop => assert(prop in user))
+      props.forEach((prop) => assert(prop in user))
     })
   })
 
@@ -54,15 +54,12 @@ describe('user API', () => {
         password: 'beam_me_up',
       }
 
-      await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(201)
+      await api.post('/api/users').send(newUser).expect(201)
 
       const users = await usersInDb()
 
       assert.strictEqual(users.length, initialUsers.length + 1)
-      assert(users.map(user => user.username).includes(newUser.username))
+      assert(users.map((user) => user.username).includes(newUser.username))
     })
 
     test('new user includes the expected properties', async () => {
@@ -76,7 +73,7 @@ describe('user API', () => {
       const props = ['username', 'name', 'id', 'blogs']
 
       assert.strictEqual(Object.keys(response.body).length, props.length)
-      props.forEach(prop => assert(prop in response.body))
+      props.forEach((prop) => assert(prop in response.body))
     })
 
     test('fails validation when username is too short', async () => {
@@ -86,10 +83,7 @@ describe('user API', () => {
         password: 'beam_me_up',
       }
 
-      const response = await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(400)
+      const response = await api.post('/api/users').send(newUser).expect(400)
 
       const users = await usersInDb()
 
@@ -104,10 +98,7 @@ describe('user API', () => {
         password: 'beam_me_up',
       }
 
-      const response = await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(400)
+      const response = await api.post('/api/users').send(newUser).expect(400)
 
       const users = await usersInDb()
 
@@ -122,10 +113,7 @@ describe('user API', () => {
         password: 'be',
       }
 
-      const response = await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(400)
+      const response = await api.post('/api/users').send(newUser).expect(400)
 
       const users = await usersInDb()
 

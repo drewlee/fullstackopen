@@ -22,7 +22,7 @@ userSchema.set('toJSON', {
     delete returnedObj._id
     delete returnedObj.__v
     delete returnedObj.passwordHash
-  }
+  },
 })
 
 module.exports = mongoose.model('User', userSchema)
