@@ -1,7 +1,7 @@
 import { useNavigate, useOutletContext } from 'react-router'
 import userService from '../services/users'
 import authService from '../services/auth'
-import LoginForm from './LoginForm'
+import LoginForm from '../components/LoginForm'
 
 const LoginFormPage = () => {
   const navigate = useNavigate()

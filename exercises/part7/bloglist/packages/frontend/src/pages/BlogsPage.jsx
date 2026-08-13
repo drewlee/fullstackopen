@@ -1,6 +1,6 @@
 import { useOutletContext } from 'react-router'
-import ErrorBoundary from './ErrorBoundary'
-import Blogs from './Blogs'
+import ErrorBoundary from '../components/ErrorBoundary'
+import Blogs from '../components/Blogs'
 
 const BlogsPage = () => {
   const { user, blogs } = useOutletContext()

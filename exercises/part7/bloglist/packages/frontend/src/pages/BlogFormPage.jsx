@@ -1,6 +1,6 @@
 import { useOutletContext, useNavigate } from 'react-router'
 import blogService from '../services/blogs'
-import BlogForm from './BlogForm'
+import BlogForm from '../components/BlogForm'
 
 const BlogFormPage = () => {
   const { blogs, setBlogs, notifyError, notifySuccess } = useOutletContext()

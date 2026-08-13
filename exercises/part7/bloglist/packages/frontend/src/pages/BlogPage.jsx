@@ -1,7 +1,7 @@
 import { useParams, useOutletContext, useNavigate } from 'react-router'
 import blogService from '../services/blogs'
-import ErrorBoundary from './ErrorBoundary'
-import Blog from './Blog'
+import ErrorBoundary from '../components/ErrorBoundary'
+import Blog from '../components/Blog'
 
 const BlogPage = () => {
   const { blogs, setBlogs, user, notifyError, notifySuccess } = useOutletContext()
