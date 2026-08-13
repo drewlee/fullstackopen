@@ -1,5 +1,6 @@
 import { useParams, useOutletContext, useNavigate } from 'react-router'
 import blogService from '../services/blogs'
+import ErrorBoundary from './ErrorBoundary'
 import Blog from './Blog'
 
 const BlogPage = () => {
@@ -57,14 +58,16 @@ const BlogPage = () => {
   }
 
   return (
-    <Blog
-      blog={blog}
-      user={user}
-      handleBlogLike={handleBlogLike}
-      handleBlogRemove={handleBlogRemove}
-      notifyError={notifyError}
-      notifySuccess={notifySuccess}
-    />
+    <ErrorBoundary>
+      <Blog
+        blog={blog}
+        user={user}
+        handleBlogLike={handleBlogLike}
+        handleBlogRemove={handleBlogRemove}
+        notifyError={notifyError}
+        notifySuccess={notifySuccess}
+      />
+    </ErrorBoundary>
   )
 }
 
