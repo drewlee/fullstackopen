@@ -1,5 +1,5 @@
 {
-  "name": "bloglist-backend",
+  "name": "bloglist-server",
   "version": "1.0.0",
   "description": "Blog backend bookmarking application",
   "private": true,
@@ -7,6 +7,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "NODE_ENV=development node --watch index.js",
+    "lint": "eslint .",
     "prettier": "prettier . -w",
     "prettier:check": "prettier . -c",
     "start": "NODE_ENV=production node index.js",

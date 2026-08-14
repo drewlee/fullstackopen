@@ -1,5 +1,5 @@
 {
-  "name": "bloglist-frontend",
+  "name": "bloglist-client",
   "version": "1.0.0",
   "description": "Blog frontend bookmarking application",
   "private": true,

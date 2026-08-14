@@ -1,10 +1,11 @@
 {
-  "name": "bloglist-e2e-tests",
+  "name": "bloglist-playwright",
   "version": "1.0.0",
   "description": "Bloglist app end-to-end tests",
   "private": true,
   "type": "module",
   "scripts": {
+    "lint": "eslint .",
     "prettier": "prettier . -w",
     "prettier:check": "prettier . -c",
     "test": "playwright test",

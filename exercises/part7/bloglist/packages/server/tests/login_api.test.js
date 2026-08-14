@@ -54,7 +54,6 @@ describe('login API', () => {
   })
 
   test('responds with error for invalid username', async () => {
-    const { username, password } = initialUsers[1]
     const user = {
       ...initialUsers[1],
       username: 'scotty',
@@ -71,7 +70,6 @@ describe('login API', () => {
   })
 
   test('responds with error for invalid password', async () => {
-    const { username, password } = initialUsers[1]
     const user = {
       ...initialUsers[1],
       password: 'beam_me_up',
