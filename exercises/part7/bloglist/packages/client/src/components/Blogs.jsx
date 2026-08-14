@@ -4,8 +4,11 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
+import { useBlogs } from '../stores/blogs'
 
-const Blogs = ({ blogs }) => {
+const Blogs = () => {
+  const blogs = useBlogs()
+
   return (
     <div>
       <Typography variant="h4" component="h2" sx={{ margin: '24px 0' }}>

@@ -3,7 +3,7 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import { useNotificationActions } from '../store'
+import { useNotificationActions } from '../stores/notification'
 
 const BlogForm = ({ handleCreateBlog }) => {
   const { notifyError, notifySuccess } = useNotificationActions()

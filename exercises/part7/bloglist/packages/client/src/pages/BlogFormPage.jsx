@@ -1,15 +1,14 @@
-import { useOutletContext, useNavigate } from 'react-router'
-import blogService from '../services/blogs'
+import { useNavigate } from 'react-router'
+import { useBlogActions } from '../stores/blogs'
 import BlogForm from '../components/BlogForm'
 
 const BlogFormPage = () => {
-  const { blogs, setBlogs } = useOutletContext()
+  const { addBlog } = useBlogActions()
   const navigate = useNavigate()
 
   const handleCreateBlog = async (newBlog) => {
     try {
-      const createdBlog = await blogService.createNew(newBlog)
-      setBlogs([...blogs, createdBlog])
+      await addBlog(newBlog)
       navigate('/')
     } catch (error) {
       console.error(error)

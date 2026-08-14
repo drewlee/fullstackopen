@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Notification from './Notification'
-import { useNotificationActions } from '../store'
+import { useNotificationActions } from '../stores/notification'
 
 const LoginForm = ({ loginHandler }) => {
   const nullCredentials = { username: '', password: '' }

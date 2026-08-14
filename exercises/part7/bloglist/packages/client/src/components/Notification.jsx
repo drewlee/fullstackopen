@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { useNotification, useNotificationActions } from '../store'
 import Alert from '@mui/material/Alert'
+import { useNotification, useNotificationActions } from '../stores/notification'
 
 const Notification = ({ duration = 5000 }) => {
   const { message, type } = useNotification()
