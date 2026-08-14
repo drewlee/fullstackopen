@@ -1,6 +1,6 @@
-import { afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useNotificationStore } from '../store'
 import Blog from './Blog'
 
 describe('<Blog />', () => {
@@ -20,6 +20,10 @@ describe('<Blog />', () => {
   const blogUser = {
     username: 'jameskirk',
   }
+
+  beforeEach(() => {
+    useNotificationStore.setState({ message: null, type: null })
+  })
 
   afterEach(() => {
     vi.restoreAllMocks()
@@ -87,23 +91,17 @@ describe('<Blog />', () => {
   test('calls the provided error props handler when liking a blog fails', async () => {
     const errorMsg = 'Server error'
     const handleBlogLike = vi.fn().mockRejectedValue(new Error(errorMsg))
-    const notifyError = vi.fn()
 
-    render(
-      <Blog
-        blog={blog}
-        user={blogUser}
-        handleBlogLike={handleBlogLike}
-        notifyError={notifyError}
-      />,
-    )
+    render(<Blog blog={blog} user={blogUser} handleBlogLike={handleBlogLike} />)
 
     const likeBtn = screen.getByRole('button', { name: 'like' })
     await userEvent.click(likeBtn)
 
     expect(handleBlogLike).toHaveBeenCalledOnce()
-    expect(notifyError).toHaveBeenCalledOnce()
-    expect(notifyError).toHaveBeenCalledWith(errorMsg)
+
+    const { message, type } = useNotificationStore.getState()
+    expect(message).toBe(errorMsg)
+    expect(type).toBe('error')
   })
 
   test('disabled `like` button prevents multiple calls', async () => {
@@ -128,14 +126,12 @@ describe('<Blog />', () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true)
 
     const handleBlogRemove = vi.fn().mockResolvedValue()
-    const notifySuccess = vi.fn()
 
     render(
       <Blog
         blog={blog}
         user={blogUser}
         handleBlogRemove={handleBlogRemove}
-        notifySuccess={notifySuccess}
         autoConfirm={true}
       />,
     )
@@ -144,10 +140,10 @@ describe('<Blog />', () => {
     await userEvent.click(removeBtn)
 
     expect(handleBlogRemove).toHaveBeenCalledOnce()
-    expect(notifySuccess).toHaveBeenCalledOnce()
-    expect(notifySuccess).toHaveBeenCalledWith(
-      `Removed blog "${blog.title}" by ${blog.author}`,
-    )
+
+    const { message, type } = useNotificationStore.getState()
+    expect(message).toBe(`Removed blog "${blog.title}" by ${blog.author}`)
+    expect(type).toBe('success')
   })
 
   test('calls the provided props handler when removing a blog fails', async () => {
@@ -155,14 +151,12 @@ describe('<Blog />', () => {
 
     const errMessage = 'Server error'
     const handleBlogRemove = vi.fn().mockRejectedValue(new Error(errMessage))
-    const notifyError = vi.fn()
 
     render(
       <Blog
         blog={blog}
         user={blogUser}
         handleBlogRemove={handleBlogRemove}
-        notifyError={notifyError}
         autoConfirm={true}
       />,
     )
@@ -171,8 +165,10 @@ describe('<Blog />', () => {
     await userEvent.click(removeBtn)
 
     expect(handleBlogRemove).toHaveBeenCalledOnce()
-    expect(notifyError).toHaveBeenCalledOnce()
-    expect(notifyError).toHaveBeenCalledWith(errMessage)
+
+    const { message, type } = useNotificationStore.getState()
+    expect(message).toBe(errMessage)
+    expect(type).toBe('error')
   })
 
   test('disabled `remove` button prevents multiple calls', async () => {

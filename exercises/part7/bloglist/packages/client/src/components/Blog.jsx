@@ -3,16 +3,11 @@ import { Link } from 'react-router'
 import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
+import { useNotificationActions } from '../store'
 import './Blog.css'
 
-const Blog = ({
-  blog,
-  user,
-  handleBlogLike,
-  handleBlogRemove,
-  notifyError,
-  notifySuccess,
-}) => {
+const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
+  const { notifySuccess, notifyError } = useNotificationActions()
   const [isLikeDisabled, setIsLikeDisabled] = useState(false)
   const [isRemoveDisabled, setIsRemoveDisabled] = useState(false)
 

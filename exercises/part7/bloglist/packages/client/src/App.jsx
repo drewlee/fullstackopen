@@ -7,7 +7,7 @@ import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Notification, { NOTIFICATION } from './components/Notification'
+import Notification from './components/Notification'
 import Blogs from './components/Blogs'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
@@ -15,26 +15,10 @@ import authService from './services/auth'
 import './App.css'
 
 const App = () => {
-  const nullNotification = { message: '', type: '' }
   const navigate = useNavigate()
   const { blogs: blogData, user: userData } = useLoaderData()
   const [user, setUser] = useState(userData)
   const [blogs, setBlogs] = useState(blogData)
-  const [notification, setNotification] = useState(nullNotification)
-
-  const notifySuccess = (message) => {
-    setNotification({
-      message,
-      type: NOTIFICATION.TYPE.SUCCESS,
-    })
-  }
-
-  const notifyError = (message) => {
-    setNotification({
-      message,
-      type: NOTIFICATION.TYPE.ERROR,
-    })
-  }
 
   const handleLogoutClick = () => {
     setUser(null)
@@ -91,15 +75,9 @@ const App = () => {
           </Typography>
         )}
 
-        <Notification
-          message={notification.message}
-          type={notification.type}
-          onDismiss={() => setNotification(nullNotification)}
-        />
+        <Notification />
 
-        <Outlet
-          context={{ user, setUser, blogs, setBlogs, notifySuccess, notifyError }}
-        />
+        <Outlet context={{ user, setUser, blogs, setBlogs }} />
       </Container>
     </>
   )

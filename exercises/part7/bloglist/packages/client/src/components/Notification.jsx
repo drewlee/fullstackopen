@@ -1,19 +1,11 @@
 import { useEffect } from 'react'
+import { useNotification, useNotificationActions } from '../store'
 import Alert from '@mui/material/Alert'
 
-const NOTIFICATION = {
-  TYPE: {
-    SUCCESS: 'success',
-    ERROR: 'error',
-  },
-}
+const Notification = ({ duration = 5000 }) => {
+  const { message, type } = useNotification()
+  const { reset } = useNotificationActions()
 
-const Notification = ({
-  message,
-  type = NOTIFICATION.TYPE.ERROR,
-  onDismiss,
-  duration = 5000,
-}) => {
   useEffect(() => {
     if (!duration) {
       return
@@ -22,7 +14,7 @@ const Notification = ({
     let timeoutId = null
 
     if (message) {
-      timeoutId = setTimeout(onDismiss, duration)
+      timeoutId = setTimeout(reset, duration)
     }
 
     return () => {
@@ -44,4 +36,4 @@ const Notification = ({
   )
 }
 
-export { Notification as default, NOTIFICATION }
+export default Notification

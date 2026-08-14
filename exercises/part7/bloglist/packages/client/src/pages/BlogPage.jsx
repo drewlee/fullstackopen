@@ -4,7 +4,7 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import Blog from '../components/Blog'
 
 const BlogPage = () => {
-  const { blogs, setBlogs, user, notifyError, notifySuccess } = useOutletContext()
+  const { blogs, setBlogs, user } = useOutletContext()
   const navigate = useNavigate()
   const { id } = useParams()
   const blog = blogs.find((blog) => blog.id === id)
@@ -64,8 +64,6 @@ const BlogPage = () => {
         user={user}
         handleBlogLike={handleBlogLike}
         handleBlogRemove={handleBlogRemove}
-        notifyError={notifyError}
-        notifySuccess={notifySuccess}
       />
     </ErrorBoundary>
   )
