@@ -4,9 +4,11 @@ import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import { useNotificationActions } from '../stores/notification'
+import { useUser } from '../stores/user'
 import './Blog.css'
 
-const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
+const Blog = ({ blog, handleBlogLike, handleBlogRemove }) => {
+  const user = useUser()
   const { notifySuccess, notifyError } = useNotificationActions()
   const [isLikeDisabled, setIsLikeDisabled] = useState(false)
   const [isRemoveDisabled, setIsRemoveDisabled] = useState(false)

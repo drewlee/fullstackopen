@@ -7,9 +7,6 @@
 
 const AUTH_USER_KEY = 'blogListAuthUser'
 
-/** @type {AuthUser | null} */
-let authUser = null
-
 /** @type {() => AuthUser | null} */
 const getUserFromStorage = () => {
   const authUserItem = localStorage.getItem(AUTH_USER_KEY)
@@ -29,29 +26,8 @@ const removeUserFromStorage = () => {
   localStorage.removeItem(AUTH_USER_KEY)
 }
 
-/** @type {(user: AuthUser) => void} */
-const setUser = (user) => {
-  authUser = user
-}
-
-/** @type {() => AuthUser | null} */
-const getUser = () => {
-  return authUser
-}
-
-/** @type {() => string} */
-const getToken = () => {
-  if (authUser) {
-    return `Bearer ${authUser.token}`
-  }
-  return ''
-}
-
 export default {
   getUserFromStorage,
   setUserInStorage,
   removeUserFromStorage,
-  setUser,
-  getUser,
-  getToken,
 }

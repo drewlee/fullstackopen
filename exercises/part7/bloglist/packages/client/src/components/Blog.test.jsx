@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useUserStore } from '../stores/user'
 import { useNotificationStore } from '../stores/notification'
 import Blog from './Blog'
 
@@ -22,6 +23,7 @@ describe('<Blog />', () => {
   }
 
   beforeEach(() => {
+    useUserStore.setState({ user: null })
     useNotificationStore.setState({ message: null, type: null })
   })
 
@@ -30,7 +32,7 @@ describe('<Blog />', () => {
   })
 
   test('buttons are hidden from users that are not logged in', () => {
-    render(<Blog blog={blog} user={null} />)
+    render(<Blog blog={blog} />)
 
     const title = screen.getByText(`${blog.title} - ${blog.author}`)
     const url = screen.getByText(blog.url)
@@ -46,7 +48,9 @@ describe('<Blog />', () => {
   })
 
   test('remove button is hidden from user who is not the blog owner', () => {
-    render(<Blog blog={blog} user={{ username: 'spock' }} />)
+    useUserStore.setState({ user: { username: 'spock' } })
+
+    render(<Blog blog={blog} />)
 
     const title = screen.getByText(`${blog.title} - ${blog.author}`)
     const url = screen.getByText(blog.url)
@@ -62,7 +66,9 @@ describe('<Blog />', () => {
   })
 
   test('all buttons are visible for user who is the blog owner', () => {
-    render(<Blog blog={blog} user={blogUser} />)
+    useUserStore.setState({ user: blogUser })
+
+    render(<Blog blog={blog} />)
 
     const title = screen.getByText(`${blog.title} - ${blog.author}`)
     const url = screen.getByText(blog.url)
@@ -79,8 +85,9 @@ describe('<Blog />', () => {
 
   test('calls the provided props handler when clicking the `like` button', async () => {
     const handleBlogLike = vi.fn().mockResolvedValue()
+    useUserStore.setState({ user: blogUser })
 
-    render(<Blog blog={blog} user={blogUser} handleBlogLike={handleBlogLike} />)
+    render(<Blog blog={blog} handleBlogLike={handleBlogLike} />)
 
     const likeBtn = screen.getByRole('button', { name: 'like' })
     await userEvent.click(likeBtn)
@@ -91,8 +98,9 @@ describe('<Blog />', () => {
   test('calls the provided error props handler when liking a blog fails', async () => {
     const errorMsg = 'Server error'
     const handleBlogLike = vi.fn().mockRejectedValue(new Error(errorMsg))
+    useUserStore.setState({ user: blogUser })
 
-    render(<Blog blog={blog} user={blogUser} handleBlogLike={handleBlogLike} />)
+    render(<Blog blog={blog} handleBlogLike={handleBlogLike} />)
 
     const likeBtn = screen.getByRole('button', { name: 'like' })
     await userEvent.click(likeBtn)
@@ -107,8 +115,9 @@ describe('<Blog />', () => {
   test('disabled `like` button prevents multiple calls', async () => {
     const { promise, resolve } = Promise.withResolvers()
     const handleBlogLike = vi.fn().mockReturnValue(promise)
+    useUserStore.setState({ user: blogUser })
 
-    render(<Blog blog={blog} user={blogUser} handleBlogLike={handleBlogLike} />)
+    render(<Blog blog={blog} handleBlogLike={handleBlogLike} />)
 
     const likeBtn = screen.getByRole('button', { name: 'like' })
     await userEvent.click(likeBtn)
@@ -123,18 +132,11 @@ describe('<Blog />', () => {
   })
 
   test('calls the provided props handler when clicking the `remove` button', async () => {
-    vi.spyOn(window, 'confirm').mockReturnValue(true)
-
     const handleBlogRemove = vi.fn().mockResolvedValue()
+    vi.spyOn(window, 'confirm').mockReturnValue(true)
+    useUserStore.setState({ user: blogUser })
 
-    render(
-      <Blog
-        blog={blog}
-        user={blogUser}
-        handleBlogRemove={handleBlogRemove}
-        autoConfirm={true}
-      />,
-    )
+    render(<Blog blog={blog} handleBlogRemove={handleBlogRemove} autoConfirm={true} />)
 
     const removeBtn = screen.getByRole('button', { name: 'remove' })
     await userEvent.click(removeBtn)
@@ -148,18 +150,12 @@ describe('<Blog />', () => {
 
   test('calls the provided props handler when removing a blog fails', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true)
+    useUserStore.setState({ user: blogUser })
 
     const errMessage = 'Server error'
     const handleBlogRemove = vi.fn().mockRejectedValue(new Error(errMessage))
 
-    render(
-      <Blog
-        blog={blog}
-        user={blogUser}
-        handleBlogRemove={handleBlogRemove}
-        autoConfirm={true}
-      />,
-    )
+    render(<Blog blog={blog} handleBlogRemove={handleBlogRemove} autoConfirm={true} />)
 
     const removeBtn = screen.getByRole('button', { name: 'remove' })
     await userEvent.click(removeBtn)
@@ -173,6 +169,7 @@ describe('<Blog />', () => {
 
   test('disabled `remove` button prevents multiple calls', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true)
+    useUserStore.setState({ user: blogUser })
 
     const { promise, resolve } = Promise.withResolvers()
     const handleBlogRemove = vi.fn().mockReturnValue(promise)
@@ -181,7 +178,6 @@ describe('<Blog />', () => {
     render(
       <Blog
         blog={blog}
-        user={blogUser}
         handleBlogRemove={handleBlogRemove}
         notifySuccess={notifySuccess}
         autoConfirm={true}

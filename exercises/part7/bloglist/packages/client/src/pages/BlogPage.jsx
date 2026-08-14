@@ -1,10 +1,9 @@
-import { useParams, useOutletContext, useNavigate } from 'react-router'
+import { useParams, useNavigate } from 'react-router'
 import { useBlogs, useBlogActions } from '../stores/blogs'
 import ErrorBoundary from '../components/ErrorBoundary'
 import Blog from '../components/Blog'
 
 const BlogPage = () => {
-  const { user } = useOutletContext()
   const blogs = useBlogs()
   const { removeBlog, incrementLikes } = useBlogActions()
   const navigate = useNavigate()
@@ -38,7 +37,6 @@ const BlogPage = () => {
     <ErrorBoundary>
       <Blog
         blog={currBlog}
-        user={user}
         handleBlogLike={handleBlogLike}
         handleBlogRemove={handleBlogRemove}
       />

@@ -1,7 +1,8 @@
 import axios from 'axios'
-import authService from './auth'
+import { useUserStore } from '../stores/user'
 
 const baseUrl = '/api/blogs'
+const { actions: userStore } = useUserStore.getState()
 
 const getAll = async () => {
   const response = await axios.get(baseUrl)
@@ -10,7 +11,7 @@ const getAll = async () => {
 
 const createNew = async (blog) => {
   const config = {
-    headers: { Authorization: authService.getToken() },
+    headers: { Authorization: userStore.getToken() },
   }
   const response = await axios.post(baseUrl, blog, config)
 
@@ -19,7 +20,7 @@ const createNew = async (blog) => {
 
 const update = async (id, blog) => {
   const config = {
-    headers: { Authorization: authService.getToken() },
+    headers: { Authorization: userStore.getToken() },
   }
   const url = `${baseUrl}/${id}`
   const response = await axios.put(url, blog, config)
@@ -29,7 +30,7 @@ const update = async (id, blog) => {
 
 const remove = async (id) => {
   const config = {
-    headers: { Authorization: authService.getToken() },
+    headers: { Authorization: userStore.getToken() },
   }
   const url = `${baseUrl}/${id}`
   await axios.delete(url, config)

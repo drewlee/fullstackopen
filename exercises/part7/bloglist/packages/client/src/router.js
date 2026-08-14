@@ -1,5 +1,6 @@
 import { createBrowserRouter, redirect } from 'react-router'
 import { useBlogStore } from './stores/blogs'
+import { useUserStore } from './stores/user'
 import authService from './services/auth'
 import blogService from './services/blogs'
 import App from './App'
@@ -13,7 +14,7 @@ const appPageLoader = async () => {
   const user = authService.getUserFromStorage()
 
   if (user) {
-    authService.setUser(user)
+    useUserStore.setState({ user })
   }
 
   try {
@@ -22,19 +23,17 @@ const appPageLoader = async () => {
   } catch (error) {
     console.error(error)
   }
-
-  return { user }
 }
 
 const loginPageLoader = () => {
-  const user = authService.getUser()
+  const { user } = useUserStore.getState()
   if (user) {
     return redirect('/')
   }
 }
 
 const createPageLoader = () => {
-  const user = authService.getUser()
+  const { user } = useUserStore.getState()
   if (!user) {
     return redirect('/')
   }

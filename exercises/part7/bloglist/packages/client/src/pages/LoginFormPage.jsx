@@ -1,18 +1,18 @@
-import { useNavigate, useOutletContext } from 'react-router'
+import { useNavigate } from 'react-router'
 import userService from '../services/users'
 import authService from '../services/auth'
 import LoginForm from '../components/LoginForm'
+import { useUserActions } from '../stores/user'
 
 const LoginFormPage = () => {
   const navigate = useNavigate()
-  const { setUser } = useOutletContext()
+  const { setUser } = useUserActions()
 
   const loginHandler = async (credentials) => {
     try {
       const user = await userService.login(credentials)
 
       setUser(user)
-      authService.setUser(user)
       authService.setUserInStorage(user)
 
       navigate('/')

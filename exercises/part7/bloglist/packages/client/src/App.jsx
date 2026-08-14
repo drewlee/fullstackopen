@@ -1,11 +1,11 @@
-import { useState } from 'react'
-import { Link, useLoaderData, useNavigate, Outlet } from 'react-router'
+import { Link, useNavigate, Outlet } from 'react-router'
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
+import { useUser, useUserActions } from './stores/user'
 import Notification from './components/Notification'
 import Blogs from './components/Blogs'
 import Blog from './components/Blog'
@@ -14,13 +14,12 @@ import authService from './services/auth'
 import './App.css'
 
 const App = () => {
-  const { user: userData } = useLoaderData()
-  const [user, setUser] = useState(userData)
+  const user = useUser()
+  const { setUser } = useUserActions()
   const navigate = useNavigate()
 
   const handleLogoutClick = () => {
     setUser(null)
-    authService.setUser(null)
     authService.removeUserFromStorage()
 
     navigate('/')
@@ -75,7 +74,7 @@ const App = () => {
 
         <Notification />
 
-        <Outlet context={{ user, setUser }} />
+        <Outlet />
       </Container>
     </>
   )
