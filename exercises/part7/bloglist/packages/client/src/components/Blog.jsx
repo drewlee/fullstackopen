@@ -11,19 +11,16 @@ const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
   const [isRemoveDisabled, setIsRemoveDisabled] = useState(false)
   const { notifyError, notifySuccess } = useNotificationContext()
 
-  const handleLikeClick = async () => {
+  const handleLikeClick = () => {
     setIsLikeDisabled(true)
 
-    try {
-      await handleBlogLike()
-    } catch (error) {
-      notifyError(error.message)
-    } finally {
-      setIsLikeDisabled(false)
-    }
+    handleBlogLike(blog, {
+      onError: () => notifyError('Something went wrong, try again later'),
+      onSettled: () => setIsLikeDisabled(false),
+    })
   }
 
-  const handleRemoveClick = async () => {
+  const handleRemoveClick = () => {
     const shouldRemove = confirm(`Remove blog "${blog.title}" by ${blog.author}?`)
     if (!shouldRemove) {
       return
@@ -31,14 +28,11 @@ const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
 
     setIsRemoveDisabled(true)
 
-    try {
-      await handleBlogRemove()
-      notifySuccess(`Removed blog "${blog.title}" by ${blog.author}`)
-    } catch (error) {
-      notifyError(error.message)
-    } finally {
-      setIsRemoveDisabled(false)
-    }
+    handleBlogRemove(blog.id, {
+      onSuccess: () => notifySuccess(`Removed blog "${blog.title}" by ${blog.author}`),
+      onError: () => notifyError('Something went wrong, try again later'),
+      onSettled: () => setIsRemoveDisabled(false),
+    })
   }
 
   return (

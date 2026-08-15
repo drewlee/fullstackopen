@@ -85,7 +85,7 @@ describe('<Blog />', () => {
   })
 
   test('calls the provided props handler when clicking the `like` button', async () => {
-    const handleBlogLike = vi.fn().mockResolvedValue()
+    const handleBlogLike = vi.fn()
 
     render(<Blog blog={blog} user={blogUser} handleBlogLike={handleBlogLike} />)
 
@@ -96,8 +96,9 @@ describe('<Blog />', () => {
   })
 
   test('calls the provided error props handler when liking a blog fails', async () => {
-    const errorMsg = 'Server error'
-    const handleBlogLike = vi.fn().mockRejectedValue(new Error(errorMsg))
+    const handleBlogLike = vi
+      .fn()
+      .mockImplementation((blog, options) => options.onError())
 
     render(<Blog blog={blog} user={blogUser} handleBlogLike={handleBlogLike} />)
 
@@ -106,12 +107,13 @@ describe('<Blog />', () => {
 
     expect(handleBlogLike).toHaveBeenCalledOnce()
     expect(notifyError).toHaveBeenCalledOnce()
-    expect(notifyError).toHaveBeenCalledWith(errorMsg)
   })
 
   test('disabled `like` button prevents multiple calls', async () => {
     const { promise, resolve } = Promise.withResolvers()
-    const handleBlogLike = vi.fn().mockReturnValue(promise)
+    const handleBlogLike = vi.fn().mockImplementation((blog, options) => {
+      promise.then(() => options.onSettled())
+    })
 
     render(<Blog blog={blog} user={blogUser} handleBlogLike={handleBlogLike} />)
 
@@ -130,7 +132,9 @@ describe('<Blog />', () => {
   test('calls the provided props handler when clicking the `remove` button', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true)
 
-    const handleBlogRemove = vi.fn().mockResolvedValue()
+    const handleBlogRemove = vi
+      .fn()
+      .mockImplementation((id, options) => options.onSuccess())
 
     render(<Blog blog={blog} user={blogUser} handleBlogRemove={handleBlogRemove} />)
 
@@ -147,8 +151,9 @@ describe('<Blog />', () => {
   test('calls the provided props handler when removing a blog fails', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true)
 
-    const errMessage = 'Server error'
-    const handleBlogRemove = vi.fn().mockRejectedValue(new Error(errMessage))
+    const handleBlogRemove = vi
+      .fn()
+      .mockImplementation((id, options) => options.onError())
 
     render(<Blog blog={blog} user={blogUser} handleBlogRemove={handleBlogRemove} />)
 
@@ -157,14 +162,15 @@ describe('<Blog />', () => {
 
     expect(handleBlogRemove).toHaveBeenCalledOnce()
     expect(notifyError).toHaveBeenCalledOnce()
-    expect(notifyError).toHaveBeenCalledWith(errMessage)
   })
 
   test('disabled `remove` button prevents multiple calls', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true)
 
     const { promise, resolve } = Promise.withResolvers()
-    const handleBlogRemove = vi.fn().mockReturnValue(promise)
+    const handleBlogRemove = vi.fn().mockImplementation((id, options) => {
+      promise.then(() => options.onSettled())
+    })
 
     render(<Blog blog={blog} user={blogUser} handleBlogRemove={handleBlogRemove} />)
 
