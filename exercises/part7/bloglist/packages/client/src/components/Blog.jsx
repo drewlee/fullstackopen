@@ -3,18 +3,13 @@ import { Link } from 'react-router'
 import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
+import useNotificationContext from '../hooks/use-notification-context'
 import './Blog.css'
 
-const Blog = ({
-  blog,
-  user,
-  handleBlogLike,
-  handleBlogRemove,
-  notifyError,
-  notifySuccess,
-}) => {
+const Blog = ({ blog, user, handleBlogLike, handleBlogRemove }) => {
   const [isLikeDisabled, setIsLikeDisabled] = useState(false)
   const [isRemoveDisabled, setIsRemoveDisabled] = useState(false)
+  const { notifyError, notifySuccess } = useNotificationContext()
 
   const handleLikeClick = async () => {
     setIsLikeDisabled(true)

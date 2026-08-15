@@ -3,7 +3,7 @@ import blogService from '../services/blogs'
 import BlogForm from '../components/BlogForm'
 
 const BlogFormPage = () => {
-  const { blogs, setBlogs, notifyError, notifySuccess } = useOutletContext()
+  const { blogs, setBlogs } = useOutletContext()
   const navigate = useNavigate()
 
   const handleCreateBlog = async (newBlog) => {
@@ -17,13 +17,7 @@ const BlogFormPage = () => {
     }
   }
 
-  return (
-    <BlogForm
-      handleCreateBlog={handleCreateBlog}
-      notifyError={notifyError}
-      notifySuccess={notifySuccess}
-    />
-  )
+  return <BlogForm handleCreateBlog={handleCreateBlog} />
 }
 
 export default BlogFormPage

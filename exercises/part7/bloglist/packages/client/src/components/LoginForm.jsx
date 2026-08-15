@@ -3,11 +3,13 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Notification, { NOTIFICATION } from './Notification'
+import useNotificationContext from '../hooks/use-notification-context'
 
-const LoginForm = ({ loginHandler, notifyError }) => {
-  const nullCredentials = { username: '', password: '' }
+const nullCredentials = { username: '', password: '' }
+
+const LoginForm = ({ loginHandler }) => {
   const [credentials, setCredentials] = useState(nullCredentials)
+  const { notifyError } = useNotificationContext()
 
   const handleFormSubmit = async (evt) => {
     evt.preventDefault()

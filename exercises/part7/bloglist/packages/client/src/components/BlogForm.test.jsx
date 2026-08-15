@@ -1,6 +1,18 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { notifyError, notifySuccess } from '../hooks/use-notification-context'
 import BlogForm from './BlogForm'
+
+vi.mock(import('../hooks/use-notification-context'), () => {
+  const notifyError = vi.fn()
+  const notifySuccess = vi.fn()
+
+  return {
+    default: () => ({ notifyError, notifySuccess }),
+    notifyError,
+    notifySuccess,
+  }
+})
 
 describe('<BlogForm />', () => {
   const blog = {
@@ -9,13 +21,14 @@ describe('<BlogForm />', () => {
     url: 'http://foo.com',
   }
 
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
   test('calls the provided prop handlers when creating a new blog', async () => {
     const handleCreateBlog = vi.fn().mockResolvedValue()
-    const notifySuccess = vi.fn()
 
-    render(
-      <BlogForm handleCreateBlog={handleCreateBlog} notifySuccess={notifySuccess} />,
-    )
+    render(<BlogForm handleCreateBlog={handleCreateBlog} />)
 
     const titleEl = screen.getByLabelText('title *')
     const authorEl = screen.getByLabelText('author')
@@ -38,16 +51,8 @@ describe('<BlogForm />', () => {
   test('calls the provided prop handler when the creation service fails', async () => {
     const errorMsg = 'Server error'
     const handleCreateBlog = vi.fn().mockRejectedValue(new Error(errorMsg))
-    const notifySuccess = vi.fn()
-    const notifyError = vi.fn()
 
-    render(
-      <BlogForm
-        handleCreateBlog={handleCreateBlog}
-        notifySuccess={notifySuccess}
-        notifyError={notifyError}
-      />,
-    )
+    render(<BlogForm handleCreateBlog={handleCreateBlog} />)
 
     const titleEl = screen.getByLabelText('title *')
     const authorEl = screen.getByLabelText('author')
@@ -71,9 +76,8 @@ describe('<BlogForm />', () => {
 
   test('calls the provided prop handler when a validation error occurs', async () => {
     const handleCreateBlog = vi.fn().mockResolvedValue()
-    const notifyError = vi.fn()
 
-    render(<BlogForm handleCreateBlog={handleCreateBlog} notifyError={notifyError} />)
+    render(<BlogForm handleCreateBlog={handleCreateBlog} />)
 
     const createButtonEl = screen.getByText('create')
     await userEvent.click(createButtonEl)

@@ -1,7 +1,18 @@
-import { afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { notifyError, notifySuccess } from '../hooks/use-notification-context'
 import Blog from './Blog'
+
+vi.mock(import('../hooks/use-notification-context'), () => {
+  const notifyError = vi.fn()
+  const notifySuccess = vi.fn()
+
+  return {
+    default: () => ({ notifyError, notifySuccess }),
+    notifyError,
+    notifySuccess,
+  }
+})
 
 describe('<Blog />', () => {
   const blog = {
@@ -22,7 +33,7 @@ describe('<Blog />', () => {
   }
 
   afterEach(() => {
-    vi.restoreAllMocks()
+    vi.resetAllMocks()
   })
 
   test('buttons are hidden from users that are not logged in', () => {
@@ -87,16 +98,8 @@ describe('<Blog />', () => {
   test('calls the provided error props handler when liking a blog fails', async () => {
     const errorMsg = 'Server error'
     const handleBlogLike = vi.fn().mockRejectedValue(new Error(errorMsg))
-    const notifyError = vi.fn()
 
-    render(
-      <Blog
-        blog={blog}
-        user={blogUser}
-        handleBlogLike={handleBlogLike}
-        notifyError={notifyError}
-      />,
-    )
+    render(<Blog blog={blog} user={blogUser} handleBlogLike={handleBlogLike} />)
 
     const likeBtn = screen.getByRole('button', { name: 'like' })
     await userEvent.click(likeBtn)
@@ -128,17 +131,8 @@ describe('<Blog />', () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true)
 
     const handleBlogRemove = vi.fn().mockResolvedValue()
-    const notifySuccess = vi.fn()
 
-    render(
-      <Blog
-        blog={blog}
-        user={blogUser}
-        handleBlogRemove={handleBlogRemove}
-        notifySuccess={notifySuccess}
-        autoConfirm={true}
-      />,
-    )
+    render(<Blog blog={blog} user={blogUser} handleBlogRemove={handleBlogRemove} />)
 
     const removeBtn = screen.getByRole('button', { name: 'remove' })
     await userEvent.click(removeBtn)
@@ -155,17 +149,8 @@ describe('<Blog />', () => {
 
     const errMessage = 'Server error'
     const handleBlogRemove = vi.fn().mockRejectedValue(new Error(errMessage))
-    const notifyError = vi.fn()
 
-    render(
-      <Blog
-        blog={blog}
-        user={blogUser}
-        handleBlogRemove={handleBlogRemove}
-        notifyError={notifyError}
-        autoConfirm={true}
-      />,
-    )
+    render(<Blog blog={blog} user={blogUser} handleBlogRemove={handleBlogRemove} />)
 
     const removeBtn = screen.getByRole('button', { name: 'remove' })
     await userEvent.click(removeBtn)
@@ -180,17 +165,8 @@ describe('<Blog />', () => {
 
     const { promise, resolve } = Promise.withResolvers()
     const handleBlogRemove = vi.fn().mockReturnValue(promise)
-    const notifySuccess = vi.fn()
 
-    render(
-      <Blog
-        blog={blog}
-        user={blogUser}
-        handleBlogRemove={handleBlogRemove}
-        notifySuccess={notifySuccess}
-        autoConfirm={true}
-      />,
-    )
+    render(<Blog blog={blog} user={blogUser} handleBlogRemove={handleBlogRemove} />)
 
     const removeBtn = screen.getByRole('button', { name: 'remove' })
     await userEvent.click(removeBtn)
