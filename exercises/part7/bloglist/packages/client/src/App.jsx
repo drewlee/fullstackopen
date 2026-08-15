@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { Link, useLoaderData, useNavigate } from 'react-router'
-import { Outlet } from 'react-router'
+import { Link, Outlet, useLoaderData, useNavigate } from 'react-router'
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
 import AppBar from '@mui/material/AppBar'
@@ -10,16 +9,16 @@ import Typography from '@mui/material/Typography'
 import Notification from './components/Notification'
 import Blogs from './components/Blogs'
 import Blog from './components/Blog'
-import LoginForm from './components/LoginForm'
 import authService from './services/auth'
+import useBlogsQuery from './hooks/use-blogs-query'
 import NotificationContextProvider from './contexts/NotificationContext'
 import './App.css'
 
 const App = () => {
   const navigate = useNavigate()
-  const { blogs: blogData, user: userData } = useLoaderData()
+  const { user: userData } = useLoaderData()
   const [user, setUser] = useState(userData)
-  const [blogs, setBlogs] = useState(blogData)
+  const { isPending, isError, blogs } = useBlogsQuery()
 
   const handleLogoutClick = () => {
     setUser(null)
@@ -27,6 +26,14 @@ const App = () => {
     authService.removeUserFromStorage()
 
     navigate('/')
+  }
+
+  if (isPending) {
+    return <p>Loading...</p>
+  }
+
+  if (isError) {
+    return <p>Something went wrong. Try again lager.</p>
   }
 
   return (
@@ -79,7 +86,7 @@ const App = () => {
 
           <Notification />
 
-          <Outlet context={{ user, setUser, blogs, setBlogs }} />
+          <Outlet context={{ user, setUser, blogs }} />
         </NotificationContextProvider>
       </Container>
     </>

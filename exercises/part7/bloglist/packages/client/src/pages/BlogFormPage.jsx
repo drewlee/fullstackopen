@@ -1,20 +1,21 @@
-import { useOutletContext, useNavigate } from 'react-router'
-import blogService from '../services/blogs'
+import { useNavigate } from 'react-router'
+import { useBlogsQueryMutations } from '../hooks/use-blogs-query'
 import BlogForm from '../components/BlogForm'
 
 const BlogFormPage = () => {
-  const { blogs, setBlogs } = useOutletContext()
   const navigate = useNavigate()
+  const { addNewBlog } = useBlogsQueryMutations()
 
-  const handleCreateBlog = async (newBlog) => {
-    try {
-      const createdBlog = await blogService.createNew(newBlog)
-      setBlogs([...blogs, createdBlog])
-      navigate('/')
-    } catch (error) {
-      console.error(error)
-      throw new Error('Something went wrong, try again later')
-    }
+  const handleCreateBlog = (newBlog, options) => {
+    const currOnSuccess = options?.onSuccess ? options.onSuccess : () => {}
+
+    addNewBlog(newBlog, {
+      ...options,
+      onSuccess() {
+        currOnSuccess(...arguments)
+        navigate('/')
+      },
+    })
   }
 
   return <BlogForm handleCreateBlog={handleCreateBlog} />

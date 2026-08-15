@@ -5,12 +5,13 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import useNotificationContext from '../hooks/use-notification-context'
 
+const nullBlog = {
+  title: '',
+  author: '',
+  url: '',
+}
+
 const BlogForm = ({ handleCreateBlog }) => {
-  const nullBlog = {
-    title: '',
-    author: '',
-    url: '',
-  }
   const [blog, setBlog] = useState(nullBlog)
   const { notifyError, notifySuccess } = useNotificationContext()
 
@@ -28,13 +29,15 @@ const BlogForm = ({ handleCreateBlog }) => {
       return
     }
 
-    try {
-      await handleCreateBlog(newBlog)
-      notifySuccess(`Added ${newBlog.title} by ${newBlog.author}`)
-      setBlog(nullBlog)
-    } catch (error) {
-      notifyError(error.message)
-    }
+    handleCreateBlog(newBlog, {
+      onSuccess(savedBlog) {
+        setBlog(nullBlog)
+        notifySuccess(`Added ${savedBlog.title} by ${savedBlog.author}`)
+      },
+      onError() {
+        notifyError('Something went wrong, try again later')
+      },
+    })
   }
 
   return (

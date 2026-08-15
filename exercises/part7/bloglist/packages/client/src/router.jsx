@@ -1,6 +1,5 @@
 import { createBrowserRouter, redirect } from 'react-router'
 import authService from './services/auth'
-import blogService from './services/blogs'
 import App from './App'
 import BlogsPage from './pages/BlogsPage'
 import BlogPage from './pages/BlogPage'
@@ -10,20 +9,12 @@ import CatchAll from './pages/CatchAll'
 
 const appPageLoader = async () => {
   const user = authService.getUserFromStorage()
-  let blogs = []
 
   if (user) {
     authService.setUser(user)
   }
 
-  try {
-    blogs = await blogService.getAll()
-    blogs.sort((a, b) => b.likes - a.likes)
-  } catch (error) {
-    console.error(error)
-  }
-
-  return { blogs, user }
+  return { user }
 }
 
 const loginPageLoader = () => {

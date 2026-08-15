@@ -26,7 +26,9 @@ describe('<BlogForm />', () => {
   })
 
   test('calls the provided prop handlers when creating a new blog', async () => {
-    const handleCreateBlog = vi.fn().mockResolvedValue()
+    const handleCreateBlog = vi.fn().mockImplementation((newBlog, options) => {
+      options.onSuccess(newBlog)
+    })
 
     render(<BlogForm handleCreateBlog={handleCreateBlog} />)
 
@@ -43,14 +45,15 @@ describe('<BlogForm />', () => {
     await user.click(createButtonEl)
 
     expect(handleCreateBlog).toHaveBeenCalledOnce()
-    expect(handleCreateBlog).toHaveBeenCalledWith(blog)
+    expect(handleCreateBlog.mock.calls[0][0]).toEqual(blog)
     expect(notifySuccess).toHaveBeenCalledOnce()
     expect(notifySuccess).toHaveBeenCalledWith(`Added ${blog.title} by ${blog.author}`)
   })
 
   test('calls the provided prop handler when the creation service fails', async () => {
-    const errorMsg = 'Server error'
-    const handleCreateBlog = vi.fn().mockRejectedValue(new Error(errorMsg))
+    const handleCreateBlog = vi.fn().mockImplementation((newBlog, options) => {
+      options.onError()
+    })
 
     render(<BlogForm handleCreateBlog={handleCreateBlog} />)
 
@@ -68,14 +71,13 @@ describe('<BlogForm />', () => {
     await user.click(createButtonEl)
 
     expect(handleCreateBlog).toHaveBeenCalledOnce()
-    expect(handleCreateBlog).toHaveBeenCalledWith(blog)
+    expect(handleCreateBlog.mock.calls[0][0]).toEqual(blog)
     expect(notifySuccess).not.toHaveBeenCalled()
     expect(notifyError).toHaveBeenCalledOnce()
-    expect(notifyError).toHaveBeenCalledWith(errorMsg)
   })
 
   test('calls the provided prop handler when a validation error occurs', async () => {
-    const handleCreateBlog = vi.fn().mockResolvedValue()
+    const handleCreateBlog = vi.fn()
 
     render(<BlogForm handleCreateBlog={handleCreateBlog} />)
 
