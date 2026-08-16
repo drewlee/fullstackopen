@@ -44,13 +44,13 @@ const Blog = ({ blog, handleBlogLike, handleBlogRemove }) => {
   }
 
   return (
-    <div>
+    <section>
       <Paper
         elevation={6}
         sx={{ marginTop: '24px', padding: '24px' }}
         component="article"
       >
-        <Typography variant="h6" component="h2">
+        <Typography variant="h5" component="h2" sx={{ fontWeight: 500 }}>
           {blog.title} - {blog.author}
         </Typography>
 
@@ -91,8 +91,24 @@ const Blog = ({ blog, handleBlogLike, handleBlogRemove }) => {
             </Button>
           )}
         </div>
+
+        <div className="blog-content_comments">
+          <Typography variant="h6" component="h3">
+            comments
+          </Typography>
+
+          {blog.comments.length ? (
+            <ul>
+              {blog.comments.map((comment) => (
+                <li key={comment}>{comment}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>No comments</p>
+          )}
+        </div>
       </Paper>
-    </div>
+    </section>
   )
 }
 
