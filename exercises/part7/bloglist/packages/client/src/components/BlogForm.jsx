@@ -1,27 +1,23 @@
-import { useState } from 'react'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
+import useField from '../hooks/use-field'
 import useNotificationContext from '../hooks/use-notification-context'
 
-const nullBlog = {
-  title: '',
-  author: '',
-  url: '',
-}
-
 const BlogForm = ({ handleCreateBlog }) => {
-  const [blog, setBlog] = useState(nullBlog)
+  const title = useField()
+  const author = useField()
+  const url = useField()
   const { notifyError, notifySuccess } = useNotificationContext()
 
   const handleFormSubmit = async (evt) => {
     evt.preventDefault()
 
-    const newBlog = { ...blog }
-
-    for (const [key, value] of Object.entries(newBlog)) {
-      newBlog[key] = value.trim()
+    const newBlog = {
+      title: title.getValue(),
+      author: author.getValue(),
+      url: url.getValue(),
     }
 
     if (!newBlog.title || !newBlog.url) {
@@ -31,7 +27,9 @@ const BlogForm = ({ handleCreateBlog }) => {
 
     handleCreateBlog(newBlog, {
       onSuccess(savedBlog) {
-        setBlog(nullBlog)
+        title.reset()
+        author.reset()
+        url.reset()
         notifySuccess(`Added ${savedBlog.title} by ${savedBlog.author}`)
       },
       onError() {
@@ -59,46 +57,11 @@ const BlogForm = ({ handleCreateBlog }) => {
           aria-labelledby="create-blog-heading"
         >
           <Stack spacing={2}>
-            <TextField
-              type="text"
-              label="title"
-              id="blog-title"
-              required
-              value={blog.title}
-              onChange={(evt) =>
-                setBlog({
-                  ...blog,
-                  title: evt.target.value,
-                })
-              }
-            />
+            <TextField id="blog-title" label="title" required {...title.props} />
 
-            <TextField
-              type="text"
-              label="author"
-              id="blog-author"
-              value={blog.author}
-              onChange={(evt) =>
-                setBlog({
-                  ...blog,
-                  author: evt.target.value,
-                })
-              }
-            />
+            <TextField id="blog-author" label="author" {...author.props} />
 
-            <TextField
-              type="text"
-              label="url"
-              id="blog-url"
-              required
-              value={blog.url}
-              onChange={(evt) =>
-                setBlog({
-                  ...blog,
-                  url: evt.target.value,
-                })
-              }
-            />
+            <TextField id="blog-url" label="url" required {...url.props} />
 
             <Button
               type="submit"

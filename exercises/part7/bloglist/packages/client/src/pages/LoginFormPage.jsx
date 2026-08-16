@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router'
 import userService from '../services/users'
 import authService from '../services/auth'
+import persistentUser from '../services/persistent-user'
 import useUserContext from '../hooks/use-user-context'
 import LoginForm from '../components/LoginForm'
 
@@ -12,9 +13,9 @@ const LoginFormPage = () => {
     try {
       const user = await userService.login(credentials)
 
-      setUser(user)
       authService.setUser(user)
-      authService.setUserInStorage(user)
+      persistentUser.saveUser(user)
+      setUser(user)
 
       navigate('/')
     } catch (error) {

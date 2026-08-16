@@ -3,6 +3,7 @@ import { Link, Outlet, useLoaderData, useNavigate } from 'react-router'
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
+import persistentUser from './services/persistent-user'
 import authService from './services/auth'
 import useBlogsQuery from './hooks/use-blogs-query'
 import useUserContext from './hooks/use-user-context'
@@ -23,9 +24,9 @@ const App = () => {
   }, [loadedUser, setUser])
 
   const handleLogoutClick = () => {
-    setUser(null)
     authService.setUser(null)
-    authService.removeUserFromStorage()
+    persistentUser.removeUser()
+    setUser(null)
 
     navigate('/')
   }

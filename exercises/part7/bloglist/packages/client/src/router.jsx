@@ -1,4 +1,5 @@
 import { createBrowserRouter, redirect } from 'react-router'
+import persistentUser from './services/persistent-user'
 import authService from './services/auth'
 import App from './App'
 import BlogsPage from './pages/BlogsPage'
@@ -8,8 +9,7 @@ import BlogFormPage from './pages/BlogFormPage'
 import CatchAll from './pages/CatchAll'
 
 const appPageLoader = () => {
-  const user = authService.getUserFromStorage()
-
+  const user = persistentUser.getUser()
   if (user) {
     authService.setUser(user)
   }
@@ -18,7 +18,6 @@ const appPageLoader = () => {
 }
 
 const loginPageLoader = () => {
-  console.log('getting stored user')
   const user = authService.getUser()
   if (user) {
     return redirect('/')
