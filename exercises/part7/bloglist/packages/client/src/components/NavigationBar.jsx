@@ -16,6 +16,12 @@ const NavigationBar = ({ user, handleLogoutClick }) => {
               </Button>
             </li>
 
+            <li className="primary-nav_list-item">
+              <Button component={Link} to="/users" color="inherit">
+                users
+              </Button>
+            </li>
+
             {user && (
               <li className="primary-nav_list-item">
                 <Button component={Link} to="/create" color="inherit">

@@ -3,11 +3,13 @@ import { useBlogStore } from './stores/blogs'
 import { useUserStore } from './stores/user'
 import persistentUser from './services/persistent-user'
 import blogService from './services/blogs'
+import userService from './services/users'
 import App from './App'
 import BlogsPage from './pages/BlogsPage'
 import BlogPage from './pages/BlogPage'
 import LoginFormPage from './pages/LoginFormPage'
 import BlogFormPage from './pages/BlogFormPage'
+import UsersListPage from './components/UsersListPage'
 import CatchAll from './pages/CatchAll'
 
 const appPageLoader = async () => {
@@ -39,6 +41,18 @@ const createPageLoader = () => {
   }
 }
 
+const usersPageLoader = async () => {
+  let users = []
+
+  try {
+    users = await userService.getAll()
+  } catch (error) {
+    console.error(error)
+  }
+
+  return { users }
+}
+
 const router = createBrowserRouter([
   {
     Component: App,
@@ -63,6 +77,11 @@ const router = createBrowserRouter([
         loader: () => redirect('/'),
       },
       { path: '/blogs/:id', Component: BlogPage },
+      {
+        path: '/users',
+        loader: usersPageLoader,
+        Component: UsersListPage,
+      },
       { path: '*', Component: CatchAll },
     ],
   },

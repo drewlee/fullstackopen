@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router'
-import userService from '../services/users'
+import loginService from '../services/login'
 import persistentUser from '../services/persistent-user'
 import LoginForm from '../components/LoginForm'
 import { useUserActions } from '../stores/user'
@@ -10,7 +10,7 @@ const LoginFormPage = () => {
 
   const loginHandler = async (credentials) => {
     try {
-      const user = await userService.login(credentials)
+      const user = await loginService.login(credentials)
 
       setUser(user)
       persistentUser.saveUser(user)
