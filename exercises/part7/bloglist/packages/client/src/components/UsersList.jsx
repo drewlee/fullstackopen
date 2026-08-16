@@ -6,6 +6,7 @@ import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+import MuiLink from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
 const UsersList = ({ users }) => {
@@ -29,7 +30,14 @@ const UsersList = ({ users }) => {
               {users.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>
-                    <Link to={`/users/${user.id}`}>{user.name}</Link>
+                    <MuiLink
+                      color="primary"
+                      underline="hover"
+                      component={Link}
+                      to={`/users/${user.id}`}
+                    >
+                      {user.name}
+                    </MuiLink>
                   </TableCell>
                   <TableCell>{user.username}</TableCell>
                   <TableCell>{user.blogs.length}</TableCell>
