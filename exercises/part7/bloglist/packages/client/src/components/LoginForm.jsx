@@ -1,32 +1,32 @@
-import { useState } from 'react'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Notification from './Notification'
+import useField from '../hooks/use-field'
 import { useNotificationActions } from '../stores/notification'
 
 const LoginForm = ({ loginHandler }) => {
-  const nullCredentials = { username: '', password: '' }
-  const [credentials, setCredentials] = useState(nullCredentials)
+  const username = useField()
+  const password = useField('password')
   const { notifyError } = useNotificationActions()
 
   const handleFormSubmit = async (evt) => {
     evt.preventDefault()
 
+    const credentials = {
+      username: username.getValue(),
+      password: password.getValue(),
+    }
+
+    if (!credentials.username || !credentials.password) {
+      notifyError('Username and password required')
+      return
+    }
+
     try {
-      for (const [key, value] of Object.entries(credentials)) {
-        credentials[key] = value.trim()
-      }
-      const { username, password } = credentials
-
-      if (!username || !password) {
-        notifyError('Username and password required')
-        return
-      }
-
       await loginHandler(credentials)
-      setCredentials(nullCredentials)
+      username.reset()
+      password.reset()
     } catch (error) {
       notifyError(error.message)
     }
@@ -45,25 +45,9 @@ const LoginForm = ({ loginHandler }) => {
 
       <form onSubmit={handleFormSubmit} aria-labelledby="login-heading">
         <Stack spacing={2}>
-          <TextField
-            type="text"
-            label="username"
-            id="login-username"
-            value={credentials.username}
-            onChange={(evt) =>
-              setCredentials({ ...credentials, username: evt.target.value })
-            }
-          />
+          <TextField id="login-username" label="username" {...username.props} />
 
-          <TextField
-            type="password"
-            label="password"
-            id="login-password"
-            value={credentials.password}
-            onChange={(evt) =>
-              setCredentials({ ...credentials, password: evt.target.value })
-            }
-          />
+          <TextField id="login-password" label="password" {...password.props} />
 
           <Button
             type="submit"

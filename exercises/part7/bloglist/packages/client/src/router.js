@@ -1,7 +1,7 @@
 import { createBrowserRouter, redirect } from 'react-router'
 import { useBlogStore } from './stores/blogs'
 import { useUserStore } from './stores/user'
-import authService from './services/auth'
+import persistentUser from './services/persistent-user'
 import blogService from './services/blogs'
 import App from './App'
 import BlogsPage from './pages/BlogsPage'
@@ -11,7 +11,7 @@ import BlogFormPage from './pages/BlogFormPage'
 import CatchAll from './pages/CatchAll'
 
 const appPageLoader = async () => {
-  const user = authService.getUserFromStorage()
+  const user = persistentUser.getUser()
 
   if (user) {
     useUserStore.setState({ user })
