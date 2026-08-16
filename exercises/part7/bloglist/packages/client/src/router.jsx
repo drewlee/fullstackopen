@@ -7,7 +7,7 @@ import LoginFormPage from './pages/LoginFormPage'
 import BlogFormPage from './pages/BlogFormPage'
 import CatchAll from './pages/CatchAll'
 
-const appPageLoader = async () => {
+const appPageLoader = () => {
   const user = authService.getUserFromStorage()
 
   if (user) {
@@ -18,6 +18,7 @@ const appPageLoader = async () => {
 }
 
 const loginPageLoader = () => {
+  console.log('getting stored user')
   const user = authService.getUser()
   if (user) {
     return redirect('/')

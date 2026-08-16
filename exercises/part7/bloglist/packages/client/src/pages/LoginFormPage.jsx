@@ -1,11 +1,12 @@
-import { useNavigate, useOutletContext } from 'react-router'
+import { useNavigate } from 'react-router'
 import userService from '../services/users'
 import authService from '../services/auth'
+import useUserContext from '../hooks/use-user-context'
 import LoginForm from '../components/LoginForm'
 
 const LoginFormPage = () => {
   const navigate = useNavigate()
-  const { setUser } = useOutletContext()
+  const { setUser } = useUserContext()
 
   const loginHandler = async (credentials) => {
     try {

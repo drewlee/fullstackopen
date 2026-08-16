@@ -3,11 +3,11 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import Blogs from '../components/Blogs'
 
 const BlogsPage = () => {
-  const { user, blogs } = useOutletContext()
+  const { blogs } = useOutletContext()
 
   return (
     <ErrorBoundary>
-      <Blogs user={user} blogs={blogs} />
+      <Blogs blogs={blogs} />
     </ErrorBoundary>
   )
 }

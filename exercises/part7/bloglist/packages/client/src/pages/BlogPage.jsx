@@ -1,10 +1,12 @@
 import { useParams, useOutletContext, useNavigate } from 'react-router'
 import { useBlogsQueryMutations } from '../hooks/use-blogs-query'
+import useUserContext from '../hooks/use-user-context'
 import ErrorBoundary from '../components/ErrorBoundary'
 import Blog from '../components/Blog'
 
 const BlogPage = () => {
-  const { blogs, user } = useOutletContext()
+  const { blogs } = useOutletContext()
+  const { user } = useUserContext()
   const { incrementLikes, removeBlog } = useBlogsQueryMutations()
   const navigate = useNavigate()
   const { id } = useParams()
