@@ -9,7 +9,9 @@ import BlogsPage from './pages/BlogsPage'
 import BlogPage from './pages/BlogPage'
 import LoginFormPage from './pages/LoginFormPage'
 import BlogFormPage from './pages/BlogFormPage'
-import UsersListPage from './components/UsersListPage'
+import UsersOutlet from './pages/UsersOutlet'
+import UsersListPage from './pages/UsersListPage'
+import UserPage from './pages/UserPage'
 import CatchAll from './pages/CatchAll'
 
 const appPageLoader = async () => {
@@ -76,11 +78,18 @@ const router = createBrowserRouter([
         path: '/blogs',
         loader: () => redirect('/'),
       },
-      { path: '/blogs/:id', Component: BlogPage },
+      {
+        path: '/blogs/:id',
+        Component: BlogPage,
+      },
       {
         path: '/users',
         loader: usersPageLoader,
-        Component: UsersListPage,
+        Component: UsersOutlet,
+        children: [
+          { index: true, Component: UsersListPage },
+          { path: '/users/:id', Component: UserPage },
+        ],
       },
       { path: '*', Component: CatchAll },
     ],

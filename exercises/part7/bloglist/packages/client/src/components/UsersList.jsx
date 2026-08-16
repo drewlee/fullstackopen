@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import TableContainer from '@mui/material/TableContainer'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -27,7 +28,9 @@ const UsersList = ({ users }) => {
             <TableBody>
               {users.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell>{user.name}</TableCell>
+                  <TableCell>
+                    <Link to={`/users/${user.id}`}>{user.name}</Link>
+                  </TableCell>
                   <TableCell>{user.username}</TableCell>
                   <TableCell>{user.blogs.length}</TableCell>
                 </TableRow>
