@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
+import MuiLink from '@mui/material/Link'
 import { useNotificationActions } from '../stores/notification'
 import { useUser } from '../stores/user'
 import CommentsForm from './CommentsForm'
@@ -13,6 +14,7 @@ const Blog = ({ blog, handleBlogLike, handleBlogRemove, handleAddComment }) => {
   const { notifySuccess, notifyError } = useNotificationActions()
   const [isLikeDisabled, setIsLikeDisabled] = useState(false)
   const [isRemoveDisabled, setIsRemoveDisabled] = useState(false)
+  const isValidURL = /^https?:\/\//.test(blog.url)
 
   const handleLikeClick = async () => {
     setIsLikeDisabled(true)
@@ -58,9 +60,13 @@ const Blog = ({ blog, handleBlogLike, handleBlogRemove, handleAddComment }) => {
         <div className="blog-content">
           <ul className="blog-content-list">
             <li className="blog-content-list-item">
-              <a href={blog.url} target="_blank">
-                {blog.url}
-              </a>
+              {isValidURL ? (
+                <MuiLink href={blog.url} target="_blank" color="primary">
+                  {blog.url}
+                </MuiLink>
+              ) : (
+                <p>{blog.url}</p>
+              )}
             </li>
             <li className="blog-content-list-item blog-content-list-item_like">
               <span data-testid="blog-likes-count">

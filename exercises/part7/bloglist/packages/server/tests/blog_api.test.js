@@ -57,7 +57,7 @@ describe('blog API', () => {
     test('returned blogs include the expected properties', async () => {
       const response = await api.get('/api/blogs')
       const blog = response.body[0]
-      const props = ['id', 'title', 'author', 'url', 'likes', 'user']
+      const props = ['id', 'title', 'author', 'url', 'likes', 'user', 'comments']
 
       assert.deepEqual(Object.keys(blog).length, props.length)
       props.forEach((prop) => assert(prop in blog))
@@ -104,7 +104,7 @@ describe('blog API', () => {
         .set('Authorization', `Bearer ${token}`)
         .send(blog)
 
-      const props = ['id', 'title', 'author', 'url', 'likes', 'user']
+      const props = ['id', 'title', 'author', 'url', 'likes', 'user', 'comments']
 
       assert.deepEqual(Object.keys(response.body).length, props.length)
       props.forEach((prop) => assert(prop in response.body))
