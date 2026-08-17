@@ -16,6 +16,7 @@ describe('<Blog />', () => {
       name: 'James T. Kirk',
       id: 'abc123',
     },
+    comments: [],
   }
 
   const blogUser = {

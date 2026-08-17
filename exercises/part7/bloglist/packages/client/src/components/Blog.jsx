@@ -5,9 +5,10 @@ import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import { useNotificationActions } from '../stores/notification'
 import { useUser } from '../stores/user'
+import CommentsForm from './CommentsForm'
 import './Blog.css'
 
-const Blog = ({ blog, handleBlogLike, handleBlogRemove }) => {
+const Blog = ({ blog, handleBlogLike, handleBlogRemove, handleAddComment }) => {
   const user = useUser()
   const { notifySuccess, notifyError } = useNotificationActions()
   const [isLikeDisabled, setIsLikeDisabled] = useState(false)
@@ -96,6 +97,8 @@ const Blog = ({ blog, handleBlogLike, handleBlogRemove }) => {
           <Typography variant="h6" component="h3">
             comments
           </Typography>
+
+          <CommentsForm handleAddComment={handleAddComment} />
 
           {blog.comments.length ? (
             <ul>

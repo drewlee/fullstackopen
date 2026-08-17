@@ -33,7 +33,15 @@ const remove = async (id) => {
     headers: { Authorization: userStore.getToken() },
   }
   const url = `${baseUrl}/${id}`
+
   await axios.delete(url, config)
+}
+
+const addComment = async (id, comment) => {
+  const url = `${baseUrl}/${id}/comments`
+  const response = await axios.post(url, comment)
+
+  return response.data
 }
 
 export default {
@@ -41,4 +49,5 @@ export default {
   createNew,
   update,
   remove,
+  addComment,
 }

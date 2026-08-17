@@ -40,6 +40,22 @@ export const useBlogStore = create((set) => ({
         }),
       }))
     },
+
+    addComment: async (id, comment) => {
+      const result = await blogService.addComment(id, { comment })
+
+      set((state) => ({
+        blogs: state.blogs.map((blog) => {
+          if (blog.id === id) {
+            return {
+              ...blog,
+              comments: result.comments,
+            }
+          }
+          return blog
+        }),
+      }))
+    },
   },
 }))
 

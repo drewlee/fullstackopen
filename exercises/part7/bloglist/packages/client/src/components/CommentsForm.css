@@ -1,0 +1,5 @@
+.blog-comment-form {
+  display: flex;
+  gap: 0 8px;
+  margin: 16px 0;
+}

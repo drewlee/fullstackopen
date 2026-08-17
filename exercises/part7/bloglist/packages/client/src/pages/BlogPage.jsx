@@ -5,7 +5,7 @@ import Blog from '../components/Blog'
 
 const BlogPage = () => {
   const blogs = useBlogs()
-  const { removeBlog, incrementLikes } = useBlogActions()
+  const { removeBlog, incrementLikes, addComment } = useBlogActions()
   const navigate = useNavigate()
   const { id } = useParams()
   const currBlog = blogs.find((blog) => blog.id === id)
@@ -29,6 +29,15 @@ const BlogPage = () => {
     }
   }
 
+  const handleAddComment = async (comment) => {
+    try {
+      await addComment(id, comment)
+    } catch (error) {
+      console.error(error)
+      throw new Error('Something went wrong, try again later')
+    }
+  }
+
   if (!currBlog) {
     return null
   }
@@ -39,6 +48,7 @@ const BlogPage = () => {
         blog={currBlog}
         handleBlogLike={handleBlogLike}
         handleBlogRemove={handleBlogRemove}
+        handleAddComment={handleAddComment}
       />
     </ErrorBoundary>
   )

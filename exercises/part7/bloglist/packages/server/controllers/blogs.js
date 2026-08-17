@@ -106,4 +106,36 @@ blogsRouter.put('/:id', async (request, response) => {
   response.status(201).json(updatedBlog)
 })
 
+blogsRouter.post('/:id/comments', async (request, response) => {
+  let blog
+
+  try {
+    const { id } = request.params
+    blog = await Blog.findById(id)
+    if (!blog) {
+      throw new Error(`Invalid blog id: ${id}`)
+    }
+  } catch (error) {
+    console.error(error)
+    response.status(404).end({ error: 'Blog not found' })
+    return
+  }
+
+  const { comment } = request.body
+
+  if (!comment || !comment.trim()) {
+    response.status(400).end({ error: 'Missing or malformed comment field' })
+    return
+  }
+
+  blog.comments = [...blog.comments, comment]
+
+  const updatedBlog = await blog.save()
+
+  response.status(201).json({
+    id: updatedBlog.id,
+    comments: updatedBlog.comments,
+  })
+})
+
 module.exports = blogsRouter
